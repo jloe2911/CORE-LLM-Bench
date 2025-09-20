@@ -546,15 +546,10 @@ If you use LLM-ORBench in your research, please cite our paper:
 ```bibtex
 @article{falahatkar2025llmorbench,
   title={LLM-ORBench: Designing a Benchmark Dataset for Complex Ontology-Based Reasoning Tasks in Large Language Models},
-  author={Falahatkar, Sara},
-  journal={Under review at ICLR 2026},
-  year={2025}
+    \author{Julie Loesch \& Sara Falahatkar \& Rishabh Jakhar \& Michel Dumontier \& Remzi Celebi \& Raghava Mutharaju}
+    journal={Under review at ICLR 2026},
+    year={2025}
 }
-```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
