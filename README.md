@@ -1,93 +1,102 @@
-# OWL Inference Explainer
+# LLM-ORBench: A Comprehensive Framework for Ontology-Based Reasoning Evaluation
 
-A tool for generating explanations of inferences made by the Pellet OWL reasoner, helping users understand why specific relations hold in their ontologies.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java 17+](https://img.shields.io/badge/Java-17+-orange.svg)](https://openjdk.java.net/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green.svg)](https://spring.io/projects/spring-boot)
+[![OWL API](https://img.shields.io/badge/OWL%20API-5.1.20-blue.svg)](https://github.com/owlcs/owlapi)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-## Overview
+LLM-ORBench is a systematic framework for evaluating Large Language Models on complex ontology-based reasoning tasks. The framework generates verifiable multi-step inferences using symbolic reasoners (Pellet/OpenLLet) and provides comprehensive evaluation across multiple dimensions including abstraction, reasoning depth, and knowledge representation formats.
 
-OWL Inference Explainer is a Java application that analyzes OWL ontologies, identifies inferences made by the Pellet reasoner, and generates detailed explanations for these inferences. The tool provides insights into three types of relations:
+## Table of Contents
 
-1. **Property Assertions**: Explains why individual A has property P relating to individual B
-2. **Class Membership**: Explains why individual A is an instance of class C
-3. **Class Subsumption**: Explains why class A is a subclass of class B
+- [Key Features](#key-features)
+- [Framework Architecture](#framework-architecture)
+- [Explanation Tagging System](#explanation-tagging-system)
+- [Quick Start](#quick-start)
+- [Java Pipeline](#java-pipeline)
+- [Python Evaluation Pipeline](#python-evaluation-pipeline)
+- [Dataset Structure](#dataset-structure)
+- [Evaluation Metrics](#evaluation-metrics)
+- [Research Applications](#research-applications)
+- [Configuration](#configuration)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Troubleshooting](#troubleshooting)
+- [Citation](#citation)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
-For each inference, the tool provides both a binary answer (true/false) and detailed explanations showing the logical path from asserted facts to inferred conclusions.
+## Key Features
 
-## Features
+- **Verifiable Ground Truth**: Uses symbolic reasoners to generate gold-standard inferences with formal proofs
+- **Fine-grained Complexity Analysis**: Novel explanation tagging system based on OWL axioms and reasoning patterns
+- **Multi-dimensional Evaluation**: Tests across natural language, formal SPARQL, and abstracted representations
+- **Systematic Abstraction**: Removes semantic content to test pure logical reasoning capabilities
+- **Comprehensive Metrics**: Accuracy, confidence calibration, and hallucination detection
+- **Scalable Pipeline**: Processes multiple ontologies with memory-efficient sequential processing
 
-- Generates SPARQL queries for all inferences in the ontology
-- Explains direct and indirect property relationships
-- Identifies class membership through various inference paths
-- Explains class hierarchy relationships
-- Handles inverse properties, subproperties, and equivalent classes
-- Outputs both CSV summaries and detailed JSON explanations
-- Supports multi-choice explanations with grouped answers
+## Framework Architecture
 
-## Output Format
+The LLM-ORBench framework consists of two main phases:
 
-The tool produces two output files:
+### Phase 1: Java-Based Dataset Generation
 
-1. **CSV Summary** (`SPARQL_questions.csv`): Contains all SPARQL queries with answer types, predicates, and answers
-2. **JSON Explanations** (`explanations.json`): Contains detailed explanations for each inference, including:
-   - The inferred relationship (subject, predicate, object)
-   - One or more explanation paths showing the reasoning steps
-   - Size metrics indicating explanation complexity
+1. **SmallOntologyExtractor**: Creates 1-hop and 2-hop resource-centric subgraphs
+2. **TBox Preservation**: Maintains complete terminological knowledge
+3. **Individual-Centric Extraction**: Focuses reasoning context around specific entities
 
-## Getting Started
+### Phase 2: Benchmark Dataset Generation
+
+1. **Symbolic Reasoning**: Apply Pellet reasoner to derive ground-truth inferences
+2. **Explanation Analysis**: Generate and tag formal proofs using our 20-tag system
+3. **Query Generation**: Create both SPARQL ASK and SELECT queries
+4. **Multi-format Output**: Natural language and formal representations
+5. **Stratified Sampling**: Balanced representation across complexity levels
+
+### Phase 3: Python-Based Evaluation Pipeline
+
+1. **Data Preparation**: Stratified sampling and abstraction generation
+2. **Verbalization**: Convert formal ontologies to natural language
+3. **LLM Testing**: Multi-setting evaluation across different models
+4. **Results Analysis**: Comprehensive statistical evaluation
+
+## Explanation Tagging System
+
+Our novel complexity metric analyzes formal proofs using 20 distinct tags:
+
+| Tag | Description | Example Usage |
+|-----|-------------|---------------|
+| **D** | Direct Assertion | Explicitly stated facts |
+| **H** | Hierarchy | rdfs:subClassOf, rdfs:subPropertyOf |
+| **T** | Transitivity | Transitive property reasoning |
+| **S** | Symmetry | Symmetric property reasoning |
+| **I** | Inverse | Inverse property pairs |
+| **R** | Domain/Range | Property domain/range constraints |
+| **N** | Property Chain | Multi-step property composition |
+| **M** | Multi-step | Combination of multiple axiom types |
+| **E** | Existential | ∃ restrictions (owl:someValuesFrom) |
+| **L** | Universal | ∀ restrictions (owl:allValuesFrom) |
+| **C** | Cardinality | Cardinality restrictions |
+| **Q** | Equivalence | owl:equivalentClass relationships |
+| **∩** | Intersection | owl:intersectionOf |
+| **∪** | Union | owl:unionOf |
+| **¬** | Complement | owl:complementOf |
+
+**Tag String Length** serves as our primary proxy for reasoning complexity, with longer strings indicating more complex inferences requiring multiple logical steps.
+
+## Quick Start
 
 ### Prerequisites
 
-- Java 11 or higher
+- Java 17 or higher
 - Maven 3.6 or higher
+- Python 3.8 or higher
+- Minimum 8GB RAM (16GB recommended for large ontologies)
 
 ### Installation
-
-1. Clone the repository:
-git clone https://github.com/SaraFlht/OwlInferenceExplainer.java
-cd owl-inference-explainer
-
-2. Build the project with Maven:
+```bash
+git clone https://github.com/SaraFlht/LLM-ORBench.git
+cd LLM-ORBench
 mvn clean install
-
-### Usage
-
-1. Run the application with a path to your OWL ontology file:
-java -jar target/owl-inference-explainer.jar /path/to/your/ontology.owl
-
-2. Or use the default sample ontology included in the project:
-java -jar target/owl-inference-explainer.jar
-
-3. The output files will be generated in the current directory:
-- `SPARQL_questions.csv`
-- `explanations.json`
-
-
-## Ontology Augmentation Scripts: Noise & Negation
-
-This project includes Python scripts for augmenting ontologies with noise and negation, located in the `scripts/` directory. These scripts allow you to generate modified ontologies for robustness testing or data augmentation.
-
-### Add Random Noise
-
-Adds a specified percentage of random triples (noise) to your ontology.
-
-**Usage:**
-```sh
-python scripts/add_noise.py --input path/to/input.ttl --output path/to/noise_output.ttl --noise_percentage 0.5
-```
-- `--input`: Path to the input ontology (Turtle format)
-- `--output`: Path to save the noisy ontology
-- `--noise_percentage`: Fraction of triples to add as noise (e.g., 0.25, 0.5, 0.75, 1.0)
-
-### Add Negation & Contradiction
-
-Adds negative predicates (e.g., `isNotFatherOf`) and optional contradictions to your ontology.
-
-**Usage:**
-```sh
-python scripts/add_negation.py --input path/to/input.ttl --output path/to/negation_output.ttl --negation_percentage 0.25 --contradiction_percentage 0.1
-```
-- `--input`: Path to the input ontology (Turtle format)
-- `--output`: Path to save the negation-augmented ontology
-- `--negation_percentage`: Fraction of object property triples to add negation for (0-1)
-- `--contradiction_percentage`: Fraction of negations that are contradictions (0-1, optional)
-
-The output ontologies will be saved in the specified output paths. You can use these augmented ontologies as input to the main Java application for further analysis or testing.
+cd scripts/llm_pipeline/
+pip install -r requirements.txt
