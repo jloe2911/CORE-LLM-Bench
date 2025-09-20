@@ -313,7 +313,7 @@ python sparql_to_nl.py
 
 ### Phase 3: Multi-Setting LLM Evaluation
 
-#### Setting 1: Natural Language + Verbalized Context
+#### Setting 1: Natural Language + Verbalized Context / Abstracted Questuons + Verbalized Abstracted Context
 ```bash
 python run_nl_verbalized.py
 ```
