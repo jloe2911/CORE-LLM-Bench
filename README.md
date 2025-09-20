@@ -539,18 +539,6 @@ CONFIG = {
 - Increase batch size for efficiency
 - Monitor memory usage with checkpoints
 
-## Citation
-
-If you use LLM-ORBench in your research, please cite our paper:
-
-```bibtex
-@article{falahatkar2025llmorbench,
-  title={LLM-ORBench: Designing a Benchmark Dataset for Complex Ontology-Based Reasoning Tasks in Large Language Models},
-    \author{Julie Loesch \& Sara Falahatkar \& Rishabh Jakhar \& Michel Dumontier \& Remzi Celebi \& Raghava Mutharaju}
-    journal={Under review at ICLR 2026},
-    year={2025}
-}
-
 ---
 
 **Contact**: For questions about the framework or to request specific benchmark configurations, please open an issue in this repository.
