@@ -2,6 +2,7 @@
 Natural Language + Verbalized Ontologies: Tests LLM reasoning with human-readable questions and context
 Enhanced version with improved memory management for heavy ontologies and thousands of questions
 """
+
 import pandas as pd
 import os
 import time
@@ -17,7 +18,7 @@ from api_calls import (
     check_api_clients,
     openai_client,
     deepseek_client,
-    openrouter_client
+    openrouter_client,
 )
 
 # Navigate to project root
@@ -27,14 +28,17 @@ os.chdir(project_root)
 
 print(f"Working directory set to: {os.getcwd()}")
 
+
 def monitor_memory():
     """Monitor system memory usage"""
     return psutil.virtual_memory().percent
+
 
 def force_cleanup():
     """Force garbage collection"""
     gc.collect()
     time.sleep(1)
+
 
 # Create timestamped output directory
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -46,30 +50,31 @@ print(f"📂 Output directory: {output_dir}")
 MODELS_CONFIG = {
     "gpt-5-mini": "gpt-5-mini-2025-08-07",
     "deepseek-chat": "deepseek-chat",
-    "llama-4-maverick": "meta-llama/llama-4-maverick"
+    "llama-4-maverick": "meta-llama/llama-4-maverick",
 }
 
 CONFIG = {
-    'experiment_type': 'nl_verbalized',
-    'description': 'Natural language questions with verbalized JSON ontology context - Memory Optimized',
-    'questions_csv': "output/FamilyOWL/2hop/SPARQL_questions_sampling_abs.csv",
-    'verbalized_ontology_dir': "output/verbalized_ontologies/FamilyOWL_2hop/abstracted",
-    'context_mode': 'json',
-    'question_column': 'Question',
-    'models_used': MODELS_CONFIG,
-    'max_workers': 8,   # Reduced for better memory management
-    'batch_size': 25,   # Smaller batches for heavy ontologies
-    'checkpoint_frequency': 50,  # More frequent saves
-    'silent_mode': False,
-    'test_mode': False,  # FULL MODE - process all questions
-    'memory_threshold': 85  # Memory threshold for cleanup
+    "experiment_type": "nl_verbalized",
+    "description": "Natural language questions with verbalized JSON ontology context - Memory Optimized",
+    "questions_csv": "output/FamilyOWL/2hop/SPARQL_questions_sampling_abs.csv",
+    "verbalized_ontology_dir": "output/verbalized_ontologies/FamilyOWL_2hop/abstracted",
+    "context_mode": "json",
+    "question_column": "Question",
+    "models_used": MODELS_CONFIG,
+    "max_workers": 8,  # Reduced for better memory management
+    "batch_size": 25,  # Smaller batches for heavy ontologies
+    "checkpoint_frequency": 50,  # More frequent saves
+    "silent_mode": False,
+    "test_mode": False,  # FULL MODE - process all questions
+    "memory_threshold": 85,  # Memory threshold for cleanup
 }
+
 
 def print_experiment_header():
     """Print a nice experiment header"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🚀 NATURAL LANGUAGE + VERBALIZED EXPERIMENT (MEMORY OPTIMIZED)")
-    print("="*80)
+    print("=" * 80)
     print(f"📋 Experiment: {CONFIG['description']}")
     print(f"🤖 Models: {', '.join(CONFIG['models_used'].keys())}")
     print(f"🔧 Max Workers: {CONFIG['max_workers']}")
@@ -78,7 +83,8 @@ def print_experiment_header():
     print(f"🔇 Silent Mode: {'ON' if CONFIG['silent_mode'] else 'OFF'}")
     print(f"🧠 Memory Threshold: {CONFIG['memory_threshold']}%")
     print(f"📂 Output: {output_dir}")
-    print("="*80)
+    print("=" * 80)
+
 
 def validate_setup():
     """Validate experiment setup with memory monitoring"""
@@ -87,28 +93,32 @@ def validate_setup():
 
     # Load questions
     try:
-        df = pd.read_csv(CONFIG['questions_csv'])
+        df = pd.read_csv(CONFIG["questions_csv"])
         print(f"✅ Loaded {len(df)} questions from {CONFIG['questions_csv']}")
     except FileNotFoundError:
         print(f"❌ Error: Questions CSV not found at {CONFIG['questions_csv']}")
         return None
 
     # Check verbalized ontology directory
-    verbalized_dir = Path(CONFIG['verbalized_ontology_dir'])
+    verbalized_dir = Path(CONFIG["verbalized_ontology_dir"])
     if not verbalized_dir.exists():
-        print(f"❌ Error: Verbalized ontology directory does not exist: {verbalized_dir}")
+        print(
+            f"❌ Error: Verbalized ontology directory does not exist: {verbalized_dir}"
+        )
         return None
 
     # Filter questions based on available JSON files
     available_json_files = {p.stem for p in verbalized_dir.glob("*.json")}
     original_count = len(df)
-    df = df[df['Root Entity'].isin(available_json_files)].copy()
+    df = df[df["Root Entity"].isin(available_json_files)].copy()
 
     print(f"🔍 Found {len(available_json_files)} JSON ontology files")
     print(f"📢 Filtered dataset to {len(df)} questions (from {original_count})")
 
     if df.empty:
-        print("❌ Error: No questions remain after filtering. Check JSON file names and 'Root Entity' column.")
+        print(
+            "❌ Error: No questions remain after filtering. Check JSON file names and 'Root Entity' column."
+        )
         return None
 
     # Check ontology sizes for memory estimation
@@ -126,54 +136,58 @@ def validate_setup():
     print(f"   Average size: {total_size / len(available_json_files) / 1024:.1f} KB")
 
     if total_size > 500 * 1024 * 1024:  # 500MB threshold
-        print("⚠️ Warning: Large ontology dataset detected. Consider reducing batch size.")
+        print(
+            "⚠️ Warning: Large ontology dataset detected. Consider reducing batch size."
+        )
 
     return df
+
 
 def analyze_nl_patterns(df):
     """Analyze patterns in natural language questions with memory efficiency"""
     patterns = {
-        'binary_questions': 0,
-        'multi_choice_questions': 0,
-        'membership_questions': 0,
-        'property_questions': 0,
-        'complex_questions': 0,
-        'short_questions': 0,
-        'medium_questions': 0,
-        'long_questions': 0
+        "binary_questions": 0,
+        "multi_choice_questions": 0,
+        "membership_questions": 0,
+        "property_questions": 0,
+        "complex_questions": 0,
+        "short_questions": 0,
+        "medium_questions": 0,
+        "long_questions": 0,
     }
 
     for idx, row in df.iterrows():
-        question = str(row.get('Question', '')).lower()
-        answer_type = str(row.get('Answer Type', '')).lower()
-        task_type = str(row.get('Task Type', '')).lower()
+        question = str(row.get("Question", "")).lower()
+        answer_type = str(row.get("Answer Type", "")).lower()
+        task_type = str(row.get("Task Type", "")).lower()
 
         # Question type analysis
-        if answer_type == 'bin':
-            patterns['binary_questions'] += 1
-        elif answer_type == 'mc':
-            patterns['multi_choice_questions'] += 1
+        if answer_type == "bin":
+            patterns["binary_questions"] += 1
+        elif answer_type == "mc":
+            patterns["multi_choice_questions"] += 1
 
         # Task type analysis
-        if 'membership' in task_type:
-            patterns['membership_questions'] += 1
-        elif 'property' in task_type:
-            patterns['property_questions'] += 1
+        if "membership" in task_type:
+            patterns["membership_questions"] += 1
+        elif "property" in task_type:
+            patterns["property_questions"] += 1
 
         # Complexity analysis
         word_count = len(question.split())
         if word_count <= 5:
-            patterns['short_questions'] += 1
+            patterns["short_questions"] += 1
         elif word_count <= 10:
-            patterns['medium_questions'] += 1
+            patterns["medium_questions"] += 1
         else:
-            patterns['long_questions'] += 1
+            patterns["long_questions"] += 1
 
         # Complex patterns (multiple clauses)
-        if ' and ' in question or ' or ' in question or '?' in question[:-1]:
-            patterns['complex_questions'] += 1
+        if " and " in question or " or " in question or "?" in question[:-1]:
+            patterns["complex_questions"] += 1
 
     return patterns
+
 
 def estimate_experiment_time(df, models_config, max_workers):
     """Estimate experiment duration with memory considerations"""
@@ -185,27 +199,38 @@ def estimate_experiment_time(df, models_config, max_workers):
     print(f"\n⏱️ EXPERIMENT ESTIMATES:")
     print(f"   Total questions: {len(df)}")
     print(f"   Total API calls: {total_calls}")
-    print(f"   Estimated time: {estimated_total_time/60:.1f} minutes")
-    print(f"   Checkpoints will be saved every {CONFIG['checkpoint_frequency']} questions")
+    print(f"   Estimated time: {estimated_total_time / 60:.1f} minutes")
+    print(
+        f"   Checkpoints will be saved every {CONFIG['checkpoint_frequency']} questions"
+    )
     print(f"   Memory monitoring: Every {CONFIG['batch_size']} questions")
     return estimated_total_time
+
 
 def check_for_previous_run():
     """Check if there's a previous incomplete run"""
     recovery_file = output_dir / "LATEST_recovery_info.json"
     if recovery_file.exists():
         try:
-            with open(recovery_file, 'r') as f:
+            with open(recovery_file, "r") as f:
                 recovery_info = json.load(f)
 
             print(f"\n🔄 Found previous incomplete run:")
-            print(f"   Completed: {recovery_info['questions_completed']}/{recovery_info['total_questions']} questions")
+            print(
+                f"   Completed: {recovery_info['questions_completed']}/{recovery_info['total_questions']} questions"
+            )
             print(f"   Progress: {recovery_info['completion_percentage']:.1f}%")
-            if 'memory_usage_percent' in recovery_info:
-                print(f"   Last memory usage: {recovery_info['memory_usage_percent']:.1f}%")
+            if "memory_usage_percent" in recovery_info:
+                print(
+                    f"   Last memory usage: {recovery_info['memory_usage_percent']:.1f}%"
+                )
 
-            response = input("Do you want to continue from where you left off? (y/n): ").lower().strip()
-            if response == 'y':
+            response = (
+                input("Do you want to continue from where you left off? (y/n): ")
+                .lower()
+                .strip()
+            )
+            if response == "y":
                 latest_csv = output_dir / "LATEST_checkpoint.csv"
                 if latest_csv.exists():
                     df = pd.read_csv(latest_csv)
@@ -215,6 +240,7 @@ def check_for_previous_run():
             print(f"⚠️ Could not load previous run: {e}")
 
     return None, None
+
 
 def main():
     """Main experiment execution with memory optimization"""
@@ -226,11 +252,7 @@ def main():
 
     # NEW: Log actual model metadata
     models_metadata_log = log_models_metadata(
-        MODELS_CONFIG,
-        output_dir,
-        openai_client,
-        deepseek_client,
-        openrouter_client
+        MODELS_CONFIG, output_dir, openai_client, deepseek_client, openrouter_client
     )
 
     # Check for previous run
@@ -239,7 +261,7 @@ def main():
     if previous_df is not None:
         df = previous_df
         print(f"✅ Resuming from previous run with {len(df)} questions")
-        start_question = recovery_info['questions_completed']
+        start_question = recovery_info["questions_completed"]
     else:
         # Validate setup for new run
         df = validate_setup()
@@ -254,7 +276,7 @@ def main():
         print("   Consider closing other applications or reducing batch size")
 
     # Use ALL data (no sampling) unless test mode
-    if CONFIG['test_mode']:
+    if CONFIG["test_mode"]:
         df_sample = df.head(50).copy()  # Test with 50 questions
         print(f"🧪 TEST MODE: Using {len(df_sample)} questions")
     else:
@@ -269,13 +291,19 @@ def main():
         print(f"   {pattern.replace('_', ' ').title()}: {count} ({percentage:.1f}%)")
 
     # Estimate time
-    estimated_time = estimate_experiment_time(df_sample, MODELS_CONFIG, CONFIG['max_workers'])
+    estimated_time = estimate_experiment_time(
+        df_sample, MODELS_CONFIG, CONFIG["max_workers"]
+    )
 
     # Confirmation prompt
     print(f"\n⚠️ Ready to start experiment")
-    print(f"📊 Processing {len(df_sample)} questions across {len(MODELS_CONFIG)} models")
+    print(
+        f"📊 Processing {len(df_sample)} questions across {len(MODELS_CONFIG)} models"
+    )
     print(f"🎯 Starting from question {start_question + 1}")
-    print(f"🔇 Silent mode: {'ON (faster)' if CONFIG['silent_mode'] else 'OFF (shows responses)'}")
+    print(
+        f"🔇 Silent mode: {'ON (faster)' if CONFIG['silent_mode'] else 'OFF (shows responses)'}"
+    )
     print(f"🧠 Current memory: {monitor_memory():.1f}%")
 
     # Auto-start after brief pause
@@ -293,47 +321,53 @@ def main():
     try:
         results_df, logs, detailed_metrics, _ = run_llm_reasoning(
             df_sample,
-            ontology_base_path=CONFIG['verbalized_ontology_dir'],
-            models=CONFIG['models_used'],
-            context_mode=CONFIG['context_mode'],
-            max_workers=CONFIG['max_workers'],
-            question_column=CONFIG['question_column'],
-            batch_size=CONFIG['batch_size'],
+            ontology_base_path=CONFIG["verbalized_ontology_dir"],
+            models=CONFIG["models_used"],
+            context_mode=CONFIG["context_mode"],
+            max_workers=CONFIG["max_workers"],
+            question_column=CONFIG["question_column"],
+            batch_size=CONFIG["batch_size"],
             output_dir=output_dir,
-            silent_mode=CONFIG['silent_mode']
+            silent_mode=CONFIG["silent_mode"],
         )
 
         experiment_time = time.time() - start_time
 
         # Print completion summary
-        print_completion_summary(results_df, experiment_time, estimated_time, nl_patterns)
+        print_completion_summary(
+            results_df, experiment_time, estimated_time, nl_patterns
+        )
 
         # Save final results
-        save_final_results(results_df, logs, detailed_metrics, experiment_time, nl_patterns)
+        save_final_results(
+            results_df, logs, detailed_metrics, experiment_time, nl_patterns
+        )
 
     except KeyboardInterrupt:
         print("\n⚠️ Experiment interrupted by user")
         experiment_time = time.time() - start_time
-        print(f"⏱️ Ran for {experiment_time:.1f}s ({experiment_time/60:.1f}min)")
+        print(f"⏱️ Ran for {experiment_time:.1f}s ({experiment_time / 60:.1f}min)")
         print(f"💾 Progress has been saved in checkpoints")
         print(f"🧠 Final memory usage: {monitor_memory():.1f}%")
 
     except Exception as e:
         print(f"\n❌ Experiment failed: {e}")
         import traceback
+
         traceback.print_exc()
         print(f"🧠 Memory usage at failure: {monitor_memory():.1f}%")
 
+
 def print_completion_summary(results_df, actual_time, estimated_time, nl_patterns):
     """Print experiment completion summary with memory info"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🎉 NATURAL LANGUAGE EXPERIMENT COMPLETED!")
-    print("="*80)
+    print("=" * 80)
 
     # Time analysis
     print(f"⏱️ Time Analysis:")
-    print(f"   Actual time: {actual_time:.1f}s ({actual_time/60:.1f}min)")
-    print(f"   Estimated time: {estimated_time:.1f}s ({estimated_time/60:.1f}min)")
+    print(f"   Actual time: {actual_time:.1f}s ({actual_time / 60:.1f}min)")
+    print(f"   Estimated time: {estimated_time:.1f}s ({estimated_time / 60:.1f}min)")
     time_diff = ((actual_time - estimated_time) / estimated_time) * 100
     print(f"   Difference: {time_diff:+.1f}%")
 
@@ -352,7 +386,7 @@ def print_completion_summary(results_df, actual_time, estimated_time, nl_pattern
         if response_col in results_df.columns:
             responses = results_df[response_col]
             non_empty = (responses != "").sum()
-            errors = responses.astype(str).str.startswith('[ERROR]').sum()
+            errors = responses.astype(str).str.startswith("[ERROR]").sum()
             success = non_empty - errors
             success_rate = (success / len(responses)) * 100 if len(responses) > 0 else 0
 
@@ -362,17 +396,26 @@ def print_completion_summary(results_df, actual_time, estimated_time, nl_pattern
                 correct_answers = (results_df[correctness_col] > 0.5).sum()
                 correctness_rate = (correct_answers / len(results_df)) * 100
                 avg_correctness = results_df[correctness_col].mean()
-                avg_response_time = pd.to_numeric(results_df[f"{model}_response_time"], errors='coerce').mean()
+                avg_response_time = pd.to_numeric(
+                    results_df[f"{model}_response_time"], errors="coerce"
+                ).mean()
 
                 print(f"   🤖 {model}:")
-                print(f"     Completed: {success}/{len(responses)} ({success_rate:.1f}%)")
-                print(f"     Correct: {correct_answers}/{len(results_df)} ({correctness_rate:.1f}%)")
+                print(
+                    f"     Completed: {success}/{len(responses)} ({success_rate:.1f}%)"
+                )
+                print(
+                    f"     Correct: {correct_answers}/{len(results_df)} ({correctness_rate:.1f}%)"
+                )
                 print(f"     Avg correctness: {avg_correctness:.3f}")
                 print(f"     Avg response time: {avg_response_time:.2f}s")
                 if errors > 0:
                     print(f"     Errors: {errors}")
 
-def save_final_results(results_df, logs, detailed_metrics, experiment_time, nl_patterns):
+
+def save_final_results(
+    results_df, logs, detailed_metrics, experiment_time, nl_patterns
+):
     """Save all final results with enhanced metadata and memory cleanup"""
     print(f"\n💾 Saving final results...")
 
@@ -402,42 +445,42 @@ def save_final_results(results_df, logs, detailed_metrics, experiment_time, nl_p
             "final_answer_extracted": metric.get("final_answer_extracted"),
             "quality_correctness": metric.get("quality_correctness"),
             "response_time_seconds": metric.get("response_time_seconds"),
-            "error_occurred": metric.get("error_occurred")
+            "error_occurred": metric.get("error_occurred"),
         }
         essential_metrics.append(essential_metric)
 
-    with open(metrics_file, 'w') as f:
+    with open(metrics_file, "w") as f:
         json.dump(essential_metrics, f, indent=2, default=str)
 
     # Enhanced experiment summary
     performance_summary = calculate_model_performance_summary(results_df, MODELS_CONFIG)
     experiment_summary = {
-        'config': CONFIG,
-        'nl_patterns': nl_patterns,
-        'experiment_time_seconds': experiment_time,
-        'experiment_time_minutes': experiment_time / 60,
-        'total_questions_processed': len(results_df),
-        'total_api_calls': len(results_df) * len(MODELS_CONFIG),
-        'performance_summary': performance_summary,
-        'timestamp': datetime.now().isoformat(),
-        'output_directory': str(output_dir),
-        'memory_info': {
-            'final_memory_usage_percent': monitor_memory(),
-            'memory_threshold': CONFIG['memory_threshold']
+        "config": CONFIG,
+        "nl_patterns": nl_patterns,
+        "experiment_time_seconds": experiment_time,
+        "experiment_time_minutes": experiment_time / 60,
+        "total_questions_processed": len(results_df),
+        "total_api_calls": len(results_df) * len(MODELS_CONFIG),
+        "performance_summary": performance_summary,
+        "timestamp": datetime.now().isoformat(),
+        "output_directory": str(output_dir),
+        "memory_info": {
+            "final_memory_usage_percent": monitor_memory(),
+            "memory_threshold": CONFIG["memory_threshold"],
         },
-        'files_created': {
-            'results': str(results_file),
-            'logs': str(logs_file),
-            'metrics': str(metrics_file),
-            'summary': str(config_file)
+        "files_created": {
+            "results": str(results_file),
+            "logs": str(logs_file),
+            "metrics": str(metrics_file),
+            "summary": str(config_file),
         },
-        'checkpoint_info': {
-            'frequency': CONFIG['checkpoint_frequency'],
-            'checkpoints_dir': str(output_dir / "checkpoints")
-        }
+        "checkpoint_info": {
+            "frequency": CONFIG["checkpoint_frequency"],
+            "checkpoints_dir": str(output_dir / "checkpoints"),
+        },
     }
 
-    with open(config_file, 'w') as f:
+    with open(config_file, "w") as f:
         json.dump(experiment_summary, f, indent=2, default=str)
 
     print(f"✅ Results saved to: {output_dir}")
@@ -448,11 +491,11 @@ def save_final_results(results_df, logs, detailed_metrics, experiment_time, nl_p
     # Print final model performance summary
     print(f"\n📈 MODEL PERFORMANCE SUMMARY:")
     for model_name, summary in performance_summary.items():
-        response_metrics = summary.get('response_metrics', {})
-        quality_metrics = summary.get('quality_metrics', {})
+        response_metrics = summary.get("response_metrics", {})
+        quality_metrics = summary.get("quality_metrics", {})
 
-        success_rate = response_metrics.get('success_rate', 0) * 100
-        avg_correctness = quality_metrics.get('correctness', {}).get('mean', 0)
+        success_rate = response_metrics.get("success_rate", 0) * 100
+        avg_correctness = quality_metrics.get("correctness", {}).get("mean", 0)
 
         print(f"  🤖 {model_name}:")
         print(f"     Success Rate: {success_rate:.1f}%")
@@ -460,6 +503,7 @@ def save_final_results(results_df, logs, detailed_metrics, experiment_time, nl_p
 
     # Final cleanup
     force_cleanup()
+
 
 if __name__ == "__main__":
     main()
