@@ -52,12 +52,30 @@ def df_to_json(df):
     return result
 
 
+def load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampling_nl"):
+    xlsx_path = os.path.join(base_path, f"{filename_without_ext}.xlsx")
+    csv_path = os.path.join(base_path, f"{filename_without_ext}.csv")
+
+    print("Checking:", os.path.abspath(xlsx_path))
+    print("Checking:", os.path.abspath(csv_path))
+
+    if os.path.exists(xlsx_path):
+        print(f"Loading Excel file: {xlsx_path}")
+        return pd.read_excel(xlsx_path)
+
+    if os.path.exists(csv_path):
+        print(f"Loading CSV file: {csv_path}")
+        return pd.read_csv(csv_path)
+
+    raise FileNotFoundError(f"Neither '{xlsx_path}' nor '{csv_path}' was found.")
+
+
 def process_dataset(dataset, hop):
     print(f"Processing dataset={dataset}, hop={hop}")
 
-    base_path = f"../data/output/{dataset}/{hop}"
+    base_path = os.path.join("data", "output", dataset, hop)
 
-    q_nl = pd.read_excel(f"{base_path}/SPARQL_questions_sampling_nl.xlsx")
+    q_nl = load_questions_file(base_path)
 
     df = q_nl[
         [
@@ -71,7 +89,9 @@ def process_dataset(dataset, hop):
     ].copy()
     df["NL Question"] = q_nl["Question"].values
 
-    verbalized_path = f"../data/output/verbalized_ontologies/{dataset}_{hop}"
+    verbalized_path = os.path.join(
+        "data", "output", "verbalized_ontologies", f"{dataset}_{hop}"
+    )
 
     df["NL Context"] = df["Root Entity"].apply(
         lambda root: parse_root_entity_and_get_verbalized_ont(
@@ -88,11 +108,7 @@ def process_dataset(dataset, hop):
     print(f"Saved → {output_file}\n")
 
 
-# =========================
-# 🔥 Run Multiple Variants
-# =========================
-
-datasets = ["FamilyOWL", "OWL2Bench"]
+datasets = ["FamilyOWL", "OWL2Bench", "toy_example"]
 hops = ["1hop", "2hop"]
 
 for dataset in datasets:

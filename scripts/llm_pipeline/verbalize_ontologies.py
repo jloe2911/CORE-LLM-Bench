@@ -1244,10 +1244,10 @@ def main():
 
     print(f"\n{'=' * 60}")
     print(f"Processing completed!")
-    print(f"âœ… Successful: {successful}")
-    print(f"âŒ Failed: {failed}")
-    print(f"ðŸ“ Output directory: {output_dir.absolute()}")
-    print(f"ðŸ”§ Final memory usage: {psutil.virtual_memory().percent:.1f}%")
+    print(f"Successful: {successful}")
+    print(f"Failed: {failed}")
+    print(f"Output directory: {output_dir.absolute()}")
+    print(f"Final memory usage: {psutil.virtual_memory().percent:.1f}%")
 
 
 if __name__ == "__main__":

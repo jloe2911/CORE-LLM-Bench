@@ -65,6 +65,95 @@ question_counter = 0
 questions_completed = 0
 
 
+def resolve_model_info(display_name, model_entry):
+    """
+    Supports both:
+      old format:  "gpt-5-mini": "gpt-5-mini-2025-08-07"
+      new format:  "openai_gpt_4_1_mini": {"provider": "openai", "model_id": "gpt-4.1-mini"}
+    """
+    if isinstance(model_entry, dict):
+        provider = model_entry.get("provider")
+        model_id = model_entry.get("model_id")
+        if not provider or not model_id:
+            raise ValueError(
+                f"Invalid model config for {display_name}. Expected provider and model_id."
+            )
+        return provider, model_id
+
+    # old fallback behavior
+    model_id = model_entry
+    provider = MODEL_TO_CLIENT.get(display_name)
+
+    if not provider:
+        # best-effort fallback from model id
+        if str(model_id).startswith("gpt-"):
+            provider = "openai"
+        elif "/" in str(model_id):
+            provider = "openrouter"
+        elif "deepseek" in str(model_id).lower():
+            provider = "deepseek"
+        else:
+            raise ValueError(
+                f"Could not infer provider for model '{display_name}' with id '{model_id}'"
+            )
+
+    return provider, model_id
+
+
+def get_client_for_provider(provider):
+    clients = {
+        "openai": openai_client,
+        "deepseek": deepseek_client,
+        "openrouter": openrouter_client,
+    }
+    return clients.get(provider)
+
+
+def get_model_params(models=None):
+    """
+    Returns parameters for each model.
+    Supports both:
+      old format:  {"gpt-5-mini": "gpt-5-mini-2025-08-07"}
+      new format:  {"openai_gpt_4_1_mini": {"provider":"openai","model_id":"gpt-4.1-mini"}}
+    """
+
+    if models is None:
+        models = MODELS
+
+    model_params = {}
+
+    for display_name, model_entry in models.items():
+        # Detect provider
+        if isinstance(model_entry, dict):
+            provider = model_entry.get("provider")
+        else:
+            provider = MODEL_TO_CLIENT.get(display_name)
+
+        if provider == "openai":
+            model_params[display_name] = {"max_completion_tokens": 1024}
+
+        elif provider == "deepseek":
+            model_params[display_name] = {
+                "max_tokens": 1024,
+                "temperature": 0.0,
+                "top_p": 0.9,
+            }
+
+        elif provider == "openrouter":
+            model_params[display_name] = {
+                "temperature": 0.0,
+                "top_p": 0.9,
+                "max_tokens": 1024,
+                "presence_penalty": 0.0,
+                "frequency_penalty": 0.1,
+            }
+
+        else:
+            model_params[display_name] = {"max_tokens": 1024}
+
+    return model_params
+
+
 def monitor_memory():
     """Monitor system memory usage"""
     return psutil.virtual_memory().percent
@@ -76,7 +165,7 @@ def force_cleanup():
     time.sleep(0.5)
 
 
-def get_model_params():
+def get_model_params(models=None):
     model_params = {}
     for model in MODELS.keys():
         if model == "gpt-5-mini":
@@ -195,7 +284,10 @@ def save_checkpoint_csv(
                     # Calculate correctness
                     correctness_col = f"{model}_quality_correctness"
                     if correctness_col in df.columns:
-                        correct_answers = (df[correctness_col] > 0.5).sum()
+                        correct_values = pd.to_numeric(
+                            df[correctness_col], errors="coerce"
+                        )
+                        correct_answers = (correct_values > 0.5).sum()
                         accuracy = (
                             (correct_answers / non_empty * 100) if non_empty > 0 else 0
                         )
@@ -214,11 +306,11 @@ def save_checkpoint_csv(
 
             memory_usage = monitor_memory()
             print(
-                f"\nðŸ’¾ CHECKPOINT SAVED - Question {questions_completed}/{total_questions} ({(questions_completed / total_questions) * 100:.1f}%)"
+                f"\nCHECKPOINT SAVED - Question {questions_completed}/{total_questions} ({(questions_completed / total_questions) * 100:.1f}%)"
             )
-            print(f"ðŸ“ Saved to: {checkpoint_file}")
-            print(f"ðŸ§  Memory usage: {memory_usage:.1f}%")
-            print(f"ðŸ“Š Progress Summary:")
+            print(f"Saved to: {checkpoint_file}")
+            print(f"Memory usage: {memory_usage:.1f}%")
+            print(f"Progress Summary:")
 
             for model, stats in model_stats.items():
                 print(
@@ -231,7 +323,7 @@ def save_checkpoint_csv(
             return checkpoint_file
 
         except Exception as e:
-            print(f"âŒ Error saving checkpoint: {e}")
+            print(f"Error saving checkpoint: {e}")
             traceback.print_exc()
             return None
 
@@ -256,20 +348,20 @@ def display_question_and_response(
 
     with display_lock:
         print("\n" + "=" * 80)  # Reduced width for better performance
-        print(f"ðŸ“‹ QUESTION #{question_idx + 1} | MODEL: {model_name.upper()}")
+        print(f"QUESTION #{question_idx + 1} | MODEL: {model_name.upper()}")
         print("=" * 80)
 
         # Display question (truncated if too long for memory efficiency)
         question_display = (
             question_text[:150] + "..." if len(question_text) > 150 else question_text
         )
-        print(f"ðŸ”¤ QUESTION: {question_display}")
-        print(f"ðŸ“Š EXPECTED: {expected_answer}")
+        print(f"QUESTION: {question_display}")
+        print(f"EXPECTED: {expected_answer}")
 
         # Display result with new metrics
         status_icon = "âœ…" if is_correct else "âŒ" if not error else "âš ï¸"
         print(f"{status_icon} MODEL ANSWER: {final_answer}")
-        print(f"â±ï¸ RESPONSE TIME: {response_time:.2f}s")
+        print(f"RESPONSE TIME: {response_time:.2f}s")
 
         if confidence_score is not None and confidence_score > 0:
             confidence_bar = "â–ˆ" * int(confidence_score * 5) + "â–‘" * (
@@ -463,17 +555,17 @@ def update_progress(
                     if questions_completed % 10 == 0:
                         memory_usage = monitor_memory()
                         print(
-                            f"\nðŸŽ¯ Completed {questions_completed}/{total_questions} questions ({(questions_completed / total_questions) * 100:.1f}%)"
+                            f"\nCompleted {questions_completed}/{total_questions} questions ({(questions_completed / total_questions) * 100:.1f}%)"
                         )
-                        print(f"ðŸ§  Memory usage: {memory_usage:.1f}%")
+                        print(f"Memory usage: {memory_usage:.1f}%")
 
                         # Force cleanup if memory is high
                         if memory_usage > 85:
-                            print("ðŸ§¹ High memory usage, forcing cleanup...")
+                            print("High memory usage, forcing cleanup...")
                             force_cleanup()
 
         except Exception as e:
-            print(f"âŒ Error processing result for {model_name}: {e}")
+            print(f"Error processing result for {model_name}: {e}")
 
 
 # Initialize API clients
@@ -482,7 +574,7 @@ deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
 openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
 
 if not all([openai_api_key, deepseek_api_key, openrouter_api_key]):
-    print("âš ï¸ Some API keys missing. Check your .env file.")
+    print("Some API keys missing. Check your .env file.")
 
 openai_client = openai.OpenAI(api_key=openai_api_key) if openai_api_key else None
 deepseek_client = (
@@ -842,164 +934,149 @@ def process_single_model_request(args):
         idx,
         row,
         display_name,
-        model_id,
+        model_entry,
         question_column,
         ontology_base_path,
         context_mode,
         model_params,
     ) = args
 
-    # Aggressive timeout limits for memory efficiency
+    query = row.get(question_column, "")
+    ontology_name = row.get("Root Entity", "Unknown")
+    answer_type = normalize_answer_type(row.get("Answer Type", "BIN"))
+    ontology_context = ""
+
+    try:
+        provider, model_id = resolve_model_info(display_name, model_entry)
+    except Exception as e:
+        return create_enhanced_metrics_entry(
+            idx,
+            row,
+            query,
+            question_column,
+            display_name,
+            str(model_entry),
+            None,
+            f"[ERROR] Invalid model configuration: {str(e)}",
+            time.time(),
+            time.time(),
+            0,
+            model_params,
+            ontology_context,
+            error=e,
+        )
+
     TIMEOUTS = {
-        "gpt-5-mini": 30,  # Reduced timeout
-        "deepseek-chat": 30,  # Reduced timeout
-        "llama-4-maverick": 30,  # Reduced timeout
+        "openai": 30,
+        "deepseek": 30,
+        "openrouter": 30,
     }
 
-    timeout = TIMEOUTS.get(display_name, 45)
+    timeout = TIMEOUTS.get(provider, 45)
+    start_time = time.time()
+    error_msg = None
 
-    # Even smaller token limits for memory efficiency
-    INITIAL_TOKEN_LIMITS = {
-        "gpt-5-mini": 1024,  # Increased from 256
-        "deepseek-chat": 1024,  # Increased from 512
-        "llama-4-maverick": 1024,  # Increased from 512
+    try:
+        ontology_context = load_ontology_context(
+            ontology_base_path, ontology_name, context_mode
+        )
+        full_prompt = create_context_specific_prompt(
+            query, ontology_context, context_mode, answer_type
+        )
+
+        client = get_client_for_provider(provider)
+        if not client:
+            raise ValueError(f"No client available for provider: {provider}")
+
+        current_params = model_params.get(display_name, {}).copy()
+
+        response = client.chat.completions.create(
+            model=model_id,
+            messages=[{"role": "user", "content": full_prompt}],
+            timeout=timeout,
+            **current_params,
+        )
+
+        end_time = time.time()
+        content = response.choices[0].message.content
+
+        return create_enhanced_metrics_entry(
+            idx,
+            row,
+            query,
+            question_column,
+            display_name,
+            model_id,
+            response,
+            content,
+            start_time,
+            end_time,
+            0,
+            model_params,
+            ontology_context,
+        )
+
+    except Exception as e:
+        error_msg = str(e)
+        end_time = time.time()
+
+        return create_enhanced_metrics_entry(
+            idx,
+            row,
+            query,
+            question_column,
+            display_name,
+            model_id,
+            None,
+            f"[ERROR] {error_msg}",
+            start_time,
+            end_time,
+            0,
+            model_params,
+            ontology_context,
+            error=e,
+        )
+
+
+def check_api_clients(models_config=None):
+    """
+    Validate only the API clients needed for the selected models.
+    models_config format:
+    {
+        "openai_gpt_4_1_mini": {"provider": "openai", "model_id": "gpt-4.1-mini"},
+        "openrouter_deepseek_chat": {"provider": "openrouter", "model_id": "deepseek/deepseek-chat"},
     }
-
-    for attempt in range(2):  # Reduced retry attempts
-        try:
-            start_time = time.time()
-
-            # Adjust token limits per attempt
-            current_params = model_params[display_name].copy()
-            if attempt == 0:
-                # First attempt: use smaller tokens for speed
-                if "max_completion_tokens" in current_params:
-                    current_params["max_completion_tokens"] = INITIAL_TOKEN_LIMITS[
-                        display_name
-                    ]
-                elif "max_tokens" in current_params:
-                    current_params["max_tokens"] = INITIAL_TOKEN_LIMITS[display_name]
-            else:
-                # Second attempt: slightly larger
-                if "max_completion_tokens" in current_params:
-                    current_params["max_completion_tokens"] = (
-                        INITIAL_TOKEN_LIMITS[display_name] * 2
-                    )
-                elif "max_tokens" in current_params:
-                    current_params["max_tokens"] = (
-                        INITIAL_TOKEN_LIMITS[display_name] * 2
-                    )
-
-            query = row[question_column]
-            ontology_name = row.get("Root Entity", "Unknown")
-            answer_type = normalize_answer_type(row.get("Answer Type", "BIN"))
-
-            ontology_context = load_ontology_context(
-                ontology_base_path, ontology_name, context_mode
-            )
-            full_prompt = create_context_specific_prompt(
-                query, ontology_context, context_mode, answer_type
-            )
-
-            client_type = MODEL_TO_CLIENT.get(display_name)
-            client = {
-                "openai": openai_client,
-                "deepseek": deepseek_client,
-                "openrouter": openrouter_client,
-            }.get(client_type)
-
-            if not client:
-                raise ValueError(f"No client available for model: {display_name}")
-
-            response = client.chat.completions.create(
-                model=model_id,
-                messages=[{"role": "user", "content": full_prompt}],
-                timeout=timeout,
-                **current_params,
-            )
-
-            end_time = time.time()
-            response_time = end_time - start_time
-
-            # Success! Check if we stayed within limits
-            if response_time > timeout:
-                raise TimeoutError(
-                    f"Response took {response_time:.1f}s, exceeding {timeout}s limit"
-                )
-
-            content = response.choices[0].message.content
-
-            return create_enhanced_metrics_entry(
-                idx,
-                row,
-                query,
-                question_column,
-                display_name,
-                model_id,
-                response,
-                content,
-                start_time,
-                end_time,
-                attempt,
-                model_params,
-                ontology_context,
-            )
-
-        except Exception as e:
-            error_msg = str(e)
-            response_time = time.time() - start_time
-
-        # Handle token limit errors specifically
-        if "max_tokens" in error_msg.lower() or "output limit" in error_msg.lower():
-            if attempt < 1:  # Retry with more tokens
-                if "max_completion_tokens" in current_params:
-                    current_params["max_completion_tokens"] *= 2
-                elif "max_tokens" in current_params:
-                    current_params["max_tokens"] *= 2
-                continue
-            else:
-                # Don't retry parameter errors or other permanent failures
-                break
-
-    # All attempts failed
-    return create_enhanced_metrics_entry(
-        idx,
-        row,
-        query,
-        question_column,
-        display_name,
-        model_id,
-        None,
-        f"[ERROR] All attempts failed: {error_msg}",
-        time.time(),
-        time.time(),
-        1,
-        model_params,
-        ontology_context,
-        error=Exception(f"Max attempts exceeded: {error_msg}"),
-    )
-
-
-def check_api_clients():
-    """Verify API clients are working"""
+    """
     issues = []
 
-    if not openai_client:
+    required_providers = set()
+
+    if models_config is None:
+        # fallback: old behavior if nothing is passed
+        required_providers = {"openai", "deepseek", "openrouter"}
+    else:
+        for model_info in models_config.values():
+            if isinstance(model_info, dict):
+                provider = model_info.get("provider")
+                if provider:
+                    required_providers.add(provider)
+
+    if "openai" in required_providers and openai_client is None:
         issues.append("OpenAI client not initialized - check OPENAI_API_KEY")
 
-    if not deepseek_client:
+    if "deepseek" in required_providers and deepseek_client is None:
         issues.append("DeepSeek client not initialized - check DEEPSEEK_API_KEY")
 
-    if not openrouter_client:
+    if "openrouter" in required_providers and openrouter_client is None:
         issues.append("OpenRouter client not initialized - check OPENROUTER_API_KEY")
 
     if issues:
-        print("âš ï¸  API Client Issues:")
+        print("⚠️ API Client Issues:")
         for issue in issues:
             print(f"   - {issue}")
         return False
 
-    print("âœ… All API clients initialized successfully")
+    print("✅ Required API clients are initialized")
     return True
 
 
@@ -1175,14 +1252,9 @@ def log_models_metadata(
     models_config: Dict, output_dir, openai_client, deepseek_client, openrouter_client
 ):
     """
-    Log actual model metadata from APIs to JSON file
+    Log actual model metadata from APIs to JSON file.
+    Supports both old and new model config formats.
     """
-    clients = {
-        "openai": openai_client,
-        "deepseek": deepseek_client,
-        "openrouter": openrouter_client,
-    }
-
     metadata_log = {
         "experiment_timestamp": datetime.now().isoformat(),
         "models_metadata": {},
@@ -1193,45 +1265,50 @@ def log_models_metadata(
         },
     }
 
-    print("ðŸ” Retrieving actual model metadata from APIs...")
+    print("🔍 Retrieving actual model metadata from APIs...")
 
-    for display_name, model_id in models_config.items():
-        client_type = MODEL_TO_CLIENT.get(display_name)
-        client = clients.get(client_type)
+    for display_name, model_entry in models_config.items():
+        try:
+            client_type, model_id = resolve_model_info(display_name, model_entry)
+            client = get_client_for_provider(client_type)
 
-        if not client:
-            print(f"   âŒ {display_name}: No client available")
+            if not client:
+                print(f"   ❌ {display_name}: No client available")
+                metadata_log["models_metadata"][display_name] = {
+                    "error": "No client available",
+                    "model_id": model_id,
+                    "client_type": client_type,
+                }
+                continue
+
+            print(f"   📋 Fetching metadata for {display_name}...")
+            model_metadata = get_actual_model_metadata(client_type, model_id, client)
+            metadata_log["models_metadata"][display_name] = model_metadata
+
+            status = "✅" if model_metadata["api_accessible"] else "❌"
+            print(f"      {status} {display_name} ({model_id})")
+
+            if model_metadata.get("error"):
+                print(f"         Error: {model_metadata['error']}")
+            elif model_metadata.get("raw_metadata"):
+                raw_meta = model_metadata["raw_metadata"]
+                if "context_length" in raw_meta:
+                    print(f"         Context: {raw_meta['context_length']:,} tokens")
+                if "pricing" in raw_meta:
+                    print("         Pricing info available")
+
+        except Exception as e:
             metadata_log["models_metadata"][display_name] = {
-                "error": "No client available",
-                "model_id": model_id,
-                "client_type": client_type,
+                "error": str(e),
+                "model_entry": str(model_entry),
             }
-            continue
+            print(f"   ❌ {display_name}: {e}")
 
-        print(f"   ðŸ“‹ Fetching metadata for {display_name}...")
-
-        model_metadata = get_actual_model_metadata(client_type, model_id, client)
-        metadata_log["models_metadata"][display_name] = model_metadata
-
-        # Print summary
-        status = "âœ…" if model_metadata["api_accessible"] else "âŒ"
-        print(f"      {status} {display_name} ({model_id})")
-
-        if model_metadata.get("error"):
-            print(f"         Error: {model_metadata['error']}")
-        elif model_metadata.get("raw_metadata"):
-            raw_meta = model_metadata["raw_metadata"]
-            if "context_length" in raw_meta:
-                print(f"         Context: {raw_meta['context_length']:,} tokens")
-            if "pricing" in raw_meta:
-                print(f"         Pricing info available")
-
-    # Save metadata to JSON file
     metadata_file = output_dir / "models_metadata.json"
     with open(metadata_file, "w") as f:
         json.dump(metadata_log, f, indent=2, default=str)
 
-    print(f"ðŸ“„ Model metadata saved to: {metadata_file}")
+    print(f"📄 Model metadata saved to: {metadata_file}")
     return metadata_log
 
 
@@ -1270,9 +1347,8 @@ def run_llm_reasoning(
     if models is None:
         models = MODELS
     if model_params is None:
-        model_params = get_model_params()
+        model_params = get_model_params(models)
 
-    # Initialize DataFrame columns with new metrics
     for display_name in models:
         base_cols = [
             "_response",
@@ -1296,19 +1372,15 @@ def run_llm_reasoning(
     questions_completed = 0
     display_results.clear()
 
-    print(f"ðŸš€ Processing {total_questions} questions with {len(models)} models...")
-    print(f"ðŸ“Š Total API calls: {total_tasks}")
-    print(f"âš™ï¸ Max workers: {max_workers}")
-    print(f"ðŸ’¾ Checkpoint frequency: Every 50 questions")
-    print(f"ðŸ”‡ Silent mode: {'ON' if silent_mode else 'OFF'}")
-    print(f"ðŸ§  Initial memory usage: {monitor_memory():.1f}%")
+    print(f"🚀 Processing {total_questions} questions with {len(models)} models...")
+    print(f"📊 Total API calls: {total_tasks}")
+    print(f"⚙️ Max workers: {max_workers}")
+    print("💾 Checkpoint frequency: Every 50 questions")
+    print(f"🔇 Silent mode: {'ON' if silent_mode else 'OFF'}")
+    print(f"🧠 Initial memory usage: {monitor_memory():.1f}%")
 
-    # Create progress bar
     pbar = tqdm(total=total_tasks, desc="API Calls", unit="calls")
-
-    # Process in smaller batches for better memory management
     total_batches = (total_questions + batch_size - 1) // batch_size
-
     detailed_metrics, logs = [], []
 
     for batch_idx in range(total_batches):
@@ -1317,19 +1389,18 @@ def run_llm_reasoning(
         df_batch = df.iloc[start_idx:end_idx]
 
         print(
-            f"\nðŸ”„ Processing batch {batch_idx + 1}/{total_batches} (questions {start_idx + 1}-{end_idx})"
+            f"\n🔄 Processing batch {batch_idx + 1}/{total_batches} (questions {start_idx + 1}-{end_idx})"
         )
-        print(f"ðŸ§  Memory usage: {monitor_memory():.1f}%")
+        print(f"🧠 Memory usage: {monitor_memory():.1f}%")
 
-        # Prepare tasks for this batch
         batch_tasks = []
         for idx, row in df_batch.iterrows():
-            for display_name, model_id in models.items():
+            for display_name, model_entry in models.items():
                 task_args = (
                     idx,
                     row,
                     display_name,
-                    model_id,
+                    model_entry,
                     question_column,
                     ontology_base_path,
                     context_mode,
@@ -1337,18 +1408,16 @@ def run_llm_reasoning(
                 )
                 batch_tasks.append(task_args)
 
-        # Process batch with ThreadPoolExecutor
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            # Submit all tasks with callbacks
             future_to_task = {}
             for task_args in batch_tasks:
-                idx, row, display_name, model_id = (
+                idx, row, display_name, model_entry = (
                     task_args[0],
                     task_args[1],
                     task_args[2],
                     task_args[3],
                 )
-                query = row[question_column]
+                query = row.get(question_column, "")
                 expected_answer = row.get("Answer", "Unknown")
 
                 future = executor.submit(process_single_model_request, task_args)
@@ -1373,44 +1442,34 @@ def run_llm_reasoning(
                 )
                 future_to_task[future] = task_args
 
-            # Wait for all tasks in this batch to complete
             for future in concurrent.futures.as_completed(future_to_task):
-                pass  # Progress is handled in the callback
+                pass
 
-        # Batch-level cleanup
         force_cleanup()
 
-        # Check memory usage and pause if needed
         memory_usage = monitor_memory()
         if memory_usage > 85:
-            print(f"âš ï¸ High memory usage ({memory_usage:.1f}%), forcing cleanup...")
+            print(f"⚠️ High memory usage ({memory_usage:.1f}%), forcing cleanup...")
             force_cleanup()
             time.sleep(2)
 
     pbar.close()
 
-    # Final save
     if output_dir:
         final_file = save_checkpoint_csv(
             df, logs, detailed_metrics, output_dir, questions_completed, total_questions
         )
-        print(f"\nâœ… Final results saved to: {final_file}")
+        print(f"\n✅ Final results saved to: {final_file}")
 
-    # Final summary
     if not silent_mode:
         display_recent_summary(display_results, list(models.keys()), sample_size=5)
 
-    print(f"\nðŸŽ‰ EXPERIMENT COMPLETED!")
-    print(f"ðŸ“Š Total: {questions_completed}/{total_questions} questions processed")
-    print(f"â±ï¸ Total API calls: {completed_tasks}/{total_tasks}")
-    print(f"ðŸ§  Final memory usage: {monitor_memory():.1f}%")
+    print("\n🎉 EXPERIMENT COMPLETED!")
+    print(f"📊 Total: {questions_completed}/{total_questions} questions processed")
+    print(f"⏱️ Total API calls: {completed_tasks}/{total_tasks}")
+    print(f"🧠 Final memory usage: {monitor_memory():.1f}%")
 
-    return (
-        df,
-        logs,
-        detailed_metrics,
-        {},
-    )  # Empty dict for deepeval_results for compatibility
+    return df, logs, detailed_metrics, {}
 
 
 # Keep existing functions for compatibility
@@ -1435,12 +1494,11 @@ def calculate_model_performance_summary(df, models):
     for model_name in models.keys():
         response_col = f"{model_name}_response"
         if response_col in df.columns:
-            responses = df[response_col]
+            responses = df[response_col].astype(str)
             non_empty = (responses != "").sum()
-            errors = responses.astype(str).str.startswith("[ERROR]").sum()
+            errors = responses.str.startswith("[ERROR]").sum()
             success = non_empty - errors
 
-            # Quality metrics
             correctness_col = f"{model_name}_quality_correctness"
             completeness_col = f"{model_name}_quality_completeness"
             structure_col = f"{model_name}_quality_structure_compliance"
@@ -1459,7 +1517,6 @@ def calculate_model_performance_summary(df, models):
                 "timing_metrics": {},
             }
 
-            # Add quality metrics if available
             for col, metric_name in [
                 (correctness_col, "correctness"),
                 (completeness_col, "completeness"),
@@ -1467,7 +1524,8 @@ def calculate_model_performance_summary(df, models):
                 (reasoning_col, "reasoning_quality"),
             ]:
                 if col in df.columns:
-                    values = df[col][df[col] > 0]
+                    values = pd.to_numeric(df[col], errors="coerce")
+                    values = values[values > 0]
                     if len(values) > 0:
                         summary[model_name]["quality_metrics"][metric_name] = {
                             "mean": float(values.mean()),
@@ -1476,9 +1534,9 @@ def calculate_model_performance_summary(df, models):
                             "max": float(values.max()),
                         }
 
-            # Add timing metrics
             if time_col in df.columns:
-                times = df[time_col][df[time_col] > 0]
+                times = pd.to_numeric(df[time_col], errors="coerce")
+                times = times[times > 0]
                 if len(times) > 0:
                     summary[model_name]["timing_metrics"] = {
                         "avg_response_time": float(times.mean()),

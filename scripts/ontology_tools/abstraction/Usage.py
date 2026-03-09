@@ -2,6 +2,7 @@
 from OntologyAbstractor import process_ontology_abstraction
 from pathlib import Path
 import os
+import argparse
 
 # Navigate to project root
 script_dir = Path(__file__).resolve().parent
@@ -9,14 +10,31 @@ project_root = script_dir.parent.parent.parent
 os.chdir(project_root)
 
 
-def main():
-    # Your original input files
-    ontology_directory = "src/main/resources/OWL2Bench_2hop"
-    output_directory = "output/OWL2Bench/2hop/abstracted"
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Run ontology abstraction on a directory of ontologies."
+    )
+    parser.add_argument(
+        "--input-directory",
+        type=str,
+        required=True,
+        help="Path to the input ontology directory.",
+    )
+    parser.add_argument(
+        "--output-directory",
+        type=str,
+        required=True,
+        help="Path to the output directory.",
+    )
+    return parser.parse_args()
 
-    # Run comprehensive abstraction
+
+def main():
+    args = parse_args()
+
     results = process_ontology_abstraction(
-        ontology_dir=ontology_directory, output_dir=output_directory
+        ontology_dir=args.input_directory,
+        output_dir=args.output_directory,
     )
 
     print("Comprehensive abstraction completed!")

@@ -11,9 +11,14 @@ import java.util.stream.Collectors;
 public class SmallOntologyExtractor {
 
     public static void main(String[] args) throws Exception {
-        String inputFile = "src/main/resources/OWL2DL-1.owl";
-        String outputDir1hop = "src/main/resources/OWL2Bench_1hop/";
-        String outputDir2hop = "src/main/resources/OWL2Bench_2hop/";
+        if (args.length < 3) {
+            System.out.println("Usage: SmallOntologyExtractor <inputFile> <outputDir1hop> <outputDir2hop>");
+            return;
+        }
+
+        String inputFile = args[0];
+        String outputDir1hop = args[1];
+        String outputDir2hop = args[2];
 
         // Create output directories
         new File(outputDir1hop).mkdirs();
@@ -55,8 +60,8 @@ public class SmallOntologyExtractor {
     }
 
     private static int[] processExtractions(OWLOntology ontology, Set<OWLNamedIndividual> individuals,
-                                            Set<OWLAxiom> tboxAxioms, int hops, String outputDir,
-                                            OWLOntologyManager manager, OWLDataFactory factory) {
+            Set<OWLAxiom> tboxAxioms, int hops, String outputDir,
+            OWLOntologyManager manager, OWLDataFactory factory) {
         int processed = 0;
         int failed = 0;
         long startTime = System.currentTimeMillis();
@@ -75,7 +80,8 @@ public class SmallOntologyExtractor {
                 allAxioms.addAll(aboxAxioms);
 
                 // Create new ontology
-                IRI moduleIRI = IRI.create("http://example.org/extracted/" + hops + "hop/" + getLocalName(individual.getIRI()));
+                IRI moduleIRI = IRI
+                        .create("http://example.org/extracted/" + hops + "hop/" + getLocalName(individual.getIRI()));
                 OWLOntology moduleOntology = manager.createOntology(allAxioms, moduleIRI);
 
                 // Add ontology annotations
@@ -84,8 +90,8 @@ public class SmallOntologyExtractor {
                 // Generate filename
                 String individualName = getLocalName(individual.getIRI());
                 Set<String> types = getIndividualTypes(ontology, individual);
-                String typePrefix = types.isEmpty() ? "Thing" :
-                        types.stream().limit(2).collect(Collectors.joining("_"));
+                String typePrefix = types.isEmpty() ? "Thing"
+                        : types.stream().limit(2).collect(Collectors.joining("_"));
 
                 String filename = sanitizeFilename(typePrefix + "_" + individualName) + ".ttl";
                 File outputFile = new File(outputDir, filename);
@@ -101,7 +107,8 @@ public class SmallOntologyExtractor {
                 processed++;
                 if (processed % 100 == 0) {
                     long elapsed = System.currentTimeMillis() - startTime;
-                    System.out.println("Processed " + processed + " individuals (" + hops + "-hop) in " + (elapsed/1000) + "s");
+                    System.out.println(
+                            "Processed " + processed + " individuals (" + hops + "-hop) in " + (elapsed / 1000) + "s");
                 }
 
             } catch (Exception e) {
@@ -114,13 +121,14 @@ public class SmallOntologyExtractor {
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Completed " + hops + "-hop processing: " + processed + " successful, " + failed + " failed in " + (totalTime/1000) + "s");
+        System.out.println("Completed " + hops + "-hop processing: " + processed + " successful, " + failed
+                + " failed in " + (totalTime / 1000) + "s");
 
-        return new int[]{processed, failed};
+        return new int[] { processed, failed };
     }
 
     private static Set<OWLAxiom> extractABoxForIndividual(OWLOntology ontology,
-                                                          OWLNamedIndividual individual, int hops) {
+            OWLNamedIndividual individual, int hops) {
         Set<OWLAxiom> aboxAxioms = new HashSet<>();
 
         if (hops == 1) {
@@ -128,7 +136,8 @@ public class SmallOntologyExtractor {
             aboxAxioms = extract1HopABox(ontology, individual);
 
         } else if (hops == 2) {
-            // For 2-hop: get 1-hop ABox + 1-hop ABox for each individual found in first step
+            // For 2-hop: get 1-hop ABox + 1-hop ABox for each individual found in first
+            // step
 
             // Step 1: Get the 1-hop ABox for the main individual
             Set<OWLAxiom> mainIndividual1Hop = extract1HopABox(ontology, individual);
@@ -200,7 +209,7 @@ public class SmallOntologyExtractor {
     }
 
     private static void findReachableIndividuals(OWLOntology ontology, OWLNamedIndividual startIndividual,
-                                                 int maxHops, Set<OWLNamedIndividual> reachableIndividuals) {
+            int maxHops, Set<OWLNamedIndividual> reachableIndividuals) {
         Queue<OWLNamedIndividual> queue = new LinkedList<>();
         Map<OWLNamedIndividual, Integer> hopDistance = new HashMap<>();
 
@@ -228,10 +237,11 @@ public class SmallOntologyExtractor {
     }
 
     private static Set<OWLNamedIndividual> findDirectlyConnectedIndividuals(OWLOntology ontology,
-                                                                            OWLNamedIndividual individual) {
+            OWLNamedIndividual individual) {
         Set<OWLNamedIndividual> connected = new HashSet<>();
 
-        // Check all object property assertions where this individual is subject or object
+        // Check all object property assertions where this individual is subject or
+        // object
         for (OWLObjectPropertyAssertionAxiom axiom : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
             OWLIndividual subject = axiom.getSubject();
             OWLIndividual object = axiom.getObject();
@@ -271,26 +281,24 @@ public class SmallOntologyExtractor {
     }
 
     private static void addOntologyMetadata(OWLOntologyManager manager, OWLDataFactory factory,
-                                            OWLOntology ontology, int hops) throws OWLOntologyChangeException {
+            OWLOntology ontology, int hops) throws OWLOntologyChangeException {
         // Add label
         OWLAnnotation labelAnnotation = factory.getOWLAnnotation(
                 factory.getRDFSLabel(),
-                factory.getOWLLiteral("OWL2Bench Individual Subgraph (" + hops + "-hop)", "en")
-        );
+                factory.getOWLLiteral("OWL2Bench Individual Subgraph (" + hops + "-hop)", "en"));
         manager.applyChange(new AddOntologyAnnotation(ontology, labelAnnotation));
 
         // Add comment
         OWLAnnotation commentAnnotation = factory.getOWLAnnotation(
                 factory.getRDFSComment(),
-                factory.getOWLLiteral("A Benchmark for OWL 2 Ontologies. Individual-centered " + hops + "-hop extraction.")
-        );
+                factory.getOWLLiteral(
+                        "A Benchmark for OWL 2 Ontologies. Individual-centered " + hops + "-hop extraction."));
         manager.applyChange(new AddOntologyAnnotation(ontology, commentAnnotation));
 
         // Add version info
         OWLAnnotation versionAnnotation = factory.getOWLAnnotation(
                 factory.getOWLVersionInfo(),
-                factory.getOWLLiteral("OWL2Bench, ver 2020")
-        );
+                factory.getOWLLiteral("OWL2Bench, ver 2020"));
         manager.applyChange(new AddOntologyAnnotation(ontology, versionAnnotation));
     }
 

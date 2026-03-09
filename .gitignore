@@ -37,6 +37,8 @@ build/
 ### Mac OS ###
 .DS_Store
 
+.env
+.venv
 data/output
 data/resources
 .ruff_cache

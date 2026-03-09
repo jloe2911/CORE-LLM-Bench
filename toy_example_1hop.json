@@ -1,0 +1,225 @@
+[
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_ada_rachel_heath_1868",
+        "NL Context": "Ada Rachel Heath is sister of Gwendoline Heath. John Heath is father of Ada Rachel Heath. M135 has female partner Ada Rachel Heath. Sarah Jacobs is mother of Ada Rachel Heath.\nAda Rachel Heath is sister of Gwendoline Heath.\nJohn Heath is father of Ada Rachel Heath.\nM135 has female partner Ada Rachel Heath.\nSarah Jacobs is mother of Ada Rachel Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }",
+                "NL Question": "Is Ada Rachel Heath related to Gwendoline Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#john_heath> }",
+                "NL Question": "Is Ada Rachel Heath related to John Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }",
+                "NL Question": "Is Ada Rachel Heath related to Sarah Jacobs?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }",
+                "NL Question": "Is Ada Rachel Heath related to herself?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_gwendoline_heath_1878",
+        "NL Context": "Ada Rachel Heath is sister of Gwendoline Heath.\nGwendoline Heath is sister of Lemuel Frederick Heath. John Heath is father of Gwendoline Heath. Lemuel Frederick Heath is brother of Gwendoline Heath. M136 has female partner Gwendoline Heath. Sarah Jacobs is mother of Gwendoline Heath.\nJohn Heath is father of Gwendoline Heath.\nLemuel Frederick Heath is brother of Gwendoline Heath. Gwendoline Heath is sister of Lemuel Frederick Heath.\nM136 has female partner Gwendoline Heath.\nSarah Jacobs is mother of Gwendoline Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }",
+                "NL Question": "Is John Heath related to Lemuel Frederick Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasBrother> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }",
+                "NL Question": "Is Gwendoline Heath the brother of Lemuel Frederick Heath?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_james_jacobs_1806",
+        "NL Context": "James Jacobs is father of Sarah Jacobs.\nJames Jacobs is father of Sarah Jacobs.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> }",
+                "NL Question": "Is James Jacobs a sibling of himself?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_john_heath",
+        "NL Context": "John Heath is father of Ada Rachel Heath.\nJohn Heath is father of Gwendoline Heath.\nJohn Heath is father of Ada Rachel Heath, Gwendoline Heath and Lemuel Frederick Heath. M100 has male partner John Heath.\nJohn Heath is father of Lemuel Frederick Heath.\nM100 has male partner John Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#isChildOf> <http://www.example.com/genealogy.owl#john_heath> }",
+                "NL Question": "Is Lemuel Frederick Heath the child of John Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#john_heath> }",
+                "NL Question": "Is the person identified as m100 in a male partnership with John Heath?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_john_william_folland",
+        "NL Context": "M135 has male partner John William Folland.\nM135 has male partner John William Folland.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#john_william_folland> <http://www.example.com/genealogy.owl#isBloodrelationOf> <http://www.example.com/genealogy.owl#john_william_folland> }",
+                "NL Question": "Is John William Folland related to himself by blood?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_lemuel_frederick_heath_1871",
+        "NL Context": "Gwendoline Heath is sister of Lemuel Frederick Heath. Lemuel Frederick Heath is brother of Gwendoline Heath.\nJohn Heath is father of Lemuel Frederick Heath.\nLemuel Frederick Heath is brother of Gwendoline Heath. Gwendoline Heath is sister of Lemuel Frederick Heath. John Heath is father of Lemuel Frederick Heath. Sarah Jacobs is mother of Lemuel Frederick Heath.\nSarah Jacobs is mother of Lemuel Frederick Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasChild> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }",
+                "NL Question": "Is Sarah Jacobs the mother of Lemuel Frederick Heath?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_priscilla_saunders_1810",
+        "NL Context": "Priscilla Saunders is mother of Sarah Jacobs.\nPriscilla Saunders is mother of Sarah Jacobs.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#hasChild> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }",
+                "NL Question": "Is Priscilla Saunders the mother of Sarah Jacobs?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> }",
+                "NL Question": "Is Priscilla Saunders considered her own sibling?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "BIN",
+        "Root Entity": "Thing_sarah_jacobs_1834",
+        "NL Context": "Sarah Jacobs is mother of Ada Rachel Heath.\nSarah Jacobs is mother of Gwendoline Heath.\nHenry Jacobs is brother of Sarah Jacobs.\nJames Jacobs is father of Sarah Jacobs.\nSarah Jacobs is mother of Lemuel Frederick Heath.\nM100 has female partner Sarah Jacobs.\nPriscilla Saunders is mother of Sarah Jacobs.\nSarah Jacobs is mother of Ada Rachel Heath, Gwendoline Heath, Lemuel Frederick Heath and William Lock Jacobs. Henry Jacobs is brother of Sarah Jacobs. James Jacobs is father of Sarah Jacobs. M100 has female partner Sarah Jacobs.\nSarah Jacobs is mother of William Lock Jacobs.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }",
+                "NL Question": "Is William Lock Jacobs a sibling of Gwendoline Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }",
+                "NL Question": "Is James Jacobs related to Lemuel Frederick Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }",
+                "NL Question": "Is William Lock Jacobs a sibling of Ada Rachel Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> }",
+                "NL Question": "Is James Jacobs related to Priscilla Saunders?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> }",
+                "NL Question": "Is William Lock Jacobs considered to be his own sibling?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }",
+                "NL Question": "Is James Jacobs related to Ada Rachel Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> }",
+                "NL Question": "Is James Jacobs related to William Lock Jacobs?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }",
+                "NL Question": "Is William Lock Jacobs a sibling of Lemuel Frederick Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }",
+                "NL Question": "Is James Jacobs related to Gwendoline Heath?",
+                "Answer": "TRUE"
+            },
+            {
+                "SPARQL Query": "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#henry_jacobs_1849> }",
+                "NL Question": "Is James Jacobs related to Henry Jacobs?",
+                "Answer": "TRUE"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "MC",
+        "Root Entity": "Thing_ada_rachel_heath_1868",
+        "NL Context": "Ada Rachel Heath is sister of Gwendoline Heath. John Heath is father of Ada Rachel Heath. M135 has female partner Ada Rachel Heath. Sarah Jacobs is mother of Ada Rachel Heath.\nAda Rachel Heath is sister of Gwendoline Heath.\nJohn Heath is father of Ada Rachel Heath.\nM135 has female partner Ada Rachel Heath.\nSarah Jacobs is mother of Ada Rachel Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasRelation> ?x }",
+                "NL Question": "This query is looking for all the people who have a relationship with Ada Rachel Heath. In other words, it finds everyone connected to Ada Rachel Heath in some way.",
+                "Answer": "ada_rachel_heath_1868; gwendoline_heath_1878; john_heath; sarah_jacobs_1834"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "MC",
+        "Root Entity": "Thing_gwendoline_heath_1878",
+        "NL Context": "Ada Rachel Heath is sister of Gwendoline Heath.\nGwendoline Heath is sister of Lemuel Frederick Heath. John Heath is father of Gwendoline Heath. Lemuel Frederick Heath is brother of Gwendoline Heath. M136 has female partner Gwendoline Heath. Sarah Jacobs is mother of Gwendoline Heath.\nJohn Heath is father of Gwendoline Heath.\nLemuel Frederick Heath is brother of Gwendoline Heath. Gwendoline Heath is sister of Lemuel Frederick Heath.\nM136 has female partner Gwendoline Heath.\nSarah Jacobs is mother of Gwendoline Heath.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#hasRelation> ?x }",
+                "NL Question": "This query is asking to find all the people who have a relationship with John Heath. In other words, it looks for everyone connected to John Heath in some way.",
+                "Answer": "ada_rachel_heath_1868; gwendoline_heath_1878; john_heath; lemuel_frederick_heath_1871; sarah_jacobs_1834"
+            }
+        ]
+    },
+    {
+        "Task Type": "Property Assertion",
+        "Answer Type": "MC",
+        "Root Entity": "Thing_sarah_jacobs_1834",
+        "NL Context": "Sarah Jacobs is mother of Ada Rachel Heath.\nSarah Jacobs is mother of Gwendoline Heath.\nHenry Jacobs is brother of Sarah Jacobs.\nJames Jacobs is father of Sarah Jacobs.\nSarah Jacobs is mother of Lemuel Frederick Heath.\nM100 has female partner Sarah Jacobs.\nPriscilla Saunders is mother of Sarah Jacobs.\nSarah Jacobs is mother of Ada Rachel Heath, Gwendoline Heath, Lemuel Frederick Heath and William Lock Jacobs. Henry Jacobs is brother of Sarah Jacobs. James Jacobs is father of Sarah Jacobs. M100 has female partner Sarah Jacobs.\nSarah Jacobs is mother of William Lock Jacobs.\n",
+        "QAs": [
+            {
+                "SPARQL Query": "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#isSiblingOf> ?x }",
+                "NL Question": "This query is asking to find all the siblings of William Lock Jacobs.",
+                "Answer": "ada_rachel_heath_1868; gwendoline_heath_1878; lemuel_frederick_heath_1871; william_lock_jacobs_1861"
+            },
+            {
+                "SPARQL Query": "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#hasRelation> ?x }",
+                "NL Question": "This query is asking to find all the people who have a relationship with James Jacobs (born in 1806). In other words, it looks for everyone connected to James Jacobs through any kind of family or personal relationship.",
+                "Answer": "ada_rachel_heath_1868; gwendoline_heath_1878; henry_jacobs_1849; james_jacobs_1806; lemuel_frederick_heath_1871; priscilla_saunders_1810; sarah_jacobs_1834; william_lock_jacobs_1861"
+            }
+        ]
+    }
+]
