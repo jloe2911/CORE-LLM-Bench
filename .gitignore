@@ -39,6 +39,8 @@ build/
 
 .env
 .venv
+.ruff_cache
+.deepeval
+.github
 data/output
 data/resources
-.ruff_cache
