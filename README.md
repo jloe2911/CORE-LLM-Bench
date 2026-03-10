@@ -58,7 +58,7 @@ source .venv/bin/activate
 pip install -r scripts/llm_pipeline/requirements.txt
 ```
 
-### 4. Configure API keys
+### 4. Configure API keys (needed for running the natural-language generation and LLM evaluation steps)
 
 Create or edit a `.env` file with the keys you need:
 
@@ -183,9 +183,9 @@ python scripts/llm_pipeline/verbalize_abstract.py --input-dir data/output/abstra
 python scripts/llm_pipeline/verbalize_abstract.py --input-dir data/output/abstracted_ontologies/toy_example_2hop/abstracted_ontologies/ --output-dir data/output/verbalized_ontologies/toy_example_2hop/abstracted/ --file-pattern "*.ttl"
 ```
 
-#### Convert Natural Language Questions to Abstracted Form
+#### Convert SPARQL Questions to Abstracted Form
 
-Convert natural language queries to abstracted natural language.
+Convert SPARQL queries to abstracted form.
 
 ```bash
 # 1-hop subgraphs 
@@ -200,16 +200,16 @@ python scripts/llm_pipeline/verbalize_abstract.py --input-file data/output/toy_e
 Convert formal SPARQL queries to human-readable questions.
 
 ```bash
-# 1-hop subgraphs (convert NL questions)
+# 1-hop subgraphs (convert SPARQL questions to NL)
 python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
 
-# 2-hop subgraphs (convert NL questions)
+# 2-hop subgraphs (convert SPARQL questions to NL)
 python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
 
-# 1-hop subgraphs (convert abstracted questions)
+# 1-hop subgraphs (convert abstracted SPARQL questions to NL)
 python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 
-# 2-hop subgraphs (convert abstracted questions)
+# 2-hop subgraphs (convert abstracted SPARQL questions to NL)
 python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 ```
 
