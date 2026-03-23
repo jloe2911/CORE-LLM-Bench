@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import os
+import argparse
 
 
 def verbalize_abox(json_data):
@@ -29,13 +30,23 @@ def parse_root_entity_and_get_verbalized_ont(path):
 def df_to_json(df):
     result = []
 
-    group_cols = ["Task Type", "Answer Type", "Root Entity", "NL Context"]
-    qa_cols = ["SPARQL Query", "NL Question", "Answer"]
+    group_cols = ["Task Type", "Answer Type", "Root Entity", "NL Context", "ABS Context"]
+    qa_cols = [
+        "Task ID",
+        "SPARQL Query",
+        "NL Question",
+        "ABS Question",
+        "Answer",
+        "Minimum Explanation",
+        # "Explanation Count",
+        # "Explanation Min",
+        # "Explanation Max",
+    ]
 
     grouped = df.groupby(group_cols)
 
     for group_keys, group_df in grouped:
-        task_type, answer_type, root_entity, nl_context = group_keys
+        task_type, answer_type, root_entity, nl_context, abs_context = group_keys
 
         qas = group_df[qa_cols].to_dict(orient="records")
 
@@ -44,6 +55,7 @@ def df_to_json(df):
             "Answer Type": answer_type,
             "Root Entity": root_entity,
             "NL Context": nl_context,
+            "ABS Context": abs_context,
             "QAs": qas,
         }
 
@@ -70,15 +82,41 @@ def load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampli
     raise FileNotFoundError(f"Neither '{xlsx_path}' nor '{csv_path}' was found.")
 
 
+def load_explanations(df, dataset, hop):
+    explanations_file_path = os.path.join("data", "output", dataset, hop, "Explanations.json")
+
+    with open(explanations_file_path, "r", encoding="utf-8") as f:
+        explanations = json.load(f)
+
+    lookup = {}
+
+    for _, value in explanations.items():
+        expl_list = value["explanations"]
+        chosen_expl = min(expl_list, key=len) if expl_list else None
+
+        for task_id in value["taskIds"]:
+            lookup[task_id] = {
+                "Minimum Explanation": chosen_expl,
+                "Explanation Count": value["explanationCount"],
+                "Explanation Min": value["size"]["min"],
+                "Explanation Max": value["size"]["max"],
+            }
+
+    df = df.join(df["Task ID"].map(lookup).apply(pd.Series))
+    return df
+
+
 def process_dataset(dataset, hop):
     print(f"Processing dataset={dataset}, hop={hop}")
 
     base_path = os.path.join("data", "output", dataset, hop)
 
     q_nl = load_questions_file(base_path)
+    q_abs = load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampling_abs")
 
     df = q_nl[
         [
+            "Task ID",
             "Root Entity",
             "Task Type",
             "Answer Type",
@@ -87,10 +125,18 @@ def process_dataset(dataset, hop):
             "Answer",
         ]
     ].copy()
+
     df["NL Question"] = q_nl["Question"].values
+    df["ABS Question"] = q_abs["Question"].values
+
+    df = load_explanations(df, dataset, hop)
 
     verbalized_path = os.path.join(
         "data", "output", "verbalized_ontologies", f"{dataset}_{hop}"
+    )
+
+    verbalized_abs_path = os.path.join(
+        "data", "output", "verbalized_ontologies", f"{dataset}_{hop}", "abstracted"
     )
 
     df["NL Context"] = df["Root Entity"].apply(
@@ -99,21 +145,26 @@ def process_dataset(dataset, hop):
         )
     )
 
+    df["ABS Context"] = df["Root Entity"].apply(
+        lambda root: parse_root_entity_and_get_verbalized_ont(
+            os.path.join(verbalized_abs_path, f"{root}.json")
+        )
+    )
+
     final_json = df_to_json(df)
 
-    output_file = f"{dataset}_{hop}.json"
+    output_file = f"final_benchmark/{dataset}_{hop}.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(final_json, f, indent=4, ensure_ascii=False)
 
     print(f"Saved → {output_file}\n")
 
 
-datasets = ["FamilyOWL", "OWL2Bench", "toy_example"]
-hops = ["1hop", "2hop"]
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", required=True, help="Dataset name, e.g. FamilyOWL")
+    parser.add_argument("--hop", required=True, help="Hop value, e.g. 1hop or 2hop")
 
-for dataset in datasets:
-    for hop in hops:
-        try:
-            process_dataset(dataset, hop)
-        except Exception as e:
-            print(f"Skipped {dataset}-{hop}: {e}")
+    args = parser.parse_args()
+
+    process_dataset(args.dataset, args.hop)
