@@ -70,7 +70,6 @@ def parse_args():
     parser.add_argument(
         "--output-file",
         type=str,
-        default="SPARQL_questions_sampling_nl.csv",
         required=False,
         help="Name of the output CSV file.",
     )
@@ -298,8 +297,8 @@ def main():
             )
 
     output_filename = output_dir / args.output_file
-    log_filename = output_dir / "processing_log_sparql_to_nl.csv"
-    stats_filename = output_dir / "processing_stats_sparql_to_nl.txt"
+    log_filename = output_dir / "processing_log_sparql_to_nl_abs.csv"
+    stats_filename = output_dir / "processing_stats_sparql_to_nl_abs.txt"
 
     df.to_csv(output_filename, index=False)
     pd.DataFrame(logs).to_csv(log_filename, index=False)

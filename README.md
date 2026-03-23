@@ -201,16 +201,16 @@ Convert formal SPARQL queries to human-readable questions.
 
 ```bash
 # 1-hop subgraphs (convert NL questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/1hop/ --output-file SPARQL_questions_sampling.csv --model gpt-4.1-mini
 
 # 2-hop subgraphs (convert NL questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/2hop/ --output-file SPARQL_questions_sampling.csv --model gpt-4.1-mini
 
 # 1-hop subgraphs (convert abstracted questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/1hop/ --output-file SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 
 # 2-hop subgraphs (convert abstracted questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/2hop/ --output-file SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 ```
 
 ### Step 3: LLM Evaluation
@@ -270,7 +270,11 @@ python scripts/llm_pipeline/complete_evaluation.py --csv-file data/output/llm_re
 ### Step 5: Create Final Benchmark Datasets
 
 ```bash
-python final_benchmark/create_final_bench.py
+# 1-hop subgraphs
+python final_benchmark/create_final_bench.py --dataset toy_example --hop 1hop
+
+# 2-hop subgraphs
+python final_benchmark/create_final_bench.py --dataset toy_example --hop 2hop
 ```
 
 ## Output Files
