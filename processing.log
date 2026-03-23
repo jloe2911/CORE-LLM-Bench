@@ -464,3 +464,175 @@
 2026-03-23 10:55:11,472 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-03-23 10:55:12,157 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-03-23 10:55:12,270 - INFO - Processing completed. Success rate: 12/12
+2026-03-23 14:20:21,279 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:20:21,279 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:22,949 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:20:22,949 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:24,589 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:20:24,589 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:26,268 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:20:26,268 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:52,398 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:20:52,398 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:54,049 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:20:54,049 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:55,649 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:20:55,649 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:20:57,269 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:20:59,237 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:00,579 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:02,191 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:03,359 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:04,209 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:06,211 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:07,543 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:08,601 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:10,230 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:10,856 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:11,469 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:12,129 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:13,319 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:14,780 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:15,580 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:17,030 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:17,711 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:18,931 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:19,499 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:21,179 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:21,936 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:22,759 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:23,670 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:24,241 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:25,274 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:26,120 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:27,352 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:29,182 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:21:29,182 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:21:30,279 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:31,602 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:32,512 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:34,179 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:34,909 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:35,532 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:36,240 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:37,019 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:37,680 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:38,719 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:39,529 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:21:40,223 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:23:54,443 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:23:54,443 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:23:56,116 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:23:56,116 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:23:57,732 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:23:57,732 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:23:59,338 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:23:59,338 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:15,836 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:25:15,837 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:17,513 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:25:17,513 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:19,162 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:25:19,162 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:20,878 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:25:20,878 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:40,547 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:25:40,547 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:42,286 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:25:42,289 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:44,109 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:25:44,109 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:45,850 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:25:45,850 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:49,198 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:25:49,198 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:25:50,347 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:51,371 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:52,959 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:53,908 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:54,703 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:55,449 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:56,638 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:57,463 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:58,305 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:25:59,159 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:00,032 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:00,869 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:01,509 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:02,369 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:03,197 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:04,579 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:05,459 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:06,129 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:07,319 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:08,119 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:08,899 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:09,669 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:10,909 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:11,679 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:12,434 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:13,329 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:14,039 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:15,116 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:15,224 - INFO - Processing completed. Success rate: 28/28
+2026-03-23 14:26:16,899 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:26:16,899 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:26:18,129 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:18,988 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:20,006 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:21,189 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:21,819 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:22,727 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:23,354 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:24,218 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:25,021 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:25,898 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:26,620 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:28,715 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:28,835 - INFO - Processing completed. Success rate: 12/12
+2026-03-23 14:26:30,483 - INFO - Loaded DataFrame with 28 rows
+2026-03-23 14:26:30,483 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:26:31,493 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:32,769 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:33,599 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:34,450 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:35,283 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:36,129 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:37,679 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:38,569 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:39,789 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:40,809 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:41,609 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:42,338 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:43,098 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:43,954 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:44,959 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:45,628 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:47,040 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:47,919 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:49,519 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:50,299 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:51,905 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:52,710 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:53,473 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:54,221 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:54,917 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:55,978 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:56,859 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:58,099 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:26:58,214 - INFO - Processing completed. Success rate: 28/28
+2026-03-23 14:26:59,877 - INFO - Loaded DataFrame with 12 rows
+2026-03-23 14:26:59,879 - INFO - Unique Answer Types: ['BIN', 'MC']
+2026-03-23 14:27:00,843 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:02,109 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:03,152 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:04,530 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:05,349 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:06,202 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:07,073 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:08,330 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:09,183 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:10,129 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:11,029 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:11,941 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-23 14:27:12,050 - INFO - Processing completed. Success rate: 12/12

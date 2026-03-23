@@ -22,19 +22,19 @@
         "perfect_answers": "7.4%",
         "partial_answers": "0.0%",
         "wrong_answers": "92.6%",
-        "confidence_calibration": "58.9%",
+        "confidence_calibration": "60.4%",
         "hallucination_score": "100.0%",
-        "average_response_time_ms": "0.75",
+        "average_response_time_ms": "1.24",
         "average_token_count": "276.63"
       },
       "tag_group_analysis": {
-        "Basic_Hierarchy": {
-          "accuracy": "9.1%",
-          "percentage_of_total": "40.7%"
-        },
         "Property_Characteristics": {
-          "accuracy": "5.3%",
-          "percentage_of_total": "70.4%"
+          "accuracy": "5.0%",
+          "percentage_of_total": "74.1%"
+        },
+        "Basic_Hierarchy": {
+          "accuracy": "10.0%",
+          "percentage_of_total": "37.0%"
         }
       },
       "performance_by_answer_type": {
@@ -42,14 +42,14 @@
           "dataset_questions": "23 (85.2%)",
           "successfully_evaluated": "23 (100.0%)",
           "average_accuracy": "8.7%",
-          "average_response_time_ms": "0.76",
+          "average_response_time_ms": "1.29",
           "average_token_count": "268.48"
         },
         "mc": {
           "dataset_questions": "4 (14.8%)",
           "successfully_evaluated": "4 (100.0%)",
           "average_accuracy": "0.0%",
-          "average_response_time_ms": "0.71",
+          "average_response_time_ms": "0.97",
           "average_token_count": "323.50"
         }
       }

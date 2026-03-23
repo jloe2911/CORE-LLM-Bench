@@ -28,13 +28,13 @@
         "average_token_count": "276.63"
       },
       "tag_group_analysis": {
-        "Basic_Hierarchy": {
-          "accuracy": "9.1%",
-          "percentage_of_total": "40.7%"
-        },
         "Property_Characteristics": {
-          "accuracy": "5.3%",
-          "percentage_of_total": "70.4%"
+          "accuracy": "5.0%",
+          "percentage_of_total": "74.1%"
+        },
+        "Basic_Hierarchy": {
+          "accuracy": "10.0%",
+          "percentage_of_total": "37.0%"
         }
       },
       "performance_by_answer_type": {

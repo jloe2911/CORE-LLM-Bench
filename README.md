@@ -177,10 +177,10 @@ python scripts/llm_pipeline/verbalize_ontologies.py --input-dir data/resources/t
 
 ```bash
 # 1-hop subgraphs
-python scripts/llm_pipeline/verbalize_abstract.py --input-dir data/output/abstracted_ontologies/toy_example_1hop/abstracted_ontologies/ --output-dir data/output/verbalized_ontologies/toy_example_1hop/abstracted/ --file-pattern "*.ttl"
+python scripts/llm_pipeline/verbalize_ontologies.py --input-dir data/output/abstracted_ontologies/toy_example_1hop/abstracted_ontologies/ --output-dir data/output/verbalized_ontologies/toy_example_1hop/abstracted/ --file-pattern "*.ttl"
 
 # 2-hop subgraphs
-python scripts/llm_pipeline/verbalize_abstract.py --input-dir data/output/abstracted_ontologies/toy_example_2hop/abstracted_ontologies/ --output-dir data/output/verbalized_ontologies/toy_example_2hop/abstracted/ --file-pattern "*.ttl"
+python scripts/llm_pipeline/verbalize_ontologies.py --input-dir data/output/abstracted_ontologies/toy_example_2hop/abstracted_ontologies/ --output-dir data/output/verbalized_ontologies/toy_example_2hop/abstracted/ --file-pattern "*.ttl"
 ```
 
 #### Convert SPARQL Questions to Abstracted Form
@@ -201,16 +201,16 @@ Convert formal SPARQL queries to human-readable questions.
 
 ```bash
 # 1-hop subgraphs (convert NL questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/1hop/ --output-file SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
 
 # 2-hop subgraphs (convert NL questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling.csv --output-directory data/output/toy_example/2hop/ --output-file SPARQL_questions_sampling_nl.csv --model gpt-4.1-mini
 
 # 1-hop subgraphs (convert abstracted questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/1hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/1hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/1hop/ --output-file SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 
 # 2-hop subgraphs (convert abstracted questions)
-python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/2hop/SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
+python scripts/llm_pipeline/sparql_to_nl.py --input-csv data/output/toy_example/2hop/SPARQL_questions_sampling_abs_temp.csv --output-directory data/output/toy_example/2hop/ --output-file SPARQL_questions_sampling_abs.csv --model gpt-4.1-mini
 ```
 
 ### Step 3: LLM Evaluation

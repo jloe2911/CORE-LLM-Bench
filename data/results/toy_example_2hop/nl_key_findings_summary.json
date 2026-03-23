@@ -29,12 +29,12 @@
       },
       "tag_group_analysis": {
         "Basic_Hierarchy": {
-          "accuracy": "12.5%",
-          "percentage_of_total": "66.7%"
+          "accuracy": "16.7%",
+          "percentage_of_total": "50.0%"
         },
         "Property_Characteristics": {
           "accuracy": "0.0%",
-          "percentage_of_total": "41.7%"
+          "percentage_of_total": "50.0%"
         }
       },
       "performance_by_answer_type": {

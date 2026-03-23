@@ -18,39 +18,39 @@
   "key_findings_summary": {
     "openai_gpt_4.1_mini": {
       "overall_metrics": {
-        "average_accuracy": "3.7%",
-        "perfect_answers": "3.7%",
+        "average_accuracy": "7.4%",
+        "perfect_answers": "7.4%",
         "partial_answers": "0.0%",
-        "wrong_answers": "96.3%",
-        "confidence_calibration": "3.7%",
-        "hallucination_score": "92.2%",
-        "average_response_time_ms": "1.42",
-        "average_token_count": "2356.70"
+        "wrong_answers": "92.6%",
+        "confidence_calibration": "7.4%",
+        "hallucination_score": "81.8%",
+        "average_response_time_ms": "1.30",
+        "average_token_count": "2350.85"
       },
       "tag_group_analysis": {
-        "Basic_Hierarchy": {
-          "accuracy": "9.1%",
-          "percentage_of_total": "40.7%"
-        },
         "Property_Characteristics": {
+          "accuracy": "10.0%",
+          "percentage_of_total": "74.1%"
+        },
+        "Basic_Hierarchy": {
           "accuracy": "0.0%",
-          "percentage_of_total": "70.4%"
+          "percentage_of_total": "37.0%"
         }
       },
       "performance_by_answer_type": {
         "binary": {
           "dataset_questions": "23 (85.2%)",
           "successfully_evaluated": "23 (100.0%)",
-          "average_accuracy": "4.3%",
-          "average_response_time_ms": "1.47",
-          "average_token_count": "2357.09"
+          "average_accuracy": "8.7%",
+          "average_response_time_ms": "1.35",
+          "average_token_count": "2350.91"
         },
         "mc": {
           "dataset_questions": "4 (14.8%)",
           "successfully_evaluated": "4 (100.0%)",
           "average_accuracy": "0.0%",
-          "average_response_time_ms": "1.14",
-          "average_token_count": "2354.50"
+          "average_response_time_ms": "1.02",
+          "average_token_count": "2350.50"
         }
       }
     }

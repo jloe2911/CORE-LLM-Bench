@@ -2,6 +2,10 @@ import pandas as pd
 import json
 import os
 import argparse
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 
 def verbalize_abox(json_data):
@@ -30,7 +34,13 @@ def parse_root_entity_and_get_verbalized_ont(path):
 def df_to_json(df):
     result = []
 
-    group_cols = ["Task Type", "Answer Type", "Root Entity", "NL Context", "ABS Context"]
+    group_cols = [
+        "Task Type",
+        "Answer Type",
+        "Root Entity",
+        "NL Context",
+        "ABS Context",
+    ]
     qa_cols = [
         "Task ID",
         "SPARQL Query",
@@ -83,7 +93,18 @@ def load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampli
 
 
 def load_explanations(df, dataset, hop):
-    explanations_file_path = os.path.join("data", "output", dataset, hop, "Explanations.json")
+    explanations_file_path = os.path.join(
+        "data", "output", dataset, hop, "Explanations.json"
+    )
+
+    from scripts.explanations_fix import repair_explanations_file
+
+    output_path = repair_explanations_file(
+        input_file=explanations_file_path,
+        in_place=True,
+    )
+
+    print(output_path)
 
     with open(explanations_file_path, "r", encoding="utf-8") as f:
         explanations = json.load(f)
@@ -112,7 +133,9 @@ def process_dataset(dataset, hop):
     base_path = os.path.join("data", "output", dataset, hop)
 
     q_nl = load_questions_file(base_path)
-    q_abs = load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampling_abs")
+    q_abs = load_questions_file(
+        base_path, filename_without_ext="SPARQL_questions_sampling_abs"
+    )
 
     df = q_nl[
         [
