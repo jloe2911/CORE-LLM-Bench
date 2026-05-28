@@ -93,7 +93,7 @@ def parse_args():
         "--hallucination-threshold",
         type=float,
         default=0.7,
-        help="Threshold for Ontology Hallucination Detection success.",
+        help="Maximum acceptable hallucination rate for Ontology Hallucination Detection success.",
     )
     parser.add_argument(
         "--bootstrap-samples",
@@ -243,9 +243,7 @@ class ConfidenceCalibrationMetric(BaseMetric):
         confidence = max(0.0, min(1.0, confidence))
 
         jaccard_accuracy = case.metrics_data.get("Jaccard Accuracy", {}).get("score", 0)
-        is_correct = 1.0 if jaccard_accuracy >= 1.0 else 0.0
-
-        calibration_error = abs(confidence - is_correct)
+        calibration_error = abs(confidence - jaccard_accuracy)
         calibration_score = 1.0 - calibration_error
 
         self.score = calibration_score
@@ -286,7 +284,7 @@ class OntologyHallucinationMetric(BaseMetric):
         )
 
         self.score = hallucination_score
-        self.success = hallucination_score >= self.threshold
+        self.success = hallucination_score <= self.threshold
         return hallucination_score
 
     def _detect_mc_hallucinations(self, actual_output, expected_output, context):
@@ -808,8 +806,8 @@ class CompleteEvaluator:
 
             test_case = LLMTestCase(
                 input=sparql_query,
-                actual_output=row[final_answer_col],
-                expected_output=row.get("Answer", ""),
+                actual_output=str(row[final_answer_col]),
+                expected_output=str(row.get("Answer", "")),
                 context=context_parts,
             )
 
@@ -926,41 +924,35 @@ class CompleteEvaluator:
 
         aggregated_groups = {}
         for group_name, results in group_analysis.items():
-            if len(results) >= 3:
-                correct_count = sum(1 for r in results if r["is_correct"])
-                total_count = len(results)
+            correct_count = sum(1 for r in results if r["is_correct"])
+            total_count = len(results)
 
-                percentage_of_total = self.tag_group_distribution.get(
-                    group_name, {}
-                ).get("percentage_of_total", 0.0)
+            percentage_of_total = self.tag_group_distribution.get(group_name, {}).get(
+                "percentage_of_total", 0.0
+            )
 
-                valid_hallucination_scores = [
-                    r["hallucination"]
-                    for r in results
-                    if r["hallucination"] is not None
-                ]
+            valid_hallucination_scores = [
+                r["hallucination"] for r in results if r["hallucination"] is not None
+            ]
 
-                aggregated_groups[group_name] = {
-                    "percentage_of_total": percentage_of_total,
-                    "accuracy_rate": correct_count / total_count,
-                    "jaccard_mean": np.mean([r["jaccard"] for r in results]),
-                    "jaccard_std": np.std([r["jaccard"] for r in results]),
-                    "calibration_mean": np.mean([r["calibration"] for r in results]),
-                    "calibration_std": np.std([r["calibration"] for r in results]),
-                    "hallucination_mean": np.mean(valid_hallucination_scores)
-                    if valid_hallucination_scores
-                    else 0,
-                    "hallucination_std": np.std(valid_hallucination_scores)
-                    if valid_hallucination_scores
-                    else 0,
-                    "binary_count": sum(
-                        1 for r in results if r["answer_type"] == "BIN"
-                    ),
-                    "mc_count": sum(1 for r in results if r["answer_type"] == "MC"),
-                    "avg_inference_count": np.mean(
-                        [r["inference_count"] for r in results]
-                    ),
-                }
+            aggregated_groups[group_name] = {
+                "percentage_of_total": percentage_of_total,
+                "sample_count": total_count,
+                "accuracy_rate": correct_count / total_count if total_count else 0,
+                "jaccard_mean": np.mean([r["jaccard"] for r in results]),
+                "jaccard_std": np.std([r["jaccard"] for r in results]),
+                "calibration_mean": np.mean([r["calibration"] for r in results]),
+                "calibration_std": np.std([r["calibration"] for r in results]),
+                "hallucination_mean": np.mean(valid_hallucination_scores)
+                if valid_hallucination_scores
+                else None,
+                "hallucination_std": np.std(valid_hallucination_scores)
+                if valid_hallucination_scores
+                else None,
+                "binary_count": sum(1 for r in results if r["answer_type"] == "BIN"),
+                "mc_count": sum(1 for r in results if r["answer_type"] == "MC"),
+                "avg_inference_count": np.mean([r["inference_count"] for r in results]),
+            }
 
         return aggregated_groups
 
@@ -1023,10 +1015,10 @@ class CompleteEvaluator:
                 },
                 "confidence_calibration": {"mean": 0, "std": 0, "well_calibrated": 0},
                 "hallucination_detection": {
-                    "mean": 0,
-                    "std": 0,
+                    "mean": None,
+                    "std": None,
                     "clean_responses": 0,
-                    "hallucination_rate": 0,
+                    "hallucination_rate": None,
                     "severe_hallucinations": 0,
                 },
                 "response_time_ms": {"mean": 0, "std": 0},
@@ -1116,20 +1108,20 @@ class CompleteEvaluator:
                 else 0,
             },
             "hallucination_detection": {
-                "mean": np.mean(hallucination_scores) if hallucination_scores else 0,
-                "std": np.std(hallucination_scores) if hallucination_scores else 0,
+                "mean": np.mean(hallucination_scores) if hallucination_scores else None,
+                "std": np.std(hallucination_scores) if hallucination_scores else None,
                 "clean_responses": sum(
-                    1 for s in hallucination_scores if s >= self.hallucination_threshold
+                    1 for s in hallucination_scores if s <= self.hallucination_threshold
                 )
                 if hallucination_scores
                 else 0,
                 "hallucination_rate": sum(
-                    1 for s in hallucination_scores if s < self.hallucination_threshold
+                    1 for s in hallucination_scores if s > self.hallucination_threshold
                 )
                 / len(hallucination_scores)
                 if hallucination_scores
-                else 0,
-                "severe_hallucinations": sum(1 for s in hallucination_scores if s < 0.3)
+                else None,
+                "severe_hallucinations": sum(1 for s in hallucination_scores if s > 0.3)
                 if hallucination_scores
                 else 0,
             },
@@ -1149,6 +1141,12 @@ class CompleteEvaluator:
         if not all_results:
             print("❌ No results to save - all models failed evaluation")
             return
+
+        def format_percent(value):
+            return "N/A" if value is None or pd.isna(value) else f"{value:.1%}"
+
+        def format_number(value):
+            return "N/A" if value is None or pd.isna(value) else f"{value:.2f}"
 
         statistical_analysis = {}
         if len(all_results) > 1:
@@ -1207,36 +1205,85 @@ class CompleteEvaluator:
             tag_groups = model_results["tag_group_analysis"]
             for group, stats_dict in tag_groups.items():
                 tag_group_data[group] = {
-                    "accuracy": f"{stats_dict['jaccard_mean']:.1%}",
+                    "sample_count": stats_dict["sample_count"],
+                    "accuracy": format_percent(stats_dict["jaccard_mean"]),
                     "percentage_of_total": f"{stats_dict['percentage_of_total']:.1f}%",
+                    "binary_count": stats_dict["binary_count"],
+                    "mc_count": stats_dict["mc_count"],
+                    "hallucination_score": format_percent(
+                        stats_dict["hallucination_mean"]
+                    ),
                 }
 
             summary_data["key_findings_summary"][model_name] = {
                 "overall_metrics": {
-                    "average_accuracy": f"{model_results['summary']['overall']['jaccard_accuracy']['mean']:.1%}",
-                    "perfect_answers": f"{model_results['summary']['overall']['jaccard_accuracy']['perfect_rate']:.1%}",
-                    "partial_answers": f"{model_results['summary']['overall']['jaccard_accuracy']['partial_rate']:.1%}",
-                    "wrong_answers": f"{model_results['summary']['overall']['jaccard_accuracy']['wrong_rate']:.1%}",
-                    "confidence_calibration": f"{model_results['summary']['overall']['confidence_calibration']['mean']:.1%}",
-                    "hallucination_score": f"{model_results['summary']['overall']['hallucination_detection']['mean']:.1%}",
-                    "average_response_time_ms": f"{model_results['summary']['overall']['response_time_ms']['mean']:.2f}",
-                    "average_token_count": f"{model_results['summary']['overall']['token_count']['mean']:.2f}",
+                    "successfully_evaluated": f"{model_results['summary']['overall']['total_test_cases']} ({model_results['summary']['overall']['dataset_percentage']:.1f}%)",
+                    "average_accuracy": format_percent(
+                        model_results["summary"]["overall"]["jaccard_accuracy"]["mean"]
+                    ),
+                    "perfect_answers": format_percent(
+                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                            "perfect_rate"
+                        ]
+                    ),
+                    "partial_answers": format_percent(
+                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                            "partial_rate"
+                        ]
+                    ),
+                    "wrong_answers": format_percent(
+                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                            "wrong_rate"
+                        ]
+                    ),
+                    "confidence_calibration": format_percent(
+                        model_results["summary"]["overall"]["confidence_calibration"][
+                            "mean"
+                        ]
+                    ),
+                    "hallucination_score": format_percent(
+                        model_results["summary"]["overall"]["hallucination_detection"][
+                            "mean"
+                        ]
+                    ),
+                    "average_response_time_seconds": format_number(
+                        model_results["summary"]["overall"]["response_time_ms"]["mean"]
+                    ),
+                    "average_token_count": format_number(
+                        model_results["summary"]["overall"]["token_count"]["mean"]
+                    ),
                 },
                 "tag_group_analysis": tag_group_data,
                 "performance_by_answer_type": {
                     "binary": {
                         "dataset_questions": f"{dataset_composition['bin_questions']} ({dataset_composition['bin_percentage']:.1f}%)",
                         "successfully_evaluated": f"{model_results['summary']['binary']['total_test_cases']} ({model_results['summary']['binary']['dataset_percentage']:.1f}%)",
-                        "average_accuracy": f"{model_results['summary']['binary']['jaccard_accuracy']['mean']:.1%}",
-                        "average_response_time_ms": f"{model_results['summary']['binary']['response_time_ms']['mean']:.2f}",
-                        "average_token_count": f"{model_results['summary']['binary']['token_count']['mean']:.2f}",
+                        "average_accuracy": format_percent(
+                            model_results["summary"]["binary"]["jaccard_accuracy"][
+                                "mean"
+                            ]
+                        ),
+                        "average_response_time_seconds": format_number(
+                            model_results["summary"]["binary"]["response_time_ms"][
+                                "mean"
+                            ]
+                        ),
+                        "average_token_count": format_number(
+                            model_results["summary"]["binary"]["token_count"]["mean"]
+                        ),
                     },
                     "mc": {
                         "dataset_questions": f"{dataset_composition['mc_questions']} ({dataset_composition['mc_percentage']:.1f}%)",
                         "successfully_evaluated": f"{model_results['summary']['mc']['total_test_cases']} ({model_results['summary']['mc']['dataset_percentage']:.1f}%)",
-                        "average_accuracy": f"{model_results['summary']['mc']['jaccard_accuracy']['mean']:.1%}",
-                        "average_response_time_ms": f"{model_results['summary']['mc']['response_time_ms']['mean']:.2f}",
-                        "average_token_count": f"{model_results['summary']['mc']['token_count']['mean']:.2f}",
+                        "average_accuracy": format_percent(
+                            model_results["summary"]["mc"]["jaccard_accuracy"]["mean"]
+                        ),
+                        "average_response_time_seconds": format_number(
+                            model_results["summary"]["mc"]["response_time_ms"]["mean"]
+                        ),
+                        "average_token_count": format_number(
+                            model_results["summary"]["mc"]["token_count"]["mean"]
+                        ),
                     },
                 },
             }
@@ -1310,9 +1357,11 @@ def main():
         print(
             f"     Confidence Calibration: {summary_overall['confidence_calibration']['mean']:.1%}"
         )
-        print(
-            f"     Hallucination Score: {summary_overall['hallucination_detection']['mean']:.1%}"
+        hallucination_mean = summary_overall["hallucination_detection"]["mean"]
+        hallucination_display = (
+            "N/A" if hallucination_mean is None else f"{hallucination_mean:.1%}"
         )
+        print(f"     Hallucination Score: {hallucination_display}")
 
         tag_groups = model_results["tag_group_analysis"]
         sorted_groups = sorted(

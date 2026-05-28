@@ -4,6 +4,32 @@ import json
 import re
 
 
+def _missing_json_closers(text: str) -> str:
+    stack: list[str] = []
+    in_string = False
+    escaped = False
+    pairs = {"{": "}", "[": "]"}
+
+    for char in text:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+
+        if char == '"':
+            in_string = True
+        elif char in pairs:
+            stack.append(pairs[char])
+        elif char in ("}", "]") and stack and stack[-1] == char:
+            stack.pop()
+
+    return "".join(reversed(stack))
+
+
 def fix_explanations_json(text: str) -> str:
     fixed = text
 
@@ -16,9 +42,10 @@ def fix_explanations_json(text: str) -> str:
     # Remove trailing commas before } or ]
     fixed = re.sub(r",(\s*[}\]])", r"\1", fixed)
 
-    # If file starts with { but does not end with }, try closing it
-    if fixed.lstrip().startswith("{") and not fixed.rstrip().endswith("}"):
-        fixed = fixed.rstrip() + "\n}"
+    # If the writer stopped early, close any still-open JSON containers.
+    missing_closers = _missing_json_closers(fixed)
+    if missing_closers:
+        fixed = fixed.rstrip() + "\n" + missing_closers
 
     return fixed
 

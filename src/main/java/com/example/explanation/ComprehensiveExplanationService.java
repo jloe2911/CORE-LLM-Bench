@@ -1184,11 +1184,20 @@ public class ComprehensiveExplanationService {
                             if (!invPropExpr.equals(domainProp) && !invPropExpr.isAnonymous()) {
                                 OWLObjectProperty invProp = invPropExpr.asOWLObjectProperty();
 
-                                // Check if someone has the inverse property pointing to our individual
-                                for (OWLNamedIndividual other : ontology.getIndividualsInSignature()) {
-                                    if (reasoner.getObjectPropertyValues(other, invProp).getFlattened().contains(individual)) {
+                                // Check asserted inverse-property facts instead of asking the reasoner
+                                // for every individual. The reasoner call is expensive here and can
+                                // dominate the whole benchmark on large generated Pizza ontologies.
+                                for (OWLObjectPropertyAssertionAxiom assertion :
+                                        ontology.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+                                    if (!assertion.getProperty().equals(invProp) ||
+                                            !assertion.getObject().equals(individual) ||
+                                            !(assertion.getSubject() instanceof OWLNamedIndividual)) {
+                                        continue;
+                                    }
+
+                                    OWLNamedIndividual other = (OWLNamedIndividual) assertion.getSubject();
                                         List<OWLAxiom> axioms = Arrays.asList(
-                                                dataFactory.getOWLObjectPropertyAssertionAxiom(invProp, other, individual),
+                                                assertion,
                                                 invAxiom,
                                                 domainAxiom
                                         );
@@ -1212,7 +1221,6 @@ public class ComprehensiveExplanationService {
 
                                         LOGGER.debug("Added inverse property path: {} via {}",
                                                 getShortForm(domainProp), getShortForm(invProp));
-                                    }
                                 }
                             }
                         }
@@ -1419,11 +1427,31 @@ public class ComprehensiveExplanationService {
         }
     }
 
+    private Set<OWLNamedIndividual> getAssertedObjectPropertyValues(OWLNamedIndividual individual, OWLObjectProperty property) {
+        return ontology.getObjectPropertyAssertionAxioms(individual).stream()
+                .filter(assertion -> assertion.getProperty().equals(property))
+                .map(OWLObjectPropertyAssertionAxiom::getObject)
+                .filter(object -> object instanceof OWLNamedIndividual)
+                .map(object -> (OWLNamedIndividual) object)
+                .collect(Collectors.toSet());
+    }
+
+    private boolean hasAssertedOrSubclassType(OWLNamedIndividual individual, OWLClass targetClass) {
+        return ontology.getClassAssertionAxioms(individual).stream()
+                .map(OWLClassAssertionAxiom::getClassExpression)
+                .filter(expr -> !expr.isAnonymous())
+                .map(OWLClassExpression::asOWLClass)
+                .anyMatch(assertedClass -> assertedClass.equals(targetClass)
+                        || !findCompleteSubclassChain(assertedClass, targetClass).isEmpty());
+    }
+
     /**
      * NEW: Find complex restriction combinations
      */
     private void addComplexRestrictionPaths(OWLNamedIndividual individual, OWLClass clazz, Set<ExplanationPath> allPaths) {
         try {
+            Set<OWLClass> individualTypes = reasoner.getTypes(individual, false).getFlattened();
+
             // This would handle complex class expressions like:
             // Woman â‰¡ Person âŠ“ âˆƒhasSex.Female âŠ“ âˆ€hasChild.Person
             for (OWLEquivalentClassesAxiom equivAxiom : ontology.getEquivalentClassesAxioms(clazz)) {
@@ -1441,7 +1469,7 @@ public class ComprehensiveExplanationService {
                         for (OWLClassExpression component : intersection.getOperands()) {
                             if (component instanceof OWLClass) {
                                 OWLClass componentClass = (OWLClass) component;
-                                if (reasoner.getTypes(individual, false).getFlattened().contains(componentClass)) {
+                                if (individualTypes.contains(componentClass)) {
                                     OWLClassAssertionAxiom assertion = dataFactory.getOWLClassAssertionAxiom(componentClass, individual);
                                     axioms.add(assertion);
                                     justifications.add(getShortForm(individual) + " rdf:type " + getShortForm(componentClass));
@@ -1456,13 +1484,12 @@ public class ComprehensiveExplanationService {
                                     OWLObjectProperty prop = someRestriction.getProperty().asOWLObjectProperty();
                                     OWLClassExpression filler = someRestriction.getFiller();
 
-                                    Set<OWLNamedIndividual> propValues = reasoner.getObjectPropertyValues(individual, prop).getFlattened();
                                     boolean foundWitness = false;
 
-                                    for (OWLNamedIndividual value : propValues) {
+                                    for (OWLNamedIndividual value : getAssertedObjectPropertyValues(individual, prop)) {
                                         if (!filler.isAnonymous()) {
                                             OWLClass fillerClass = filler.asOWLClass();
-                                            if (reasoner.getTypes(value, false).getFlattened().contains(fillerClass)) {
+                                            if (hasAssertedOrSubclassType(value, fillerClass)) {
                                                 axioms.add(dataFactory.getOWLObjectPropertyAssertionAxiom(prop, individual, value));
                                                 axioms.add(dataFactory.getOWLClassAssertionAxiom(fillerClass, value));
                                                 justifications.add(getShortForm(individual) + " " + getShortForm(prop) + " " + getShortForm(value));
@@ -2298,6 +2325,14 @@ public class ComprehensiveExplanationService {
         }
     }
 
+    private Optional<OWLObjectPropertyAssertionAxiom> findAssertedObjectPropertyAssertion(
+            OWLNamedIndividual subject, OWLObjectPropertyExpression property, OWLNamedIndividual object) {
+        return ontology.getObjectPropertyAssertionAxioms(subject).stream()
+                .filter(assertion -> assertion.getProperty().equals(property)
+                        && assertion.getObject().equals(object))
+                .findFirst();
+    }
+
     private void addSubPropertyReasoningPaths(OWLNamedIndividual subject, OWLObjectProperty property,
                                               OWLNamedIndividual object, Set<ExplanationPath> allPaths) {
         try {
@@ -2305,14 +2340,16 @@ public class ComprehensiveExplanationService {
                 OWLObjectPropertyExpression subProp = subPropAxiom.getSubProperty();
                 if (!subProp.isAnonymous()) {
                     OWLObjectProperty subProperty = subProp.asOWLObjectProperty();
-                    if (reasoner.getObjectPropertyValues(subject, subProperty).getFlattened().contains(object)) {
+                    Optional<OWLObjectPropertyAssertionAxiom> assertion =
+                            findAssertedObjectPropertyAssertion(subject, subProperty, object);
+                    if (assertion.isPresent()) {
                         List<String> justifications = Arrays.asList(
                                 getShortForm(subject) + " " + getShortForm(subProperty) + " " + getShortForm(object),
                                 getShortForm(subProperty) + " rdfs:subPropertyOf " + getShortForm(property)
                         );
 
                         List<OWLAxiom> axioms = Arrays.asList(
-                                dataFactory.getOWLObjectPropertyAssertionAxiom(subProperty, subject, object),
+                                assertion.get(),
                                 subPropAxiom
                         );
 
@@ -2340,14 +2377,16 @@ public class ComprehensiveExplanationService {
         try {
             // Symmetric property reasoning
             for (OWLSymmetricObjectPropertyAxiom symAxiom : ontology.getSymmetricObjectPropertyAxioms(property)) {
-                if (reasoner.getObjectPropertyValues(object, property).getFlattened().contains(subject)) {
+                Optional<OWLObjectPropertyAssertionAxiom> assertion =
+                        findAssertedObjectPropertyAssertion(object, property, subject);
+                if (assertion.isPresent()) {
                     List<String> justifications = Arrays.asList(
                             getShortForm(object) + " " + getShortForm(property) + " " + getShortForm(subject),
                             "SymmetricObjectProperty(" + getShortForm(property) + ")"
                     );
 
                     List<OWLAxiom> axioms = Arrays.asList(
-                            dataFactory.getOWLObjectPropertyAssertionAxiom(property, object, subject),
+                            assertion.get(),
                             symAxiom
                     );
 
@@ -2367,12 +2406,19 @@ public class ComprehensiveExplanationService {
 
             // Transitive property reasoning
             for (OWLTransitiveObjectPropertyAxiom transAxiom : ontology.getTransitiveObjectPropertyAxioms(property)) {
-                Set<OWLNamedIndividual> intermediates = reasoner.getObjectPropertyValues(subject, property).getFlattened();
+                for (OWLObjectPropertyAssertionAxiom firstAssertion : ontology.getObjectPropertyAssertionAxioms(subject)) {
+                    if (!firstAssertion.getProperty().equals(property) ||
+                            !(firstAssertion.getObject() instanceof OWLNamedIndividual)) {
+                        continue;
+                    }
 
-                for (OWLNamedIndividual intermediate : intermediates) {
-                    if (!intermediate.equals(object) &&
-                            reasoner.getObjectPropertyValues(intermediate, property).getFlattened().contains(object)) {
-
+                    OWLNamedIndividual intermediate = (OWLNamedIndividual) firstAssertion.getObject();
+                    if (!intermediate.equals(object)) {
+                        Optional<OWLObjectPropertyAssertionAxiom> secondAssertion =
+                                findAssertedObjectPropertyAssertion(intermediate, property, object);
+                        if (secondAssertion.isEmpty()) {
+                            continue;
+                        }
                         List<String> justifications = Arrays.asList(
                                 getShortForm(subject) + " " + getShortForm(property) + " " + getShortForm(intermediate),
                                 getShortForm(intermediate) + " " + getShortForm(property) + " " + getShortForm(object),
@@ -2380,8 +2426,8 @@ public class ComprehensiveExplanationService {
                         );
 
                         List<OWLAxiom> axioms = Arrays.asList(
-                                dataFactory.getOWLObjectPropertyAssertionAxiom(property, subject, intermediate),
-                                dataFactory.getOWLObjectPropertyAssertionAxiom(property, intermediate, object),
+                                firstAssertion,
+                                secondAssertion.get(),
                                 transAxiom
                         );
 
@@ -2406,14 +2452,16 @@ public class ComprehensiveExplanationService {
                 for (OWLObjectPropertyExpression invProp : invAxiom.getProperties()) {
                     if (!invProp.equals(property) && !invProp.isAnonymous()) {
                         OWLObjectProperty inverseProperty = invProp.asOWLObjectProperty();
-                        if (reasoner.getObjectPropertyValues(object, inverseProperty).getFlattened().contains(subject)) {
+                        Optional<OWLObjectPropertyAssertionAxiom> assertion =
+                                findAssertedObjectPropertyAssertion(object, inverseProperty, subject);
+                        if (assertion.isPresent()) {
                             List<String> justifications = Arrays.asList(
                                     getShortForm(object) + " " + getShortForm(inverseProperty) + " " + getShortForm(subject),
                                     getShortForm(property) + " owl:inverseOf " + getShortForm(inverseProperty)
                             );
 
                             List<OWLAxiom> axioms = Arrays.asList(
-                                    dataFactory.getOWLObjectPropertyAssertionAxiom(inverseProperty, object, subject),
+                                    assertion.get(),
                                     invAxiom
                             );
 
@@ -2449,10 +2497,16 @@ public class ComprehensiveExplanationService {
                         OWLObjectProperty prop1 = chain.get(0).asOWLObjectProperty();
                         OWLObjectProperty prop2 = chain.get(1).asOWLObjectProperty();
 
-                        Set<OWLNamedIndividual> intermediates = reasoner.getObjectPropertyValues(subject, prop1).getFlattened();
+                        for (OWLObjectPropertyAssertionAxiom firstAssertion : ontology.getObjectPropertyAssertionAxioms(subject)) {
+                            if (!firstAssertion.getProperty().equals(prop1) ||
+                                    !(firstAssertion.getObject() instanceof OWLNamedIndividual)) {
+                                continue;
+                            }
 
-                        for (OWLNamedIndividual intermediate : intermediates) {
-                            if (reasoner.getObjectPropertyValues(intermediate, prop2).getFlattened().contains(object)) {
+                            OWLNamedIndividual intermediate = (OWLNamedIndividual) firstAssertion.getObject();
+                            Optional<OWLObjectPropertyAssertionAxiom> secondAssertion =
+                                    findAssertedObjectPropertyAssertion(intermediate, prop2, object);
+                            if (secondAssertion.isPresent()) {
                                 List<String> justifications = Arrays.asList(
                                         getShortForm(subject) + " " + getShortForm(prop1) + " " + getShortForm(intermediate),
                                         getShortForm(intermediate) + " " + getShortForm(prop2) + " " + getShortForm(object),
@@ -2461,8 +2515,8 @@ public class ComprehensiveExplanationService {
 
                                 List<OWLAxiom> axioms = Arrays.asList(
                                         chainAxiom,
-                                        dataFactory.getOWLObjectPropertyAssertionAxiom(prop1, subject, intermediate),
-                                        dataFactory.getOWLObjectPropertyAssertionAxiom(prop2, intermediate, object)
+                                        firstAssertion,
+                                        secondAssertion.get()
                                 );
 
                                 ExplanationPath path = new ExplanationPath(

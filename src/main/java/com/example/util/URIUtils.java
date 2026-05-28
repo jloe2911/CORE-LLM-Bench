@@ -47,13 +47,21 @@ public class URIUtils {
      * Generate standardized task ID for queries
      */
     public static String generateTaskId(String rootEntity, String subject, String predicate, String answerType) {
+        return generateTaskId("1hop", rootEntity, subject, predicate, answerType);
+    }
+
+    /**
+     * Generate standardized task ID for queries with an explicit hop prefix.
+     */
+    public static String generateTaskId(String hopPrefix, String rootEntity, String subject, String predicate, String answerType) {
+        if (hopPrefix == null || hopPrefix.isEmpty()) hopPrefix = "1hop";
         if (rootEntity == null) rootEntity = "Thing";
         if (subject == null) subject = "unknown";
         if (predicate == null) predicate = "unknown";
         if (answerType == null) answerType = "BIN";
 
-        return String.format("1hop-%s_%s-%s-%s-%s",
-                rootEntity, subject, subject, predicate, answerType);
+        return String.format("%s-%s_%s-%s-%s-%s",
+                hopPrefix, rootEntity, subject, subject, predicate, answerType);
     }
 
     /**

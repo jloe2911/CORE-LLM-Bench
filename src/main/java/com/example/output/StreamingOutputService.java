@@ -10,7 +10,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.List;
-import java.nio.file.Files;
 
 
 /**
@@ -43,50 +42,23 @@ public class StreamingOutputService implements OutputService {
             outputDir.mkdirs();
         }
 
-        // FIXED: Append mode for CSV
+        // Start each benchmark generation run from clean core outputs. Resuming by
+        // appending is unsafe because an interrupted JSON file may be incomplete.
         File queryFile = new File(outputDir, "SPARQL_questions.csv");
-        boolean csvExists = queryFile.exists() && queryFile.length() > 0;
-        queryWriter = new FileWriter(queryFile, StandardCharsets.UTF_8, true); // APPEND mode
+        queryWriter = new FileWriter(queryFile, StandardCharsets.UTF_8, false);
+        queryWriter.write("\"Task ID\",\"Root Entity\",\"Size of ontology TBox\",\"Size of ontology ABox\"," +
+                "\"Task Type\",\"Answer Type\",\"SPARQL Query\",\"Predicate\",\"Answer\"," +
+                "\"Min Tag Length\",\"Max Tag Length\"\n");
+        queryWriter.flush();
 
-        if (!csvExists) {
-            // Add header only for new file
-            queryWriter.write("\"Task ID\",\"Root Entity\",\"Size of ontology TBox\",\"Size of ontology ABox\"," +
-                    "\"Task Type\",\"Answer Type\",\"SPARQL Query\",\"Predicate\",\"Answer\"," +
-                    "\"Min Tag Length\",\"Max Tag Length\"\n");
-        }
-
-        // FIXED: Append mode for JSON
         File explanationFile = new File(outputDir, "Explanations.json");
-        boolean jsonExists = explanationFile.exists() && explanationFile.length() > 0;
-        explanationWriter = new FileWriter(explanationFile, StandardCharsets.UTF_8, true); // APPEND mode
+        explanationWriter = new FileWriter(explanationFile, StandardCharsets.UTF_8, false);
+        explanationWriter.write("{\n");
+        explanationWriter.flush();
+        isFirstExplanation = true;
 
-        if (!jsonExists) {
-            // Start JSON structure for new file
-            explanationWriter.write("{\n");
-            isFirstExplanation = true;
-        } else {
-            // For existing file, remove the closing "}" and continue
-            removeLastCharacterFromFile(explanationFile);
-            explanationWriter.write(",\n"); // Add comma to continue JSON
-            isFirstExplanation = false;
-        }
-
-        LOGGER.info("Output files initialized (append mode): queries={}, explanations={}",
+        LOGGER.info("Output files initialized: queries={}, explanations={}",
                 queryFile.getPath(), explanationFile.getPath());
-    }
-
-    // Helper method to remove closing brace from JSON file
-    private void removeLastCharacterFromFile(File file) {
-        try {
-            String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
-            if (content.trim().endsWith("}")) {
-                content = content.trim();
-                content = content.substring(0, content.length() - 1).trim(); // Remove last "}"
-                Files.writeString(file.toPath(), content, StandardCharsets.UTF_8);
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Could not modify existing JSON file: {}", e.getMessage());
-        }
     }
 
     @Override
@@ -244,6 +216,8 @@ public class StreamingOutputService implements OutputService {
                 queryWriter.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing query writer", e);
+            } finally {
+                queryWriter = null;
             }
         }
 
@@ -253,6 +227,8 @@ public class StreamingOutputService implements OutputService {
                 explanationWriter.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing explanation writer", e);
+            } finally {
+                explanationWriter = null;
             }
         }
     }

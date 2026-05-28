@@ -4,6 +4,7 @@ import os
 import argparse
 import sys
 from pathlib import Path
+from rdflib import Graph
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
@@ -31,6 +32,30 @@ def parse_root_entity_and_get_verbalized_ont(path):
         return f"Error processing {path}: {str(e)}"
 
 
+def parse_root_entity(path):
+    try:
+        graph = Graph()
+        graph.parse(path, format="turtle")
+        return graph.serialize(format="xml")
+    except FileNotFoundError:
+        return f"File not found: {path}"
+    except Exception as e:
+        return f"Error processing {path}: {str(e)}"
+
+
+def clean_for_json(value):
+    if isinstance(value, dict):
+        return {key: clean_for_json(item) for key, item in value.items()}
+
+    if isinstance(value, list):
+        return [clean_for_json(item) for item in value]
+
+    if pd.isna(value):
+        return None
+
+    return value
+
+
 def df_to_json(df):
     result = []
 
@@ -38,6 +63,7 @@ def df_to_json(df):
         "Task Type",
         "Answer Type",
         "Root Entity",
+        "OWL Context",
         "NL Context",
         "ABS Context",
     ]
@@ -48,22 +74,26 @@ def df_to_json(df):
         "ABS Question",
         "Answer",
         "Minimum Explanation",
-        # "Explanation Count",
-        # "Explanation Min",
-        # "Explanation Max",
+        "Explanations",
+        "Explanation Count",
+        "Explanation Min",
+        "Explanation Max",
     ]
 
     grouped = df.groupby(group_cols)
 
     for group_keys, group_df in grouped:
-        task_type, answer_type, root_entity, nl_context, abs_context = group_keys
+        task_type, answer_type, root_entity, owl_context, nl_context, abs_context = (
+            group_keys
+        )
 
-        qas = group_df[qa_cols].to_dict(orient="records")
+        qas = clean_for_json(group_df[qa_cols].to_dict(orient="records"))
 
         entry = {
             "Task Type": task_type,
             "Answer Type": answer_type,
             "Root Entity": root_entity,
+            "OWL Context": owl_context,
             "NL Context": nl_context,
             "ABS Context": abs_context,
             "QAs": qas,
@@ -81,13 +111,13 @@ def load_questions_file(base_path, filename_without_ext="SPARQL_questions_sampli
     print("Checking:", os.path.abspath(xlsx_path))
     print("Checking:", os.path.abspath(csv_path))
 
-    if os.path.exists(xlsx_path):
-        print(f"Loading Excel file: {xlsx_path}")
-        return pd.read_excel(xlsx_path)
-
     if os.path.exists(csv_path):
         print(f"Loading CSV file: {csv_path}")
         return pd.read_csv(csv_path)
+
+    if os.path.exists(xlsx_path):
+        print(f"Loading Excel file: {xlsx_path}")
+        return pd.read_excel(xlsx_path)
 
     raise FileNotFoundError(f"Neither '{xlsx_path}' nor '{csv_path}' was found.")
 
@@ -97,17 +127,10 @@ def load_explanations(df, dataset, hop):
         "data", "output", dataset, hop, "Explanations.json"
     )
 
-    from scripts.explanations_fix import repair_explanations_file
-
-    output_path = repair_explanations_file(
-        input_file=explanations_file_path,
-        in_place=True,
-    )
-
-    print(output_path)
+    from scripts.explanations_fix import fix_explanations_json
 
     with open(explanations_file_path, "r", encoding="utf-8") as f:
-        explanations = json.load(f)
+        explanations = json.loads(fix_explanations_json(f.read()))
 
     lookup = {}
 
@@ -118,12 +141,27 @@ def load_explanations(df, dataset, hop):
         for task_id in value["taskIds"]:
             lookup[task_id] = {
                 "Minimum Explanation": chosen_expl,
+                "Explanations": expl_list,
                 "Explanation Count": value["explanationCount"],
                 "Explanation Min": value["size"]["min"],
                 "Explanation Max": value["size"]["max"],
             }
 
-    df = df.join(df["Task ID"].map(lookup).apply(pd.Series))
+    explanation_cols = [
+        "Minimum Explanation",
+        "Explanations",
+        "Explanation Count",
+        "Explanation Min",
+        "Explanation Max",
+    ]
+
+    explanation_df = df["Task ID"].map(lookup).apply(pd.Series)
+    df = df.join(explanation_df)
+
+    false_binary_mask = df["Answer Type"].astype(str).str.upper().eq("BIN") & df[
+        "Answer"
+    ].astype(str).str.upper().eq("FALSE")
+    df.loc[false_binary_mask, explanation_cols] = None
     return df
 
 
@@ -136,6 +174,12 @@ def process_dataset(dataset, hop):
     q_abs = load_questions_file(
         base_path, filename_without_ext="SPARQL_questions_sampling_abs"
     )
+
+    if len(q_nl) != len(q_abs):
+        raise ValueError(
+            f"NL and abstract question files have different row counts: "
+            f"{len(q_nl)} != {len(q_abs)}"
+        )
 
     df = q_nl[
         [
@@ -154,6 +198,8 @@ def process_dataset(dataset, hop):
 
     df = load_explanations(df, dataset, hop)
 
+    owl_path = os.path.join("data", "resources", f"{dataset}_{hop}")
+
     verbalized_path = os.path.join(
         "data", "output", "verbalized_ontologies", f"{dataset}_{hop}"
     )
@@ -162,25 +208,38 @@ def process_dataset(dataset, hop):
         "data", "output", "verbalized_ontologies", f"{dataset}_{hop}", "abstracted"
     )
 
-    df["NL Context"] = df["Root Entity"].apply(
-        lambda root: parse_root_entity_and_get_verbalized_ont(
+    unique_roots = df["Root Entity"].drop_duplicates()
+
+    print(f"Loading contexts for {len(unique_roots)} unique root entities")
+
+    owl_contexts = {
+        root: parse_root_entity(os.path.join(owl_path, f"{root}.ttl"))
+        for root in unique_roots
+    }
+    nl_contexts = {
+        root: parse_root_entity_and_get_verbalized_ont(
             os.path.join(verbalized_path, f"{root}.json")
         )
-    )
-
-    df["ABS Context"] = df["Root Entity"].apply(
-        lambda root: parse_root_entity_and_get_verbalized_ont(
+        for root in unique_roots
+    }
+    abs_contexts = {
+        root: parse_root_entity_and_get_verbalized_ont(
             os.path.join(verbalized_abs_path, f"{root}.json")
         )
-    )
+        for root in unique_roots
+    }
 
-    final_json = df_to_json(df)
+    df["OWL Context"] = df["Root Entity"].map(owl_contexts)
+    df["NL Context"] = df["Root Entity"].map(nl_contexts)
+    df["ABS Context"] = df["Root Entity"].map(abs_contexts)
+
+    final_json = clean_for_json(df_to_json(df))
 
     output_file = f"final_benchmark/{dataset}_{hop}.json"
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(final_json, f, indent=4, ensure_ascii=False)
+        json.dump(final_json, f, indent=4, ensure_ascii=False, allow_nan=False)
 
-    print(f"Saved → {output_file}\n")
+    print(f"Saved -> {output_file}\n")
 
 
 if __name__ == "__main__":
