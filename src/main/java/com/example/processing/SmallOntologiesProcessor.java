@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class SmallOntologiesProcessor implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmallOntologiesProcessor.class);
+    private static final int MAX_ROOT_CONTEXTS_PER_BASE_QUERY = 3;
 
     // Services
     private final OntologyService ontologyService;
@@ -48,6 +49,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
     // For tracking MC queries across current ontology only
     private Set<String> currentOntologyMCQueries;
+    private String taskIdHopPrefix = "1hop";
 
     public SmallOntologiesProcessor(OntologyService ontologyService,
                                     ReasoningService reasoningService,
@@ -71,6 +73,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         try {
             LOGGER.info("Starting SEQUENTIAL processing of small ontologies from: {}", ontologiesDirectory);
+            taskIdHopPrefix = inferHopPrefix(ontologiesDirectory);
+            LOGGER.info("Using '{}' task ID prefix", taskIdHopPrefix);
 
             // Step 1: Initialize output service
             outputService.initialize();
@@ -238,8 +242,9 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         Map<String, Set<ExplanationPath>> inferences = new HashMap<>();
         Set<OWLNamedIndividual> individuals = ontology.getIndividualsInSignature();
 
-        LOGGER.debug("Processing {} individuals from ontology", individuals.size());
+        LOGGER.info("Extracting explanations for {} individuals", individuals.size());
 
+        int processedIndividuals = 0;
         for (OWLNamedIndividual individual : individuals) {
             try {
                 // Extract class assertions - use INFERRED for queries, but explain how ASSERTED ones could be inferred
@@ -251,9 +256,16 @@ public class SmallOntologiesProcessor implements AutoCloseable {
             } catch (Exception e) {
                 LOGGER.debug("Error processing individual {}: {}", individual, e.getMessage());
             }
+
+            processedIndividuals++;
+            if (processedIndividuals == 1 || processedIndividuals % 25 == 0 || processedIndividuals == individuals.size()) {
+                LOGGER.info(
+                        "Explanation extraction progress: {}/{} individuals, {} explained inferences collected",
+                        processedIndividuals, individuals.size(), inferences.size());
+            }
         }
 
-        LOGGER.debug("Extracted {} inferences from ontology", inferences.size());
+        LOGGER.info("Extracted {} explained inferences from ontology", inferences.size());
         return inferences;
     }
 
@@ -363,7 +375,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                                            OWLOntology ontology, int tboxSize, int aboxSize,
                                            String rootEntity, ProcessingResult result) {
 
-        LOGGER.debug("Processing and writing {} inferences immediately", inferences.size());
+        LOGGER.info("Writing {} inferences to CSV/JSON outputs", inferences.size());
 
         String ontologyName = extractOntologyName(ontology);
 
@@ -371,8 +383,12 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         Map<String, Map<String, Set<String>>> subjectPredicateObjects = groupInferencesForMCQueries(inferences);
 
         long binaryQueries = 0;
+        long negativeBinaryQueries = 0;
         long multiChoiceQueries = 0;
+        List<String> candidateObjects = collectCandidateObjects(inferences);
+        Map<String, Set<String>> usedNegativeObjects = new HashMap<>();
 
+        int writtenInferences = 0;
         for (Map.Entry<String, Set<ExplanationPath>> entry : inferences.entrySet()) {
             String tripleKey = entry.getKey();
             Set<ExplanationPath> paths = entry.getValue();
@@ -384,11 +400,14 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 String subject = parts[0];
                 String predicate = parts[1];
                 String object = parts[2];
+                String inferenceKey = createRootScopedQueryKey(rootEntity, tripleKey);
 
-                // CRITICAL: Check if this query was already processed globally
-                if (!GlobalQueryTracker.markQueryProcessed(tripleKey, ontologyName)) {
-                    LOGGER.debug("Skipping duplicate query: {} (first seen in {})",
-                            tripleKey, GlobalQueryTracker.getFirstOntology(tripleKey));
+                // Keep limited root-context diversity without allowing highly
+                // repeated ontology patterns to dominate the generated dataset.
+                if (!GlobalQueryTracker.markQueryProcessedWithContextLimit(
+                        inferenceKey, tripleKey, rootEntity, ontologyName, MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
+                    LOGGER.debug("Skipping duplicate inference: {} (first seen in {})",
+                            inferenceKey, GlobalQueryTracker.getFirstOntology(inferenceKey));
                     continue;
                 }
 
@@ -398,8 +417,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 int[] tagStats = calculateTagStats(paths);
 
                 // 2. Write binary query (BIN) - ASK query
-                String binaryTaskId = URIUtils.generateTaskId(rootEntity, subject, predicate, "BIN");
-                GlobalQueryTracker.addTaskId(tripleKey, binaryTaskId);
+                String binaryTaskId = URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "BIN");
+                GlobalQueryTracker.addTaskId(inferenceKey, binaryTaskId);
 
                 String binaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
                         URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(object));
@@ -411,49 +430,96 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 );
                 binaryQueries++;
 
+                // 2b. Write a paired negative binary query by corrupting the object.
+                String negativeObject = chooseNegativeObject(
+                        subject, predicate, object, subjectPredicateObjects, candidateObjects,
+                        inferences.keySet(), usedNegativeObjects);
+
+                if (negativeObject != null) {
+                    String negativeBaseQueryKey = "NEG|" + OntologyUtils.createTripleKey(subject, predicate, negativeObject);
+                    String negativeQueryKey = createRootScopedQueryKey(rootEntity, negativeBaseQueryKey);
+
+                    if (GlobalQueryTracker.markQueryProcessedWithContextLimit(
+                            negativeQueryKey, negativeBaseQueryKey, rootEntity, ontologyName,
+                            MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
+                        String negativeTaskId = generateNegativeTaskId(rootEntity, subject, predicate, negativeObject);
+
+                        String negativeBinaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
+                                URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(negativeObject));
+
+                        outputService.writeComprehensiveQuery(
+                                negativeTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
+                                negativeBinaryQuery, predicate,
+                                "FALSE", null, tagStats[0], tagStats[1]
+                        );
+                        GlobalQueryTracker.addTaskId(negativeQueryKey, negativeTaskId);
+                        negativeBinaryQueries++;
+                    }
+                }
+
                 // 3. Write multi-choice query (MC) if applicable - SELECT query
                 if (shouldGenerateMultiChoiceQuery(subject, predicate, subjectPredicateObjects)) {
-                    Set<String> allObjectsSet = subjectPredicateObjects.get(subject).get(predicate);
-                    List<String> allAnswers = allObjectsSet.stream()
-                            .sorted()
-                            .collect(Collectors.toList());
+                    String multiBaseQueryKey = "MC|" + subject + "|" + predicate;
+                    String multiQueryKey = createRootScopedQueryKey(rootEntity, multiBaseQueryKey);
+                    if (GlobalQueryTracker.markQueryProcessedWithContextLimit(
+                            multiQueryKey, multiBaseQueryKey, rootEntity, ontologyName,
+                            MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
+                        Set<String> allObjectsSet = subjectPredicateObjects.get(subject).get(predicate);
+                        List<String> allAnswers = allObjectsSet.stream()
+                                .sorted()
+                                .collect(Collectors.toList());
 
-                    String multiTaskId = URIUtils.generateTaskId(rootEntity, subject, predicate, "MC");
-                    GlobalQueryTracker.addTaskId(tripleKey, multiTaskId);
+                        String multiTaskId = URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "MC");
+                        GlobalQueryTracker.addTaskId(multiQueryKey, multiTaskId);
 
-                    // MC query is SELECT - doesn't specify the object
-                    String multiQuery = String.format("SELECT ?x WHERE { <%s> <%s> ?x }",
-                            URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate));
+                        // MC query is SELECT - doesn't specify the object
+                        String multiQuery = String.format("SELECT ?x WHERE { <%s> <%s> ?x }",
+                                URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate));
 
-                    outputService.writeComprehensiveQuery(
-                            multiTaskId, rootEntity, tboxSize, aboxSize, taskType, "MC",
-                            multiQuery, predicate,
-                            object, allAnswers,
-                            tagStats[0], tagStats[1]  // Updated to use tag stats
-                    );
-                    multiChoiceQueries++;
+                        outputService.writeComprehensiveQuery(
+                                multiTaskId, rootEntity, tboxSize, aboxSize, taskType, "MC",
+                                multiQuery, predicate,
+                                object, allAnswers,
+                                tagStats[0], tagStats[1]  // Updated to use tag stats
+                        );
+                        multiChoiceQueries++;
+                    }
                 }
 
                 // 1. Write comprehensive explanation to JSON AFTER generating task IDs
                 String comprehensiveExplanation = ExplanationFormatter.generateExactJSONFormat(
-                        tripleKey, paths, tagger);
-                outputService.writeExplanationWithComprehensiveFormat(tripleKey, comprehensiveExplanation);
+                        inferenceKey, tripleKey, paths, tagger);
+                outputService.writeExplanationWithComprehensiveFormat(inferenceKey, comprehensiveExplanation);
 
             } catch (Exception e) {
                 LOGGER.warn("Error processing inference {}: {}", tripleKey, e.getMessage());
                 result.addWarning("Failed to process inference: " + tripleKey);
             }
+
+            writtenInferences++;
+            if (writtenInferences == 1 || writtenInferences % 100 == 0 || writtenInferences == inferences.size()) {
+                LOGGER.info(
+                        "Output progress: {}/{} inferences written, {} queries generated so far for ontology {}",
+                        writtenInferences,
+                        inferences.size(),
+                        binaryQueries + negativeBinaryQueries + multiChoiceQueries,
+                        ontologyName);
+            }
         }
 
         // Update counters and flush
-        totalBinaryQueries.addAndGet(binaryQueries);
+        totalBinaryQueries.addAndGet(binaryQueries + negativeBinaryQueries);
         totalMultiChoiceQueries.addAndGet(multiChoiceQueries);
-        totalQueriesGenerated.addAndGet(binaryQueries + multiChoiceQueries);
+        totalQueriesGenerated.addAndGet(binaryQueries + negativeBinaryQueries + multiChoiceQueries);
 
-        LOGGER.debug("Wrote {} binary queries and {} MC queries for ontology {}",
-                binaryQueries, multiChoiceQueries, ontologyName);
+        LOGGER.debug("Wrote {} positive binary queries, {} negative binary queries, and {} MC queries for ontology {}",
+                binaryQueries, negativeBinaryQueries, multiChoiceQueries, ontologyName);
 
         outputService.flush();
+    }
+
+    private String createRootScopedQueryKey(String rootEntity, String queryKey) {
+        return rootEntity + "||" + queryKey;
     }
 
     // Helper method to extract ontology name
@@ -477,6 +543,112 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         Set<String> objects = predicateObjects.get(predicate);
         return objects != null && objects.size() > 1; // Only generate MC if multiple objects
+    }
+
+    /**
+     * Collect available object terms so negative binary questions can be paired
+     * with real ontology vocabulary instead of invented placeholder entities.
+     */
+    private List<String> collectCandidateObjects(Map<String, Set<ExplanationPath>> inferences) {
+        return inferences.keySet().stream()
+                .map(OntologyUtils::parseTripleKey)
+                .filter(parts -> parts.length == 3)
+                .map(parts -> parts[2])
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Choose an object that makes the same subject-predicate ASK query false.
+     * Preference is given to objects seen with the same predicate elsewhere, then
+     * to any object in the current ontology's generated inferences.
+     */
+    private String chooseNegativeObject(String subject, String predicate, String object,
+                                        Map<String, Map<String, Set<String>>> subjectPredicateObjects,
+                                        List<String> candidateObjects,
+                                        Set<String> positiveTripleKeys,
+                                        Map<String, Set<String>> usedNegativeObjects) {
+        Set<String> trueObjectsForSubjectPredicate = subjectPredicateObjects
+                .getOrDefault(subject, Collections.emptyMap())
+                .getOrDefault(predicate, Collections.emptySet());
+        String subjectPredicateKey = subject + "|" + predicate;
+        Set<String> usedForSubjectPredicate = usedNegativeObjects
+                .computeIfAbsent(subjectPredicateKey, key -> new HashSet<>());
+
+        List<String> samePredicateCandidates = subjectPredicateObjects.values().stream()
+                .map(predicateObjects -> predicateObjects.getOrDefault(predicate, Collections.emptySet()))
+                .flatMap(Set::stream)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        String candidate = findNegativeObjectCandidate(
+                subject, predicate, trueObjectsForSubjectPredicate, samePredicateCandidates,
+                positiveTripleKeys, usedForSubjectPredicate);
+        if (candidate != null) {
+            usedForSubjectPredicate.add(candidate);
+            return candidate;
+        }
+
+        candidate = findNegativeObjectCandidate(
+                subject, predicate, trueObjectsForSubjectPredicate, candidateObjects,
+                positiveTripleKeys, usedForSubjectPredicate);
+        if (candidate != null) {
+            usedForSubjectPredicate.add(candidate);
+            return candidate;
+        }
+
+        String fallback = object + "_negative_control";
+        String fallbackTripleKey = OntologyUtils.createTripleKey(subject, predicate, fallback);
+        if (positiveTripleKeys.contains(fallbackTripleKey) || usedForSubjectPredicate.contains(fallback)) {
+            return null;
+        }
+
+        usedForSubjectPredicate.add(fallback);
+        return fallback;
+    }
+
+    private String findNegativeObjectCandidate(String subject, String predicate,
+                                               Set<String> trueObjectsForSubjectPredicate,
+                                               List<String> candidates,
+                                               Set<String> positiveTripleKeys,
+                                               Set<String> usedForSubjectPredicate) {
+        for (String candidate : candidates) {
+            if (trueObjectsForSubjectPredicate.contains(candidate) ||
+                    usedForSubjectPredicate.contains(candidate)) {
+                continue;
+            }
+
+            String candidateTripleKey = OntologyUtils.createTripleKey(subject, predicate, candidate);
+            if (!positiveTripleKeys.contains(candidateTripleKey)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private String generateNegativeTaskId(String rootEntity, String subject, String predicate, String negativeObject) {
+        return String.format("%s-%s-NEG-BIN",
+                URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "BIN"),
+                negativeObject);
+    }
+
+    private String inferHopPrefix(String ontologiesDirectory) {
+        if (ontologiesDirectory == null) {
+            return "1hop";
+        }
+
+        String normalized = ontologiesDirectory.toLowerCase(Locale.ROOT);
+        if (normalized.contains("2hop")) {
+            return "2hop";
+        }
+        if (normalized.contains("1hop")) {
+            return "1hop";
+        }
+
+        return "1hop";
     }
 
     /**

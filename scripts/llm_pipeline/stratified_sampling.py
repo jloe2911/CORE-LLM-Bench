@@ -16,14 +16,19 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-def stratified_sample(input_file, output_file, test_size=0.95, random_state=42):
-    print(f"Reading input: {input_file}")
-    df = pd.read_csv(input_file)
-    print(f"Initial rows: {len(df)}")
+SAMPLING_COLUMNS = [
+    "Task ID",
+    "Task Type",
+    "Size of ontology ABox",
+    "Max Tag Length",
+]
 
-    df = df.drop_duplicates()
+
+def add_sampling_columns(df):
     df = df[df["Task Type"].isin(["Membership", "Property Assertion"])].copy()
-    df["Task ID temp"] = df["Task ID"].str.replace(r"-(BIN|MC)$", "", regex=True)
+    df["Task ID temp"] = df["Task ID"].str.replace(
+        r"(-BIN-.+-NEG-BIN|-(BIN|MC))$", "", regex=True
+    )
 
     # Bin variables
     bin_edges = np.histogram_bin_edges(df["Size of ontology ABox"], bins="auto")
@@ -42,7 +47,10 @@ def stratified_sample(input_file, output_file, test_size=0.95, random_state=42):
         + "_"
         + df["Bin_Max Tag Length"].astype(str)
     )
+    return df
 
+
+def select_train_groups(df, test_size, random_state):
     # Group by Task ID temp
     df_groups = df.groupby("Task ID temp").first().reset_index()
     strata_counts = df_groups["strata"].value_counts()
@@ -80,37 +88,101 @@ def stratified_sample(input_file, output_file, test_size=0.95, random_state=42):
             f"so both splits contain at least one sample per stratum."
         )
 
-    train_groups, test_groups = train_test_split(
+    train_groups, _ = train_test_split(
         df_filtered["Task ID temp"],
         train_size=adjusted_train_size,
         test_size=adjusted_test_size,
         stratify=df_filtered["strata"],
         random_state=random_state,
     )
+    return set(train_groups)
 
-    # Assign split back to original df rows based on group membership
-    df["split"] = "test"
-    df.loc[df["Task ID temp"].isin(train_groups), "split"] = "train"
 
-    train_df = df[df["split"] == "train"].copy()
+def limit_rows_by_group(df, max_rows, random_state):
+    if max_rows is None or len(df) <= max_rows:
+        return df
 
-    columns_to_drop = [
-        "Task ID temp",
-        "Bin_Size of ontology ABox",
-        "Bin_Max Tag Length",
-        "strata",
-        "split",
-    ]
-    train_df = train_df.drop(columns=columns_to_drop)
+    task_groups = df["Task ID"].str.replace(
+        r"(-BIN-.+-NEG-BIN|-(BIN|MC))$", "", regex=True
+    )
+    group_sizes = task_groups.value_counts()
+    rng = np.random.default_rng(random_state)
+    shuffled_groups = rng.permutation(group_sizes.index.to_numpy())
 
+    selected_groups = []
+    selected_rows = 0
+    for group in shuffled_groups:
+        group_size = group_sizes[group]
+        if selected_rows and selected_rows + group_size > max_rows:
+            continue
+        if group_size > max_rows:
+            continue
+
+        selected_groups.append(group)
+        selected_rows += group_size
+        if selected_rows == max_rows:
+            break
+
+    limited_df = df[task_groups.isin(selected_groups)].copy()
+    print(
+        f"Limiting sampled rows from {len(df)} to {len(limited_df)} "
+        f"while preserving {len(selected_groups)} task groups."
+    )
+    return limited_df
+
+
+def stream_sampled_rows(
+    input_file, output_file, train_groups, random_state, max_rows=None, chunksize=50000
+):
     output_path = Path(output_file)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    selected_chunks = []
+    sampled_rows = 0
+    print(f"Streaming selected rows to: {output_file}")
+
+    for chunk in pd.read_csv(input_file, chunksize=chunksize):
+        chunk = chunk[
+            chunk["Task Type"].isin(["Membership", "Property Assertion"])
+        ].copy()
+        chunk["Task ID temp"] = chunk["Task ID"].str.replace(
+            r"(-BIN-.+-NEG-BIN|-(BIN|MC))$", "", regex=True
+        )
+        selected = chunk[chunk["Task ID temp"].isin(train_groups)].copy()
+        if selected.empty:
+            continue
+
+        selected = selected.drop(columns=["Task ID temp"])
+        selected_chunks.append(selected)
+        sampled_rows += len(selected)
+
+    if selected_chunks:
+        train_df = pd.concat(selected_chunks, ignore_index=True).drop_duplicates()
+    else:
+        train_df = pd.DataFrame()
+
+    train_df = limit_rows_by_group(train_df, max_rows, random_state)
 
     print(f"Sampled rows: {len(train_df)}")
     print(f"Writing output: {output_file}")
     train_df.to_csv(output_file, index=False)
     print("Done.")
     return train_df
+
+
+def stratified_sample(
+    input_file, output_file, test_size=0.95, random_state=42, max_rows=None
+):
+    print(f"Reading input: {input_file}")
+    df = pd.read_csv(input_file, usecols=SAMPLING_COLUMNS)
+    print(f"Initial rows: {len(df)}")
+
+    df = df.drop_duplicates()
+    df = add_sampling_columns(df)
+    train_groups = select_train_groups(df, test_size, random_state)
+    return stream_sampled_rows(
+        input_file, output_file, train_groups, random_state, max_rows=max_rows
+    )
 
 
 def main():
@@ -131,6 +203,12 @@ def main():
         default=42,
         help="Random seed (default: 42)",
     )
+    parser.add_argument(
+        "--max-rows",
+        type=int,
+        default=None,
+        help="Optional hard cap on sampled output rows.",
+    )
 
     args = parser.parse_args()
 
@@ -139,6 +217,7 @@ def main():
         output_file=args.output_file,
         test_size=args.test_size,
         random_state=args.random_state,
+        max_rows=args.max_rows,
     )
 
 

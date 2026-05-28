@@ -166,39 +166,94 @@ def force_cleanup():
 
 
 def get_model_params(models=None):
+    if models is None:
+        models = MODELS
+
     model_params = {}
-    for model in MODELS.keys():
-        if model == "gpt-5-mini":
-            model_params[model] = {
+    for display_name, model_entry in models.items():
+        if isinstance(model_entry, dict):
+            provider = model_entry.get("provider")
+            model_id = model_entry.get("model_id", display_name)
+        else:
+            provider = MODEL_TO_CLIENT.get(display_name)
+            model_id = str(model_entry)
+
+        if provider == "openai" and "gpt-5" in model_id:
+            model_params[display_name] = {
                 "max_completion_tokens": 1024,  # Increased
                 "reasoning_effort": "low",
                 "verbosity": "low",
             }
-        elif model == "deepseek-chat":  # Updated
-            model_params[model] = {
+        elif provider == "openai":
+            model_params[display_name] = {"max_completion_tokens": 1024}
+        elif provider == "deepseek":
+            model_params[display_name] = {
                 "max_tokens": 1024,  # Increased
                 "temperature": 0.0,  # Now supported!
                 "top_p": 0.9,
             }
-        else:  # llama-4-maverick
-            model_params[model] = {
+        else:
+            model_params[display_name] = {
                 "temperature": 0.0,
                 "top_p": 0.9,
-                "max_completion_tokens": 1024,
+                "max_tokens": 1024,
                 "presence_penalty": 0.0,
                 "frequency_penalty": 0.1,
             }
     return model_params
 
 
+def is_completed_response(value):
+    """A non-empty response means an API call was already spent for this cell."""
+    if value is None:
+        return False
+    if pd.isna(value):
+        return False
+    return str(value).strip() != ""
+
+
+def count_completed_questions(df, models):
+    completed = 0
+    for _, row in df.iterrows():
+        if all(
+            is_completed_response(row.get(f"{model}_response", "")) for model in models
+        ):
+            completed += 1
+    return completed
+
+
+def slugify_model_name(model_name):
+    slug = re.sub(r"[^A-Za-z0-9._-]+", "_", str(model_name).strip())
+    slug = re.sub(r"_+", "_", slug).strip("._-")
+    return slug or "unknown_model"
+
+
+def model_specific_dataframe(df, model_name, model_names):
+    model_prefixes = tuple(f"{name}_" for name in model_names)
+    model_prefix = f"{model_name}_"
+    columns = [
+        column
+        for column in df.columns
+        if not column.startswith(model_prefixes) or column.startswith(model_prefix)
+    ]
+    return df.loc[:, columns]
+
+
 def save_checkpoint_csv(
-    df, logs, detailed_metrics, output_dir, questions_completed, total_questions
+    df,
+    logs,
+    detailed_metrics,
+    output_dir,
+    questions_completed,
+    total_questions,
+    model_names=None,
 ):
     """Save checkpoint CSV with memory optimization"""
     with save_lock:
         try:
+            model_names = list(model_names or MODELS.keys())
             checkpoint_dir = output_dir / "checkpoints"
-            checkpoint_dir.mkdir(exist_ok=True)
+            checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
             # Create checkpoint filename with timestamp and progress
             timestamp = datetime.now().strftime("%H%M%S")
@@ -254,6 +309,59 @@ def save_checkpoint_csv(
                 logs_df.to_csv(latest_logs, index=False)
                 del logs_df
 
+            by_llm_dir = output_dir / "by_llm"
+            for model_name in model_names:
+                model_dir = by_llm_dir / slugify_model_name(model_name)
+                model_checkpoint_dir = model_dir / "checkpoints"
+                model_checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
+                model_df = model_specific_dataframe(df, model_name, model_names)
+                model_checkpoint_file = (
+                    model_checkpoint_dir
+                    / f"checkpoint_q{questions_completed:04d}_of_{total_questions:04d}_{timestamp}.csv"
+                )
+                model_latest_file = model_dir / "LATEST_checkpoint.csv"
+                model_df.to_csv(model_checkpoint_file, index=False)
+                model_df.to_csv(model_latest_file, index=False)
+
+                model_logs = [log for log in logs if log.get("model") == model_name]
+                if model_logs:
+                    model_logs_file = (
+                        model_checkpoint_dir
+                        / f"checkpoint_logs_q{questions_completed:04d}_{timestamp}.csv"
+                    )
+                    model_latest_logs = model_dir / "LATEST_checkpoint_logs.csv"
+                    model_logs_df = pd.DataFrame(model_logs)
+                    model_logs_df.to_csv(model_logs_file, index=False)
+                    model_logs_df.to_csv(model_latest_logs, index=False)
+                    del model_logs_df
+
+                model_metrics = [
+                    metric
+                    for metric in detailed_metrics
+                    if metric.get("model_display_name") == model_name
+                ]
+                if model_metrics:
+                    model_metrics_file = (
+                        model_checkpoint_dir
+                        / f"checkpoint_metrics_q{questions_completed:04d}_{timestamp}.json"
+                    )
+                    with open(model_metrics_file, "w") as f:
+                        json.dump(model_metrics, f, indent=2, default=str)
+
+                model_recovery_info = {
+                    "model": model_name,
+                    "questions_completed": questions_completed,
+                    "total_questions": total_questions,
+                    "completion_percentage": (questions_completed / total_questions)
+                    * 100,
+                    "timestamp": datetime.now().isoformat(),
+                    "checkpoint_file": str(model_checkpoint_file),
+                    "memory_usage_percent": monitor_memory(),
+                }
+                with open(model_dir / "LATEST_recovery_info.json", "w") as f:
+                    json.dump(model_recovery_info, f, indent=2, default=str)
+
             # Create recovery info
             recovery_info = {
                 "questions_completed": questions_completed,
@@ -262,7 +370,7 @@ def save_checkpoint_csv(
                 "timestamp": datetime.now().isoformat(),
                 "checkpoint_file": str(checkpoint_file),
                 "total_api_calls_completed": completed_tasks,
-                "total_api_calls_expected": total_questions * len(MODELS),
+                "total_api_calls_expected": total_questions * len(model_names),
                 "memory_usage_percent": monitor_memory(),
             }
 
@@ -272,7 +380,7 @@ def save_checkpoint_csv(
 
             # Calculate and display statistics
             model_stats = {}
-            for model in MODELS.keys():
+            for model in model_names:
                 response_col = f"{model}_response"
                 if response_col in df.columns:
                     non_empty = (df[response_col] != "").sum()
@@ -426,6 +534,7 @@ def update_progress(
     output_dir,
     models_list,
     total_questions,
+    checkpoint_frequency,
     silent_mode=False,
 ):
     """Callback function to update progress and save checkpoints with memory management"""
@@ -531,8 +640,7 @@ def update_progress(
                 if question_complete:
                     questions_completed += 1
 
-                    # Save checkpoint every 50 questions (increased for better performance)
-                    if questions_completed % 50 == 0:
+                    if questions_completed % checkpoint_frequency == 0:
                         save_checkpoint_csv(
                             df,
                             logs,
@@ -540,6 +648,7 @@ def update_progress(
                             output_dir,
                             questions_completed,
                             total_questions,
+                            models_list,
                         )
 
                         # Clear logs and metrics after checkpoint to free memory
@@ -574,7 +683,7 @@ deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
 openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
 
 if not all([openai_api_key, deepseek_api_key, openrouter_api_key]):
-    print("Some API keys missing. Check your .env file.")
+    print("Some API keys are missing. Only keys for selected providers are required.")
 
 openai_client = openai.OpenAI(api_key=openai_api_key) if openai_api_key else None
 deepseek_client = (
@@ -854,6 +963,18 @@ def load_ontology_context(ontology_base_path, ontology_name, context_mode):
         return f"[ERROR: Failed to load ontology {ontology_name}: {str(e)}]"
 
 
+def get_inline_context_from_row(row, context_mode):
+    context_columns = {
+        "inline_owl": "OWL Context",
+        "inline_nl": "NL Context",
+        "inline_abs": "ABS Context",
+    }
+    context_column = context_columns.get(context_mode)
+    if not context_column:
+        return None
+    return row.get(context_column, "")
+
+
 def create_context_specific_prompt(query, ontology_context, context_mode, answer_type):
     """Enhanced prompting for confidence and reasoning steps with memory optimization"""
 
@@ -861,27 +982,21 @@ def create_context_specific_prompt(query, ontology_context, context_mode, answer
         format_instruction = (
             "ANSWER: [TRUE or FALSE]\n"
             "CONFIDENCE: [score ranging from 0.0 to 1.0 indicating how certain you are]\n"
-            "REASONING_STEPS: [distinct number of reasoning steps you used to get to the answer, indicating complexity of reasoning needed]\n\n"
             "ANSWER section: ONLY write TRUE or FALSE.\n"
             "CONFIDENCE section: 1.0 = completely certain, 0.0 = pure guess.\n"
-            "REASONING_STEPS section: 1 = trivial/direct lookup, 10+ = complex multi-step reasoning.\n"
         )
     elif answer_type == "MC" or answer_type.lower() == "multi choice":
         format_instruction = (
-            "ANSWER: [Use LOCAL NAMES only, comma-separated]\n"
+            "ANSWER: [Use LOCAL NAMES only, semicolon-separated]\n"
             "CONFIDENCE: [score ranging from 0.0 to 1.0 indicating how certain you are]\n"
-            "REASONING_STEPS: [distinct number of reasoning steps you used to get to the answer, indicating complexity of reasoning needed]\n\n"
             "ANSWER section: Use LOCAL NAMES only (e.g., 'Person', 'U0C4', 'caroline_lavinia_tubb_1840'), give all the possible answers.\n"
             "CONFIDENCE section: 1.0 = completely certain, 0.0 = pure guess.\n"
-            "REASONING_STEPS section: 1 = trivial/direct lookup, 10+ = complex multi-step reasoning.\n"
         )
     else:
         format_instruction = (
             "ANSWER: [Your answer using local names]\n"
             "CONFIDENCE: [score ranging from 0.0 to 1.0 indicating how certain you are]\n"
-            "REASONING_STEPS: [distinct number of reasoning steps you used to get to the answer, indicating complexity of reasoning needed]\n\n"
             "CONFIDENCE section: 1.0 = completely certain, 0.0 = pure guess.\n"
-            "REASONING_STEPS section: 1 = trivial/direct lookup, 10+ = complex multi-step reasoning.\n"
         )
 
     # Move this outside the if/else blocks so all answer types can use it
@@ -897,8 +1012,8 @@ def create_context_specific_prompt(query, ontology_context, context_mode, answer
             ontology_context[:10000] + "\n... [truncated for memory efficiency]"
         )
 
-    if context_mode == "ttl":
-        return f"""You are an expert in SPARQL and OWL ontologies. Analyze the TTL ontology and answer the SPARQL query precisely.
+    if context_mode in {"ttl", "inline_owl"}:
+        return f"""You are an expert in SPARQL and OWL ontologies. Analyze the ontology context and answer the SPARQL query precisely.
 
 {base_instruction}
 
@@ -977,9 +1092,11 @@ def process_single_model_request(args):
     error_msg = None
 
     try:
-        ontology_context = load_ontology_context(
-            ontology_base_path, ontology_name, context_mode
-        )
+        ontology_context = get_inline_context_from_row(row, context_mode)
+        if ontology_context is None:
+            ontology_context = load_ontology_context(
+                ontology_base_path, ontology_name, context_mode
+            )
         full_prompt = create_context_specific_prompt(
             query, ontology_context, context_mode, answer_type
         )
@@ -1336,6 +1453,8 @@ def run_llm_reasoning(
     context_mode="ttl",
     max_workers=8,
     batch_size=25,
+    checkpoint_frequency=50,
+    max_api_calls=None,
     question_column="Question",
     save_detailed_metrics=True,
     output_dir=None,
@@ -1348,6 +1467,7 @@ def run_llm_reasoning(
         models = MODELS
     if model_params is None:
         model_params = get_model_params(models)
+    checkpoint_frequency = max(1, int(checkpoint_frequency))
 
     for display_name in models:
         base_cols = [
@@ -1361,52 +1481,70 @@ def run_llm_reasoning(
         ]
 
         for col in base_cols:
-            if "response" in col or "answer" in col:
-                df[f"{display_name}{col}"] = ""
+            column_name = f"{display_name}{col}"
+            if column_name not in df.columns:
+                if "response" in col or "answer" in col:
+                    df[column_name] = ""
+                else:
+                    df[column_name] = 0.0
+            elif "response" in col or "answer" in col:
+                df[column_name] = df[column_name].fillna("")
             else:
-                df[f"{display_name}{col}"] = 0.0
+                df[column_name] = df[column_name].fillna(0.0)
 
     total_questions = len(df)
-    total_tasks = total_questions * len(models)
+    pending_tasks = []
+    for idx, row in df.iterrows():
+        for display_name, model_entry in models.items():
+            if is_completed_response(row.get(f"{display_name}_response", "")):
+                continue
+            pending_tasks.append((idx, row, display_name, model_entry))
+
+    if max_api_calls is not None:
+        pending_tasks = pending_tasks[:max_api_calls]
+
+    total_tasks = len(pending_tasks)
     completed_tasks = 0
-    questions_completed = 0
+    questions_completed = count_completed_questions(df, models.keys())
     display_results.clear()
 
     print(f"🚀 Processing {total_questions} questions with {len(models)} models...")
-    print(f"📊 Total API calls: {total_tasks}")
+    print(f"📊 Pending API calls: {total_tasks}")
+    print(f"💾 Already completed questions: {questions_completed}/{total_questions}")
     print(f"⚙️ Max workers: {max_workers}")
-    print("💾 Checkpoint frequency: Every 50 questions")
+    print(f"💾 Checkpoint frequency: Every {checkpoint_frequency} questions")
+    if max_api_calls is not None:
+        print(f"🧯 API call cap for this run: {max_api_calls}")
     print(f"🔇 Silent mode: {'ON' if silent_mode else 'OFF'}")
     print(f"🧠 Initial memory usage: {monitor_memory():.1f}%")
 
     pbar = tqdm(total=total_tasks, desc="API Calls", unit="calls")
-    total_batches = (total_questions + batch_size - 1) // batch_size
+    total_batches = (len(pending_tasks) + batch_size - 1) // batch_size
     detailed_metrics, logs = [], []
 
     for batch_idx in range(total_batches):
         start_idx = batch_idx * batch_size
-        end_idx = min(start_idx + batch_size, total_questions)
-        df_batch = df.iloc[start_idx:end_idx]
+        end_idx = min(start_idx + batch_size, len(pending_tasks))
+        df_batch_tasks = pending_tasks[start_idx:end_idx]
 
         print(
-            f"\n🔄 Processing batch {batch_idx + 1}/{total_batches} (questions {start_idx + 1}-{end_idx})"
+            f"\n🔄 Processing batch {batch_idx + 1}/{total_batches} (pending calls {start_idx + 1}-{end_idx})"
         )
         print(f"🧠 Memory usage: {monitor_memory():.1f}%")
 
         batch_tasks = []
-        for idx, row in df_batch.iterrows():
-            for display_name, model_entry in models.items():
-                task_args = (
-                    idx,
-                    row,
-                    display_name,
-                    model_entry,
-                    question_column,
-                    ontology_base_path,
-                    context_mode,
-                    model_params,
-                )
-                batch_tasks.append(task_args)
+        for idx, row, display_name, model_entry in df_batch_tasks:
+            task_args = (
+                idx,
+                row,
+                display_name,
+                model_entry,
+                question_column,
+                ontology_base_path,
+                context_mode,
+                model_params,
+            )
+            batch_tasks.append(task_args)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_task = {}
@@ -1436,6 +1574,7 @@ def run_llm_reasoning(
                             output_dir,
                             list(models.keys()),
                             total_questions,
+                            checkpoint_frequency,
                             silent_mode,
                         )
                     )
@@ -1457,7 +1596,13 @@ def run_llm_reasoning(
 
     if output_dir:
         final_file = save_checkpoint_csv(
-            df, logs, detailed_metrics, output_dir, questions_completed, total_questions
+            df,
+            logs,
+            detailed_metrics,
+            output_dir,
+            questions_completed,
+            total_questions,
+            list(models.keys()),
         )
         print(f"\n✅ Final results saved to: {final_file}")
 

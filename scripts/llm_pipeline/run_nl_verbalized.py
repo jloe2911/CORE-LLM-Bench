@@ -92,6 +92,12 @@ def parse_args():
         help="Checkpoint frequency.",
     )
     parser.add_argument(
+        "--max-api-calls",
+        type=int,
+        default=None,
+        help="Maximum number of new API calls to make in this run.",
+    )
+    parser.add_argument(
         "--memory-threshold",
         type=int,
         default=85,
@@ -161,6 +167,7 @@ def build_config(args):
         "max_workers": args.max_workers,
         "batch_size": args.batch_size,
         "checkpoint_frequency": args.checkpoint_frequency,
+        "max_api_calls": args.max_api_calls,
         "silent_mode": args.silent_mode,
         "test_mode": args.test_mode,
         "memory_threshold": args.memory_threshold,
@@ -554,6 +561,8 @@ def main():
             max_workers=config["max_workers"],
             question_column=config["question_column"],
             batch_size=config["batch_size"],
+            checkpoint_frequency=config["checkpoint_frequency"],
+            max_api_calls=config["max_api_calls"],
             output_dir=output_dir,
             silent_mode=config["silent_mode"],
         )

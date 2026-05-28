@@ -37,7 +37,9 @@ public class PelletReasoningService implements ReasoningService {
         // Enable explanation tracking
         reasoner.getKB().setDoExplanation(true);
 
-        reasoner.prepareReasoner();
+        // Avoid eager full realization here. On larger OWL2Bench subgraphs,
+        // prepareReasoner() can spend hours before the first output row is
+        // written. Later calls perform the needed reasoning on demand.
         LOGGER.info("Pellet reasoner initialized with explanation support");
     }
 

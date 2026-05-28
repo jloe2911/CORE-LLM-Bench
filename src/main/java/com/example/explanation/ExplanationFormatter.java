@@ -24,6 +24,15 @@ public class ExplanationFormatter {
      */
     public static String generateExactJSONFormat(String tripleKey, Set<ExplanationPath> paths,
                                                  EnhancedExplanationTagger tagger) {
+        return generateExactJSONFormat(tripleKey, tripleKey, paths, tagger);
+    }
+
+    /**
+     * Generate the exact JSON format using a stable explanation key while keeping
+     * the inferred triple in subject|predicate|object format.
+     */
+    public static String generateExactJSONFormat(String explanationKey, String tripleKey, Set<ExplanationPath> paths,
+                                                 EnhancedExplanationTagger tagger) {
         StringBuilder json = new StringBuilder();
         String[] parts = OntologyUtils.parseTripleKey(tripleKey);
 
@@ -32,7 +41,7 @@ public class ExplanationFormatter {
             return "";
         }
 
-        json.append("  \"").append(tripleKey).append("\" : {\n");
+        json.append("  \"").append(OntologyUtils.escapeJson(explanationKey)).append("\" : {\n");
 
         // Inferred section uses short forms
         json.append("    \"inferred\" : {\n");
@@ -85,7 +94,7 @@ public class ExplanationFormatter {
         json.append("    \"explanationCount\" : ").append(paths.size()).append(",\n");
 
         // Task IDs section - get ALL task IDs for this triple (both BIN and MC)
-        List<String> allTaskIds = GlobalQueryTracker.getTaskIds(tripleKey);
+        List<String> allTaskIds = GlobalQueryTracker.getTaskIds(explanationKey);
         json.append("    \"taskIds\" : [ ");
         for (int i = 0; i < allTaskIds.size(); i++) {
             json.append("\"").append(allTaskIds.get(i)).append("\"");

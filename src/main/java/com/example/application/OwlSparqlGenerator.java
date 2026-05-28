@@ -92,6 +92,8 @@ public class OwlSparqlGenerator implements CommandLineRunner {
         } catch (Exception e) {
             LOGGER.error("Processing failed", e);
             throw e;
+        } finally {
+            cleanup();
         }
     }
 

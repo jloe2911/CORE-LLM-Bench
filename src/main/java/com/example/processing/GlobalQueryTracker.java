@@ -18,6 +18,7 @@ public class GlobalQueryTracker {
     private static final Set<String> processedQueries = ConcurrentHashMap.newKeySet();
     private static final Map<String, List<String>> queryToTaskIds = new ConcurrentHashMap<>();
     private static final Map<String, String> queryToFirstOntology = new ConcurrentHashMap<>();
+    private static final Map<String, Set<String>> baseQueryToRootContexts = new ConcurrentHashMap<>();
 
     /**
      * Check if a query should be processed (first time seeing this triple)
@@ -39,6 +40,44 @@ public class GlobalQueryTracker {
             LOGGER.debug("Skipping duplicate query '{}' from ontology '{}' (first seen in '{}')",
                     tripleKey, ontologyName, queryToFirstOntology.get(tripleKey));
         }
+        return isFirst;
+    }
+
+    /**
+     * Mark a root-scoped query as processed while limiting how many distinct
+     * root contexts may contribute the same base query.
+     */
+    public static synchronized boolean markQueryProcessedWithContextLimit(
+            String scopedQueryKey,
+            String baseQueryKey,
+            String rootContext,
+            String ontologyName,
+            int maxRootContexts) {
+
+        if (processedQueries.contains(scopedQueryKey)) {
+            LOGGER.debug("Skipping duplicate query '{}' from ontology '{}' (first seen in '{}')",
+                    scopedQueryKey, ontologyName, queryToFirstOntology.get(scopedQueryKey));
+            return false;
+        }
+
+        Set<String> rootContexts = baseQueryToRootContexts.computeIfAbsent(
+                baseQueryKey, key -> ConcurrentHashMap.newKeySet());
+        boolean rootAlreadyAccepted = rootContexts.contains(rootContext);
+
+        if (!rootAlreadyAccepted && rootContexts.size() >= maxRootContexts) {
+            LOGGER.debug("Skipping query '{}' from ontology '{}'; base query '{}' already has {} root contexts",
+                    scopedQueryKey, ontologyName, baseQueryKey, maxRootContexts);
+            return false;
+        }
+
+        boolean isFirst = processedQueries.add(scopedQueryKey);
+        if (isFirst) {
+            rootContexts.add(rootContext);
+            queryToFirstOntology.put(scopedQueryKey, ontologyName);
+            queryToTaskIds.put(scopedQueryKey, new ArrayList<>());
+            LOGGER.debug("First occurrence of query '{}' in ontology '{}'", scopedQueryKey, ontologyName);
+        }
+
         return isFirst;
     }
 
@@ -93,6 +132,7 @@ public class GlobalQueryTracker {
         processedQueries.clear();
         queryToTaskIds.clear();
         queryToFirstOntology.clear();
+        baseQueryToRootContexts.clear();
         LOGGER.info("Cleared all global query tracking data");
     }
 
