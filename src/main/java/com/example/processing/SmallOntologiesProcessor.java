@@ -152,8 +152,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 // Log progress every 10 files
                 if ((i + 1) % 10 == 0) {
                     long processed = totalOntologiesProcessed.get();
-                    LOGGER.info("Progress: {}/{} files processed ({:.1f}%)",
-                            processed, ontologyFiles.size(), (processed * 100.0) / ontologyFiles.size());
+                    LOGGER.info("Progress: {}/{} files processed ({}%)",
+                            processed, ontologyFiles.size(), formatDouble((processed * 100.0) / ontologyFiles.size(), 1));
                     logMemoryUsage();
                 }
 
@@ -198,13 +198,15 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 return false;
             }
 
-            // Create explanation service for this ontology
-            explanationService = new ComprehensiveExplanationService(
-                    reasoningService.getReasoner(), ontology);
-
-            // Extract inferences and process them immediately
-            Map<String, Set<ExplanationPath>> ontologyInferences =
-                    extractInferencesWithExplanations(ontology, explanationService);
+            Map<String, Set<ExplanationPath>> ontologyInferences;
+            if (config.isGenerateExplanations()) {
+                explanationService = new ComprehensiveExplanationService(
+                        reasoningService.getReasoner(), ontology,
+                        config.getMaxExplanationsPerInference());
+                ontologyInferences = extractInferencesWithExplanations(ontology, explanationService, rootEntity);
+            } else {
+                ontologyInferences = extractInferencesWithoutExplanations(ontology, rootEntity);
+            }
 
             // Process and write inferences using the instance fields
             processAndWriteInferences(ontologyInferences, ontology, tboxSize, aboxSize, rootEntity, result);
@@ -237,12 +239,13 @@ public class SmallOntologiesProcessor implements AutoCloseable {
      * UPDATED: Extract inferences - get INFERRED triples for queries, but explain ASSERTED triples
      */
     private Map<String, Set<ExplanationPath>> extractInferencesWithExplanations(
-            OWLOntology ontology, ComprehensiveExplanationService explanationService) {
+            OWLOntology ontology, ComprehensiveExplanationService explanationService, String rootEntity) {
 
         Map<String, Set<ExplanationPath>> inferences = new HashMap<>();
-        Set<OWLNamedIndividual> individuals = ontology.getIndividualsInSignature();
+        Set<OWLNamedIndividual> individuals = selectIndividualsForExplanation(ontology, rootEntity);
+        int totalIndividuals = ontology.getIndividualsInSignature().size();
 
-        LOGGER.info("Extracting explanations for {} individuals", individuals.size());
+        LOGGER.info("Extracting explanations for {} of {} individuals", individuals.size(), totalIndividuals);
 
         int processedIndividuals = 0;
         for (OWLNamedIndividual individual : individuals) {
@@ -267,6 +270,93 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         LOGGER.info("Extracted {} explained inferences from ontology", inferences.size());
         return inferences;
+    }
+
+    private Map<String, Set<ExplanationPath>> extractInferencesWithoutExplanations(
+            OWLOntology ontology, String rootEntity) {
+
+        Map<String, Set<ExplanationPath>> inferences = new LinkedHashMap<>();
+        Set<OWLNamedIndividual> individuals = selectIndividualsForExplanation(ontology, rootEntity);
+        int totalIndividuals = ontology.getIndividualsInSignature().size();
+
+        LOGGER.info("Extracting inferred triples without explanations for {} of {} individuals",
+                individuals.size(), totalIndividuals);
+
+        int processedIndividuals = 0;
+        for (OWLNamedIndividual individual : individuals) {
+            try {
+                extractClassAssertionInferencesWithoutExplanations(individual, inferences);
+                extractPropertyAssertionInferencesWithoutExplanations(individual, ontology, inferences);
+            } catch (Exception e) {
+                LOGGER.debug("Error processing individual {}: {}", individual, e.getMessage());
+            }
+
+            processedIndividuals++;
+            if (processedIndividuals == 1 || processedIndividuals % 25 == 0 || processedIndividuals == individuals.size()) {
+                LOGGER.info(
+                        "Inference extraction progress: {}/{} individuals, {} inferred triples collected",
+                        processedIndividuals, individuals.size(), inferences.size());
+            }
+        }
+
+        LOGGER.info("Extracted {} inferred triples from ontology without explanations", inferences.size());
+        return inferences;
+    }
+
+    private Set<OWLNamedIndividual> selectIndividualsForExplanation(OWLOntology ontology, String rootEntity) {
+        List<OWLNamedIndividual> allIndividuals = ontology.getIndividualsInSignature().stream()
+                .sorted(Comparator.comparing(individual -> OntologyUtils.getShortForm(individual)))
+                .collect(Collectors.toList());
+
+        if (config.isFocusRootIndividualOnly()) {
+            Optional<OWLNamedIndividual> rootIndividual = findRootIndividual(allIndividuals, rootEntity);
+            if (rootIndividual.isPresent()) {
+                LOGGER.info("Focused explanation extraction on root individual: {}",
+                        OntologyUtils.getShortForm(rootIndividual.get()));
+                return new LinkedHashSet<>(Collections.singletonList(rootIndividual.get()));
+            }
+
+            LOGGER.warn("Could not identify root individual for '{}'; falling back to all individuals", rootEntity);
+        }
+
+        int maxIndividuals = config.getMaxIndividualsPerOntology();
+        if (maxIndividuals > 0 && allIndividuals.size() > maxIndividuals) {
+            LOGGER.info("Limiting explanation extraction to first {} individuals out of {}",
+                    maxIndividuals, allIndividuals.size());
+            return new LinkedHashSet<>(allIndividuals.subList(0, maxIndividuals));
+        }
+
+        return new LinkedHashSet<>(allIndividuals);
+    }
+
+    private Optional<OWLNamedIndividual> findRootIndividual(List<OWLNamedIndividual> individuals, String rootEntity) {
+        if (rootEntity == null || rootEntity.isBlank()) {
+            return Optional.empty();
+        }
+
+        String normalizedRoot = rootEntity.trim();
+
+        Optional<OWLNamedIndividual> exactMatch = individuals.stream()
+                .filter(individual -> OntologyUtils.getShortForm(individual).equals(normalizedRoot))
+                .findFirst();
+        if (exactMatch.isPresent()) {
+            return exactMatch;
+        }
+
+        return individuals.stream()
+                .filter(individual -> normalizedRoot.endsWith("_" + OntologyUtils.getShortForm(individual)))
+                .max(Comparator.comparingInt(individual -> OntologyUtils.getShortForm(individual).length()));
+    }
+
+    private Set<ExplanationPath> limitExplanationPaths(Set<ExplanationPath> paths) {
+        int maxExplanations = config.getMaxExplanationsPerInference();
+        if (maxExplanations <= 0 || paths.size() <= maxExplanations) {
+            return paths;
+        }
+
+        return paths.stream()
+                .limit(maxExplanations)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**
@@ -302,13 +392,35 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 Set<ExplanationPath> paths = explanationService.findExplanationPathsLikeProtege(individual, inferredClass);
 
                 if (!paths.isEmpty()) {
-                    inferences.put(tripleKey, paths);
+                    inferences.put(tripleKey, limitExplanationPaths(paths));
 
                     LOGGER.debug("Found {} explanation paths for INFERRED type: {} rdf:type {}",
                             paths.size(), OntologyUtils.getShortForm(individual), OntologyUtils.getShortForm(inferredClass));
                 }
             }
 
+        } catch (Exception e) {
+            LOGGER.debug("Error extracting class assertions for {}: {}", individual, e.getMessage());
+        }
+    }
+
+    private void extractClassAssertionInferencesWithoutExplanations(
+            OWLNamedIndividual individual,
+            Map<String, Set<ExplanationPath>> inferences) {
+        try {
+            Set<OWLClass> inferredTypes = reasoningService.getReasoner()
+                    .getTypes(individual, false).getFlattened();
+
+            for (OWLClass inferredClass : inferredTypes) {
+                if (OntologyUtils.isOwlThing(inferredClass)) continue;
+
+                String tripleKey = OntologyUtils.createTripleKey(
+                        OntologyUtils.getShortForm(individual),
+                        "rdf:type",
+                        OntologyUtils.getShortForm(inferredClass)
+                );
+                inferences.put(tripleKey, Collections.emptySet());
+            }
         } catch (Exception e) {
             LOGGER.debug("Error extracting class assertions for {}: {}", individual, e.getMessage());
         }
@@ -330,16 +442,6 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 Set<OWLNamedIndividual> inferredValues = reasoningService.getReasoner()
                         .getObjectPropertyValues(individual, property).getFlattened();
 
-                // Get ASSERTED values from ontology (for comparison)
-                Set<OWLNamedIndividual> assertedValues = ontology.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)
-                        .stream()
-                        .filter(axiom -> axiom.getSubject().equals(individual) &&
-                                axiom.getProperty().equals(property))
-                        .map(axiom -> axiom.getObject())
-                        .filter(obj -> obj instanceof OWLNamedIndividual)
-                        .map(obj -> (OWLNamedIndividual) obj)
-                        .collect(Collectors.toSet());
-
                 // Process INFERRED values for queries
                 for (OWLNamedIndividual inferredValue : inferredValues) {
                     String tripleKey = OntologyUtils.createTripleKey(
@@ -353,17 +455,39 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                             individual, property, inferredValue);
 
                     if (!paths.isEmpty()) {
-                        inferences.put(tripleKey, paths);
+                        inferences.put(tripleKey, limitExplanationPaths(paths));
 
-                        boolean isAsserted = assertedValues.contains(inferredValue);
-                        LOGGER.debug("Found {} explanation paths for {} property: {} {} {} (asserted: {})",
+                        LOGGER.debug("Found {} explanation paths for property: {} {} {}",
                                 paths.size(),
-                                isAsserted ? "ASSERTED" : "INFERRED",
                                 OntologyUtils.getShortForm(individual),
                                 OntologyUtils.getShortForm(property),
-                                OntologyUtils.getShortForm(inferredValue),
-                                isAsserted);
+                                OntologyUtils.getShortForm(inferredValue));
                     }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.debug("Error extracting property assertions for {}: {}", individual, e.getMessage());
+        }
+    }
+
+    private void extractPropertyAssertionInferencesWithoutExplanations(
+            OWLNamedIndividual individual,
+            OWLOntology ontology,
+            Map<String, Set<ExplanationPath>> inferences) {
+        try {
+            Set<OWLObjectProperty> properties = ontology.getObjectPropertiesInSignature();
+
+            for (OWLObjectProperty property : properties) {
+                Set<OWLNamedIndividual> inferredValues = reasoningService.getReasoner()
+                        .getObjectPropertyValues(individual, property).getFlattened();
+
+                for (OWLNamedIndividual inferredValue : inferredValues) {
+                    String tripleKey = OntologyUtils.createTripleKey(
+                            OntologyUtils.getShortForm(individual),
+                            OntologyUtils.getShortForm(property),
+                            OntologyUtils.getShortForm(inferredValue)
+                    );
+                    inferences.put(tripleKey, Collections.emptySet());
                 }
             }
         } catch (Exception e) {
@@ -385,7 +509,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         long binaryQueries = 0;
         long negativeBinaryQueries = 0;
         long multiChoiceQueries = 0;
-        List<String> candidateObjects = collectCandidateObjects(inferences);
+        CandidateObjectPools candidateObjects = collectCandidateObjects(ontology, inferences);
         Map<String, Set<String>> usedNegativeObjects = new HashMap<>();
 
         int writtenInferences = 0;
@@ -416,48 +540,51 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 // Calculate tag statistics instead of explanation statistics
                 int[] tagStats = calculateTagStats(paths);
 
-                // 2. Write binary query (BIN) - ASK query
-                String binaryTaskId = URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "BIN");
-                GlobalQueryTracker.addTaskId(inferenceKey, binaryTaskId);
+                if (shouldGenerateBinaryForGroup(subject, predicate, object, subjectPredicateObjects)) {
+                    // 2. Write one representative positive binary query per subject-predicate group.
+                    String binaryTaskId = URIUtils.generateBinaryTaskId(
+                            taskIdHopPrefix, rootEntity, subject, predicate, object);
+                    GlobalQueryTracker.addTaskId(inferenceKey, binaryTaskId);
 
-                String binaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
-                        URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(object));
+                    String binaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
+                            URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(object));
 
-                outputService.writeComprehensiveQuery(
-                        binaryTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
-                        binaryQuery, predicate,
-                        "TRUE", null, tagStats[0], tagStats[1]  // Updated to use tag stats
-                );
-                binaryQueries++;
+                    outputService.writeComprehensiveQuery(
+                            binaryTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
+                            binaryQuery, predicate,
+                            "TRUE", null, tagStats[0], tagStats[1]
+                    );
+                    binaryQueries++;
 
-                // 2b. Write a paired negative binary query by corrupting the object.
-                String negativeObject = chooseNegativeObject(
-                        subject, predicate, object, subjectPredicateObjects, candidateObjects,
-                        inferences.keySet(), usedNegativeObjects);
+                    // 2b. Write one paired negative binary query for the same subject-predicate group.
+                    String negativeObject = chooseNegativeObject(
+                            subject, predicate, object, subjectPredicateObjects, candidateObjects,
+                            inferences.keySet(), usedNegativeObjects);
 
-                if (negativeObject != null) {
-                    String negativeBaseQueryKey = "NEG|" + OntologyUtils.createTripleKey(subject, predicate, negativeObject);
-                    String negativeQueryKey = createRootScopedQueryKey(rootEntity, negativeBaseQueryKey);
+                    if (negativeObject != null) {
+                        String negativeBaseQueryKey = "NEG|" + OntologyUtils.createTripleKey(subject, predicate, negativeObject);
+                        String negativeQueryKey = createRootScopedQueryKey(rootEntity, negativeBaseQueryKey);
 
-                    if (GlobalQueryTracker.markQueryProcessedWithContextLimit(
-                            negativeQueryKey, negativeBaseQueryKey, rootEntity, ontologyName,
-                            MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
-                        String negativeTaskId = generateNegativeTaskId(rootEntity, subject, predicate, negativeObject);
+                        if (GlobalQueryTracker.markQueryProcessedWithContextLimit(
+                                negativeQueryKey, negativeBaseQueryKey, rootEntity, ontologyName,
+                                MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
+                            String negativeTaskId = generateNegativeTaskId(rootEntity, subject, predicate, negativeObject);
 
-                        String negativeBinaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
-                                URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(negativeObject));
+                            String negativeBinaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
+                                    URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(negativeObject));
 
-                        outputService.writeComprehensiveQuery(
-                                negativeTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
-                                negativeBinaryQuery, predicate,
-                                "FALSE", null, tagStats[0], tagStats[1]
-                        );
-                        GlobalQueryTracker.addTaskId(negativeQueryKey, negativeTaskId);
-                        negativeBinaryQueries++;
+                            outputService.writeComprehensiveQuery(
+                                    negativeTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
+                                    negativeBinaryQuery, predicate,
+                                    "FALSE", null, tagStats[0], tagStats[1]
+                            );
+                            GlobalQueryTracker.addTaskId(negativeQueryKey, negativeTaskId);
+                            negativeBinaryQueries++;
+                        }
                     }
                 }
 
-                // 3. Write multi-choice query (MC) if applicable - SELECT query
+                // 3. Write one open-ended SELECT query per subject-predicate group.
                 if (shouldGenerateMultiChoiceQuery(subject, predicate, subjectPredicateObjects)) {
                     String multiBaseQueryKey = "MC|" + subject + "|" + predicate;
                     String multiQueryKey = createRootScopedQueryKey(rootEntity, multiBaseQueryKey);
@@ -486,10 +613,12 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                     }
                 }
 
-                // 1. Write comprehensive explanation to JSON AFTER generating task IDs
-                String comprehensiveExplanation = ExplanationFormatter.generateExactJSONFormat(
-                        inferenceKey, tripleKey, paths, tagger);
-                outputService.writeExplanationWithComprehensiveFormat(inferenceKey, comprehensiveExplanation);
+                if (config.isGenerateExplanations()) {
+                    // Write comprehensive explanation to JSON after generating task IDs.
+                    String comprehensiveExplanation = ExplanationFormatter.generateExactJSONFormat(
+                            inferenceKey, tripleKey, paths, tagger);
+                    outputService.writeExplanationWithComprehensiveFormat(inferenceKey, comprehensiveExplanation);
+                }
 
             } catch (Exception e) {
                 LOGGER.warn("Error processing inference {}: {}", tripleKey, e.getMessage());
@@ -535,6 +664,25 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         return "unknown";
     }
 
+    private boolean shouldGenerateBinaryForGroup(String subject, String predicate, String object,
+                                                 Map<String, Map<String, Set<String>>> subjectPredicateObjects) {
+        Map<String, Set<String>> predicateObjects = subjectPredicateObjects.get(subject);
+        if (predicateObjects == null) return false;
+
+        Set<String> objects = predicateObjects.get(predicate);
+        if (objects == null || objects.isEmpty()) return false;
+
+        Comparator<String> representativeComparator = Comparator
+                .comparingInt((String candidate) -> negativeCandidatePriority(predicate, candidate))
+                .thenComparing(Comparator.naturalOrder());
+
+        return objects.stream()
+                .sorted(representativeComparator)
+                .findFirst()
+                .map(object::equals)
+                .orElse(false);
+    }
+
     // Updated to check against subject-predicate combinations
     private boolean shouldGenerateMultiChoiceQuery(String subject, String predicate,
                                                    Map<String, Map<String, Set<String>>> subjectPredicateObjects) {
@@ -542,21 +690,47 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         if (predicateObjects == null) return false;
 
         Set<String> objects = predicateObjects.get(predicate);
-        return objects != null && objects.size() > 1; // Only generate MC if multiple objects
+        return objects != null && !objects.isEmpty();
     }
 
     /**
-     * Collect available object terms so negative binary questions can be paired
-     * with real ontology vocabulary instead of invented placeholder entities.
+     * Collect available object terms so negative binary questions can use
+     * plausible same-kind alternatives instead of obvious class/individual
+     * mismatches.
      */
-    private List<String> collectCandidateObjects(Map<String, Set<ExplanationPath>> inferences) {
-        return inferences.keySet().stream()
+    private CandidateObjectPools collectCandidateObjects(
+            OWLOntology ontology,
+            Map<String, Set<ExplanationPath>> inferences) {
+        Set<String> inferredClassObjects = inferences.keySet().stream()
                 .map(OntologyUtils::parseTripleKey)
                 .filter(parts -> parts.length == 3)
+                .filter(parts -> "rdf:type".equals(parts[1]))
                 .map(parts -> parts[2])
                 .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        Set<String> inferredIndividualObjects = inferences.keySet().stream()
+                .map(OntologyUtils::parseTripleKey)
+                .filter(parts -> parts.length == 3)
+                .filter(parts -> !"rdf:type".equals(parts[1]))
+                .map(parts -> parts[2])
+                .distinct()
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        Set<String> signatureClasses = ontology.getClassesInSignature().stream()
+                .map(OntologyUtils::getShortForm)
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        Set<String> signatureIndividuals = ontology.getIndividualsInSignature().stream()
+                .map(OntologyUtils::getShortForm)
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        inferredClassObjects.addAll(signatureClasses);
+        inferredIndividualObjects.addAll(signatureIndividuals);
+
+        return new CandidateObjectPools(
+                new ArrayList<>(inferredClassObjects),
+                new ArrayList<>(inferredIndividualObjects));
     }
 
     /**
@@ -566,7 +740,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
      */
     private String chooseNegativeObject(String subject, String predicate, String object,
                                         Map<String, Map<String, Set<String>>> subjectPredicateObjects,
-                                        List<String> candidateObjects,
+                                        CandidateObjectPools candidateObjects,
                                         Set<String> positiveTripleKeys,
                                         Map<String, Set<String>> usedNegativeObjects) {
         Set<String> trueObjectsForSubjectPredicate = subjectPredicateObjects
@@ -576,12 +750,20 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         Set<String> usedForSubjectPredicate = usedNegativeObjects
                 .computeIfAbsent(subjectPredicateKey, key -> new HashSet<>());
 
+        Comparator<String> negativeCandidateComparator = Comparator
+                .comparingInt((String candidate) -> negativeCandidatePriority(predicate, candidate))
+                .thenComparing(Comparator.naturalOrder());
+
         List<String> samePredicateCandidates = subjectPredicateObjects.values().stream()
                 .map(predicateObjects -> predicateObjects.getOrDefault(predicate, Collections.emptySet()))
                 .flatMap(Set::stream)
                 .distinct()
-                .sorted()
+                .sorted(negativeCandidateComparator)
                 .collect(Collectors.toList());
+
+        List<String> sameKindCandidates = "rdf:type".equals(predicate)
+                ? candidateObjects.classObjects
+                : candidateObjects.individualObjects;
 
         String candidate = findNegativeObjectCandidate(
                 subject, predicate, trueObjectsForSubjectPredicate, samePredicateCandidates,
@@ -592,21 +774,14 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         }
 
         candidate = findNegativeObjectCandidate(
-                subject, predicate, trueObjectsForSubjectPredicate, candidateObjects,
+                subject, predicate, trueObjectsForSubjectPredicate, sameKindCandidates,
                 positiveTripleKeys, usedForSubjectPredicate);
         if (candidate != null) {
             usedForSubjectPredicate.add(candidate);
             return candidate;
         }
 
-        String fallback = object + "_negative_control";
-        String fallbackTripleKey = OntologyUtils.createTripleKey(subject, predicate, fallback);
-        if (positiveTripleKeys.contains(fallbackTripleKey) || usedForSubjectPredicate.contains(fallback)) {
-            return null;
-        }
-
-        usedForSubjectPredicate.add(fallback);
-        return fallback;
+        return null;
     }
 
     private String findNegativeObjectCandidate(String subject, String predicate,
@@ -629,10 +804,32 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         return null;
     }
 
+    private int negativeCandidatePriority(String predicate, String candidate) {
+        if (!"rdf:type".equals(predicate)) {
+            return 0;
+        }
+
+        String localName = URIUtils.getLocalName(candidate);
+        if (Set.of("Thing", "NamedIndividual", "DomainEntity", "Person").contains(localName)) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private static class CandidateObjectPools {
+        private final List<String> classObjects;
+        private final List<String> individualObjects;
+
+        private CandidateObjectPools(List<String> classObjects, List<String> individualObjects) {
+            this.classObjects = classObjects;
+            this.individualObjects = individualObjects;
+        }
+    }
+
     private String generateNegativeTaskId(String rootEntity, String subject, String predicate, String negativeObject) {
-        return String.format("%s-%s-NEG-BIN",
-                URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "BIN"),
-                negativeObject);
+        return URIUtils.generateBinaryTaskId(taskIdHopPrefix, rootEntity, subject, predicate, negativeObject)
+                .replace("-BIN", "-NEG-BIN");
     }
 
     private String inferHopPrefix(String ontologiesDirectory) {
@@ -761,9 +958,15 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         long usedMemory = totalMemory - freeMemory;
         long maxMemory = runtime.maxMemory();
 
-        LOGGER.info("Memory Usage: {:.2f} MB used, {:.2f} MB free, {:.2f} MB total, {:.2f} MB max",
-                usedMemory / (1024.0 * 1024.0), freeMemory / (1024.0 * 1024.0),
-                totalMemory / (1024.0 * 1024.0), maxMemory / (1024.0 * 1024.0));
+        LOGGER.info("Memory Usage: {} MB used, {} MB free, {} MB total, {} MB max",
+                formatDouble(usedMemory / (1024.0 * 1024.0), 2),
+                formatDouble(freeMemory / (1024.0 * 1024.0), 2),
+                formatDouble(totalMemory / (1024.0 * 1024.0), 2),
+                formatDouble(maxMemory / (1024.0 * 1024.0), 2));
+    }
+
+    private String formatDouble(double value, int decimals) {
+        return String.format(Locale.ROOT, "%." + decimals + "f", value);
     }
 
     /**

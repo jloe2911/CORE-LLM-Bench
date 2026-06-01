@@ -65,6 +65,23 @@ public class URIUtils {
     }
 
     /**
+     * Generate a task ID for binary ASK queries where the object is part of the
+     * question identity. MC SELECT queries intentionally continue to use the
+     * subject-predicate form because they ask for all matching objects.
+     */
+    public static String generateBinaryTaskId(String hopPrefix, String rootEntity,
+                                              String subject, String predicate, String object) {
+        if (hopPrefix == null || hopPrefix.isEmpty()) hopPrefix = "1hop";
+        if (rootEntity == null) rootEntity = "Thing";
+        if (subject == null) subject = "unknown";
+        if (predicate == null) predicate = "unknown";
+        if (object == null) object = "unknown";
+
+        return String.format("%s-%s_%s-%s-%s-%s-BIN",
+                hopPrefix, rootEntity, subject, subject, predicate, object);
+    }
+
+    /**
      * Extract namespace from full URI
      */
     public static String getNamespace(String fullURI) {

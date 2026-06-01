@@ -20,6 +20,9 @@ public class ProcessingConfiguration {
     private int threadPoolSize = 4;
     private int batchSize = 50;
     private boolean enableDetailedLogging = false;
+    private boolean focusRootIndividualOnly = true;
+    private int maxIndividualsPerOntology = 0;
+    private boolean generateExplanations = true;
 
     // Getters and setters
     public String getOntologiesDirectory() { return ontologiesDirectory; }
@@ -47,6 +50,21 @@ public class ProcessingConfiguration {
         this.enableDetailedLogging = enableDetailedLogging;
     }
 
+    public boolean isFocusRootIndividualOnly() { return focusRootIndividualOnly; }
+    public void setFocusRootIndividualOnly(boolean focusRootIndividualOnly) {
+        this.focusRootIndividualOnly = focusRootIndividualOnly;
+    }
+
+    public int getMaxIndividualsPerOntology() { return maxIndividualsPerOntology; }
+    public void setMaxIndividualsPerOntology(int maxIndividualsPerOntology) {
+        this.maxIndividualsPerOntology = maxIndividualsPerOntology;
+    }
+
+    public boolean isGenerateExplanations() { return generateExplanations; }
+    public void setGenerateExplanations(boolean generateExplanations) {
+        this.generateExplanations = generateExplanations;
+    }
+
     @Override
     public String toString() {
         return "ProcessingConfiguration{" +
@@ -56,6 +74,9 @@ public class ProcessingConfiguration {
                 ", maxExplanationsPerInference=" + maxExplanationsPerInference +
                 ", threadPoolSize=" + threadPoolSize +
                 ", batchSize=" + batchSize +
+                ", focusRootIndividualOnly=" + focusRootIndividualOnly +
+                ", maxIndividualsPerOntology=" + maxIndividualsPerOntology +
+                ", generateExplanations=" + generateExplanations +
                 '}';
     }
 }

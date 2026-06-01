@@ -5,8 +5,8 @@ This is the credit-safe entry point for completed benchmark datasets:
 1. Load a final benchmark JSON.
 2. Flatten nested QAs into one row per question.
 3. Run selected LLMs with inline context from the JSON.
-4. Save checkpoints and final model outputs.
-5. Run the metrics summarizer.
+4. Save a resumable latest checkpoint.
+5. Run the metrics summarizer that feeds the paper table.
 """
 
 import argparse
@@ -42,6 +42,7 @@ SETTING_CONFIG = {
     },
     "abs": {
         "question_column": "ABS Question",
+        "answer_column": "ABS Answer",
         "context_mode": "inline_abs",
         "prefix": "abs",
         "description": "Abstracted natural-language question with abstracted context",
@@ -123,7 +124,24 @@ def parse_args():
     parser.add_argument(
         "--skip-metrics",
         action="store_true",
-        help="Only run LLM calls and write final CSV; do not run metrics.",
+        help="Only run LLM calls and write the latest checkpoint; do not run metrics.",
+    )
+    parser.add_argument(
+        "--keep-full-results",
+        action="store_true",
+        help=(
+            "Keep all source columns in runtime checkpoints and final CSVs. "
+            "By default, only columns needed to resume and evaluate the selected "
+            "setting are retained to avoid very large outputs."
+        ),
+    )
+    parser.add_argument(
+        "--write-final-artifacts",
+        action="store_true",
+        help=(
+            "Also write legacy FINAL CSV/logs/detailed-metrics files. By default "
+            "the run keeps only LATEST_checkpoint.csv plus metrics summaries."
+        ),
     )
     return parser.parse_args()
 
@@ -213,6 +231,7 @@ def flatten_final_benchmark(records):
                     "SPARQL Query": qa.get("SPARQL Query", ""),
                     "NL Question": qa.get("NL Question", ""),
                     "ABS Question": qa.get("ABS Question", ""),
+                    "ABS Answer": qa.get("ABS Answer", qa.get("Answer", "")),
                     "Question": qa.get("NL Question", ""),
                     "Answer": qa.get("Answer", ""),
                     "OWL Context": group.get("OWL Context", ""),
@@ -277,6 +296,65 @@ def load_resume_dataframe(output_dir, base_df, restart):
     return base_df.copy()
 
 
+def compact_runtime_dataframe(df, setting_config, models_config):
+    context_column_by_mode = {
+        "inline_nl": "NL Context",
+        "inline_abs": "ABS Context",
+        "inline_owl": "OWL Context",
+    }
+    keep_columns = [
+        "Task ID",
+        "QA Index",
+        "Benchmark Group Index",
+        "Root Entity",
+        "Task Type",
+        "Answer Type",
+        "Answer",
+        setting_config.get("answer_column"),
+        "SPARQL Query",
+        setting_config["question_column"],
+        context_column_by_mode.get(setting_config["context_mode"]),
+    ]
+
+    for model_name in models_config:
+        keep_columns.extend(
+            [
+                f"{model_name}_response",
+                f"{model_name}_final_answer",
+                f"{model_name}_confidence_score",
+                f"{model_name}_reasoning_steps_complexity",
+                f"{model_name}_response_time",
+                f"{model_name}_token_count",
+                f"{model_name}_quality_correctness",
+            ]
+        )
+
+    keep_columns = [column for column in dict.fromkeys(keep_columns) if column]
+    existing_columns = [column for column in keep_columns if column in df.columns]
+    return df.loc[:, existing_columns].copy()
+
+
+def backfill_source_column(df, base_df, column):
+    if column in df.columns and df[column].astype(str).str.strip().ne("").all():
+        return df
+
+    merge_keys = ["Benchmark Group Index", "QA Index"]
+    if not all(key in df.columns and key in base_df.columns for key in merge_keys):
+        merge_keys = ["Task ID"]
+    if not all(key in df.columns and key in base_df.columns for key in merge_keys):
+        return df
+
+    source = base_df[merge_keys + [column]].drop_duplicates(subset=merge_keys)
+    merged = df.merge(source, on=merge_keys, how="left", suffixes=("", "__source"))
+    source_column = f"{column}__source"
+    if column not in merged.columns:
+        merged[column] = merged[source_column]
+    else:
+        missing_mask = merged[column].astype(str).str.strip().eq("")
+        merged.loc[missing_mask, column] = merged.loc[missing_mask, source_column]
+    return merged.drop(columns=[source_column])
+
+
 def save_final_outputs(
     results_df,
     logs,
@@ -333,6 +411,22 @@ def run_metrics(results_file, explanations_file, output_dir, setting_prefix):
     return metrics_dir
 
 
+def write_run_summary(output_dir, config, results_file, metrics_dir):
+    summary_file = output_dir / f"{config['setting']}_run_summary.json"
+    summary = {
+        "config": config,
+        "timestamp": datetime.now().isoformat(),
+        "files_created": {
+            "checkpoint": str(results_file),
+            "metrics_dir": str(metrics_dir) if metrics_dir else None,
+            "summary": str(summary_file),
+        },
+    }
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2, default=str)
+    return summary_file
+
+
 def run_setting(args, benchmark_path, base_df, setting, models_config):
     setting_config = SETTING_CONFIG[setting]
     dataset_stem = benchmark_path.stem
@@ -341,8 +435,24 @@ def run_setting(args, benchmark_path, base_df, setting, models_config):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     df = load_resume_dataframe(output_dir, base_df, args.restart)
+    answer_column = setting_config.get("answer_column")
+    if answer_column and answer_column in base_df.columns:
+        df = backfill_source_column(df, base_df, answer_column)
+    if not args.keep_full_results:
+        df = compact_runtime_dataframe(df, setting_config, models_config)
     if args.limit_questions is not None:
         df = df.head(args.limit_questions).copy()
+
+    if answer_column and answer_column in df.columns:
+        missing_answers = df[answer_column].astype(str).str.strip().eq("").sum()
+        if missing_answers:
+            print(
+                f"Warning: {missing_answers} rows have empty {answer_column}; "
+                "falling back to the default Answer column for those rows."
+            )
+        df["Answer"] = df[answer_column].where(
+            df[answer_column].astype(str).str.strip().ne(""), df["Answer"]
+        )
 
     question_column = setting_config["question_column"]
     missing_questions = df[question_column].astype(str).str.strip().eq("").sum()
@@ -354,7 +464,7 @@ def run_setting(args, benchmark_path, base_df, setting, models_config):
     explanations_file = (
         output_dir / f"{setting_config['prefix']}_inline_explanations.json"
     )
-    write_inline_explanations(df, explanations_file)
+    write_inline_explanations(base_df, explanations_file)
 
     config = {
         "benchmark_json": str(benchmark_path),
@@ -397,15 +507,21 @@ def run_setting(args, benchmark_path, base_df, setting, models_config):
     )
     config["runtime_seconds"] = round(time.time() - start_time, 3)
 
-    results_file = save_final_outputs(
-        results_df,
-        logs,
-        detailed_metrics,
-        output_dir,
-        setting_config["prefix"],
-        config,
-        models_config,
-    )
+    latest_checkpoint = output_dir / "LATEST_checkpoint.csv"
+    if args.write_final_artifacts:
+        results_file = save_final_outputs(
+            results_df,
+            logs,
+            detailed_metrics,
+            output_dir,
+            setting_config["prefix"],
+            config,
+            models_config,
+        )
+    else:
+        results_file = latest_checkpoint
+        if not results_file.exists():
+            results_df.to_csv(results_file, index=False)
 
     metrics_dir = None
     if not args.skip_metrics:
@@ -416,6 +532,7 @@ def run_setting(args, benchmark_path, base_df, setting, models_config):
             setting_config["prefix"],
         )
 
+    write_run_summary(output_dir, config, results_file, metrics_dir)
     return {"results_file": results_file, "metrics_dir": metrics_dir}
 
 
