@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -20,6 +21,7 @@ public class StreamingOutputService implements OutputService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamingOutputService.class);
 
     private final String outputDirectory;
+    private final boolean preserveExistingExplanations;
     private final AtomicLong queryCounter = new AtomicLong(0);
     private final AtomicLong explanationCounter = new AtomicLong(0);
     private final ObjectMapper objectMapper = new ObjectMapper();  // ADD THIS FIELD
@@ -30,7 +32,12 @@ public class StreamingOutputService implements OutputService {
     private boolean isFirstExplanation = true;
 
     public StreamingOutputService(String outputDirectory) {
+        this(outputDirectory, false);
+    }
+
+    public StreamingOutputService(String outputDirectory, boolean preserveExistingExplanations) {
         this.outputDirectory = outputDirectory;
+        this.preserveExistingExplanations = preserveExistingExplanations;
     }
 
     @Override
@@ -52,10 +59,15 @@ public class StreamingOutputService implements OutputService {
         queryWriter.flush();
 
         File explanationFile = new File(outputDir, "Explanations.json");
-        explanationWriter = new FileWriter(explanationFile, StandardCharsets.UTF_8, false);
-        explanationWriter.write("{\n");
-        explanationWriter.flush();
-        isFirstExplanation = true;
+        if (preserveExistingExplanations && explanationFile.exists()) {
+            explanationWriter = null;
+            LOGGER.info("Preserving existing explanations file: {}", explanationFile.getPath());
+        } else {
+            explanationWriter = new FileWriter(explanationFile, StandardCharsets.UTF_8, false);
+            explanationWriter.write("{\n");
+            explanationWriter.flush();
+            isFirstExplanation = true;
+        }
 
         LOGGER.info("Output files initialized: queries={}, explanations={}",
                 queryFile.getPath(), explanationFile.getPath());
@@ -73,6 +85,10 @@ public class StreamingOutputService implements OutputService {
 
     @Override
     public void writeExplanationWithTags(String key, String explanation, String tags) {
+        if (explanationWriter == null) {
+            return;
+        }
+
         try {
             long currentCount = explanationCounter.incrementAndGet();
 
@@ -145,6 +161,10 @@ public class StreamingOutputService implements OutputService {
 
     @Override
     public void writeExplanationWithComprehensiveFormat(String key, String comprehensiveExplanation) {
+        if (explanationWriter == null) {
+            return;
+        }
+
         try {
             long currentCount = explanationCounter.incrementAndGet();
 
@@ -186,7 +206,8 @@ public class StreamingOutputService implements OutputService {
     public void logProgress(String operation, long completed, long total) {
         if (total > 0) {
             double percentage = (completed * 100.0) / total;
-            LOGGER.info("Progress {}: {}/{} ({:.1f}%)", operation, completed, total, percentage);
+            LOGGER.info("Progress {}: {}/{} ({}%)", operation, completed, total,
+                    String.format(Locale.ROOT, "%.1f", percentage));
         } else {
             LOGGER.info("Progress {}: {} completed", operation, completed);
         }

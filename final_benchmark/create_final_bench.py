@@ -8,6 +8,12 @@ from rdflib import Graph
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
+from scripts.llm_pipeline.verbalize_abstract import (
+    abstract_question,
+    build_replacement_pattern,
+    parse_mapping_file,
+)
+
 
 def verbalize_abox(json_data):
     output = []
@@ -36,7 +42,7 @@ def parse_root_entity(path):
     try:
         graph = Graph()
         graph.parse(path, format="turtle")
-        return graph.serialize(format="xml")
+        return graph.serialize(format="turtle")
     except FileNotFoundError:
         return f"File not found: {path}"
     except Exception as e:
@@ -72,6 +78,7 @@ def df_to_json(df):
         "SPARQL Query",
         "NL Question",
         "ABS Question",
+        "ABS Answer",
         "Answer",
         "Minimum Explanation",
         "Explanations",
@@ -132,20 +139,35 @@ def load_explanations(df, dataset, hop):
     with open(explanations_file_path, "r", encoding="utf-8") as f:
         explanations = json.loads(fix_explanations_json(f.read()))
 
-    lookup = {}
+    task_lookup = {}
+    exact_query_lookup = {}
+
+    def normalize_sparql(query):
+        return " ".join(str(query).split())
 
     for _, value in explanations.items():
         expl_list = value["explanations"]
         chosen_expl = min(expl_list, key=len) if expl_list else None
 
+        explanation_record = {
+            "Minimum Explanation": chosen_expl,
+            "Explanations": expl_list,
+            "Explanation Count": value["explanationCount"],
+            "Explanation Min": value["size"]["min"],
+            "Explanation Max": value["size"]["max"],
+        }
+
+        for sparql_query in value.get("sparqlQueries", []):
+            exact_query_lookup[normalize_sparql(sparql_query)] = explanation_record
+
         for task_id in value["taskIds"]:
-            lookup[task_id] = {
-                "Minimum Explanation": chosen_expl,
-                "Explanations": expl_list,
-                "Explanation Count": value["explanationCount"],
-                "Explanation Min": value["size"]["min"],
-                "Explanation Max": value["size"]["max"],
-            }
+            # Older generated files can reuse the same Task ID for several BIN
+            # object values. Mark collisions unusable so a wrong proof cannot be
+            # silently attached to a different ASK query.
+            if task_id in task_lookup and task_lookup[task_id] != explanation_record:
+                task_lookup[task_id] = None
+            else:
+                task_lookup[task_id] = explanation_record
 
     explanation_cols = [
         "Minimum Explanation",
@@ -155,8 +177,17 @@ def load_explanations(df, dataset, hop):
         "Explanation Max",
     ]
 
-    explanation_df = df["Task ID"].map(lookup).apply(pd.Series)
+    def find_explanation(row):
+        exact_match = exact_query_lookup.get(normalize_sparql(row["SPARQL Query"]))
+        if exact_match is not None:
+            return exact_match
+        return task_lookup.get(row["Task ID"])
+
+    explanation_df = df.apply(find_explanation, axis=1).apply(pd.Series)
     df = df.join(explanation_df)
+    for col in explanation_cols:
+        if col not in df.columns:
+            df[col] = None
 
     false_binary_mask = df["Answer Type"].astype(str).str.upper().eq("BIN") & df[
         "Answer"
@@ -180,6 +211,17 @@ def process_dataset(dataset, hop):
             f"NL and abstract question files have different row counts: "
             f"{len(q_nl)} != {len(q_abs)}"
         )
+    if "Task ID" in q_nl.columns and "Task ID" in q_abs.columns:
+        nl_task_ids = q_nl["Task ID"].astype(str).reset_index(drop=True)
+        abs_task_ids = q_abs["Task ID"].astype(str).reset_index(drop=True)
+        if not nl_task_ids.equals(abs_task_ids):
+            mismatch_index = (nl_task_ids != abs_task_ids).idxmax()
+            raise ValueError(
+                "NL and abstract question files are not row-aligned by Task ID. "
+                f"First mismatch at row {mismatch_index}: "
+                f"{nl_task_ids.iloc[mismatch_index]} != "
+                f"{abs_task_ids.iloc[mismatch_index]}"
+            )
 
     df = q_nl[
         [
@@ -195,6 +237,31 @@ def process_dataset(dataset, hop):
 
     df["NL Question"] = q_nl["Question"].values
     df["ABS Question"] = q_abs["Question"].values
+
+    mappings_file = Path(
+        "data",
+        "output",
+        "abstracted_ontologies",
+        f"{dataset}_{hop}",
+        "abstraction_mappings.txt",
+    )
+    mappings = parse_mapping_file(mappings_file)
+    replacement_pattern = build_replacement_pattern(list(mappings.keys()))
+    mc_mask = (
+        df["Answer Type"]
+        .astype(str)
+        .str.upper()
+        .isin(["MC", "MULTI CHOICE", "MULTICHOICE"])
+    )
+    df["ABS Answer"] = df["Answer"]
+    if "Answer" in q_abs.columns and not q_abs.loc[mc_mask, "Answer"].equals(
+        q_nl.loc[mc_mask, "Answer"]
+    ):
+        df.loc[mc_mask, "ABS Answer"] = q_abs.loc[mc_mask, "Answer"].values
+    else:
+        df.loc[mc_mask, "ABS Answer"] = df.loc[mc_mask, "Answer"].apply(
+            lambda answer: abstract_question(answer, mappings, replacement_pattern)
+        )
 
     df = load_explanations(df, dataset, hop)
 

@@ -171,7 +171,7 @@ def stream_sampled_rows(
 
 
 def stratified_sample(
-    input_file, output_file, test_size=0.95, random_state=42, max_rows=None
+    input_file, output_file, test_size=0.75, random_state=42, max_rows=None
 ):
     print(f"Reading input: {input_file}")
     df = pd.read_csv(input_file, usecols=SAMPLING_COLUMNS)
@@ -194,8 +194,8 @@ def main():
     parser.add_argument(
         "--test-size",
         type=float,
-        default=0.95,
-        help="Fraction assigned to test split (default: 0.95)",
+        default=0.75,
+        help="Fraction assigned to test split (default: 0.75)",
     )
     parser.add_argument(
         "--random-state",

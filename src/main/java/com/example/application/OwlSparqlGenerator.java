@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.annotation.PreDestroy;
+import java.util.Locale;
 
 /**
  * Professional OWL Inference Processor
@@ -70,6 +71,34 @@ public class OwlSparqlGenerator implements CommandLineRunner {
         if (args.length > 1) {
             config.setOutputDirectory(args[1]);
         }
+        for (String arg : args) {
+            String normalized = arg.trim().toLowerCase(Locale.ROOT);
+            if ("--no-explanations".equals(normalized)
+                    || "--skip-explanations".equals(normalized)
+                    || "no-explanations".equals(normalized)
+                    || "skip-explanations".equals(normalized)
+                    || "--processing.generate-explanations=false".equals(normalized)
+                    || "--processing.generateexplanations=false".equals(normalized)) {
+                config.setGenerateExplanations(false);
+            } else if ("--focus-root-individual-only".equals(normalized)
+                    || "--processing.focus-root-individual-only=true".equals(normalized)
+                    || "--processing.focusrootindividualonly=true".equals(normalized)) {
+                config.setFocusRootIndividualOnly(true);
+            } else if ("--no-focus-root-individual-only".equals(normalized)
+                    || "--processing.focus-root-individual-only=false".equals(normalized)
+                    || "--processing.focusrootindividualonly=false".equals(normalized)) {
+                config.setFocusRootIndividualOnly(false);
+            } else if (normalized.startsWith("--max-individuals-per-ontology=")) {
+                config.setMaxIndividualsPerOntology(parsePositiveIntOption(
+                        arg, "--max-individuals-per-ontology="));
+            } else if (normalized.startsWith("--processing.max-individuals-per-ontology=")) {
+                config.setMaxIndividualsPerOntology(parsePositiveIntOption(
+                        arg, "--processing.max-individuals-per-ontology="));
+            } else if (normalized.startsWith("--processing.maxindividualsperontology=")) {
+                config.setMaxIndividualsPerOntology(parsePositiveIntOption(
+                        arg, "--processing.maxindividualsperontology="));
+            }
+        }
 
         LOGGER.info("=== Professional OWL Inference Processor (Sequential Mode) ===");
         logSystemInfo();
@@ -77,8 +106,10 @@ public class OwlSparqlGenerator implements CommandLineRunner {
         // Initialize services
         DefaultOntologyService ontologyService = new DefaultOntologyService();
         PelletReasoningService reasoningService = new PelletReasoningService();
+        reasoningService.setExplanationSupportEnabled(config.isGenerateExplanations());
         SparqlQueryGenerationService queryService = new SparqlQueryGenerationService();
-        StreamingOutputService outputService = new StreamingOutputService(config.getOutputDirectory());
+        StreamingOutputService outputService = new StreamingOutputService(
+                config.getOutputDirectory(), !config.isGenerateExplanations());
 
         // Create main processor (using the same class name)
         processor = new SmallOntologiesProcessor(
@@ -100,19 +131,24 @@ public class OwlSparqlGenerator implements CommandLineRunner {
     private void logInitialMemoryStatus() {
         Runtime runtime = Runtime.getRuntime();
         LOGGER.info("Initial Memory Status:");
-        LOGGER.info("  Max memory: {:.2f} GB", runtime.maxMemory() / (1024.0 * 1024.0 * 1024.0));
-        LOGGER.info("  Total memory: {:.2f} GB", runtime.totalMemory() / (1024.0 * 1024.0 * 1024.0));
-        LOGGER.info("  Free memory: {:.2f} GB", runtime.freeMemory() / (1024.0 * 1024.0 * 1024.0));
+        LOGGER.info("  Max memory: {} GB", formatDouble(runtime.maxMemory() / (1024.0 * 1024.0 * 1024.0)));
+        LOGGER.info("  Total memory: {} GB", formatDouble(runtime.totalMemory() / (1024.0 * 1024.0 * 1024.0)));
+        LOGGER.info("  Free memory: {} GB", formatDouble(runtime.freeMemory() / (1024.0 * 1024.0 * 1024.0)));
     }
 
     private void logSystemInfo() {
         Runtime runtime = Runtime.getRuntime();
         LOGGER.info("System Configuration:");
         LOGGER.info("  Available processors: {}", runtime.availableProcessors());
-        LOGGER.info("  Max memory: {:.2f} GB", runtime.maxMemory() / (1024.0 * 1024.0 * 1024.0));
+        LOGGER.info("  Max memory: {} GB", formatDouble(runtime.maxMemory() / (1024.0 * 1024.0 * 1024.0)));
         LOGGER.info("  Ontologies directory: {}", config.getOntologiesDirectory());
         LOGGER.info("  Output directory: {}", config.getOutputDirectory());
         LOGGER.info("  Max explanations per inference: {}", config.getMaxExplanationsPerInference());
+        LOGGER.info("  Generate explanations: {}", config.isGenerateExplanations());
+        LOGGER.info("  Focus root individual only: {}", config.isFocusRootIndividualOnly());
+        LOGGER.info("  Max individuals per ontology: {}", config.getMaxIndividualsPerOntology() > 0
+                ? config.getMaxIndividualsPerOntology()
+                : "unlimited");
         LOGGER.info("  Thread pool size: {}", config.getThreadPoolSize());
         LOGGER.info("  Processing timeout: {} hours", config.getTimeoutHours());
     }
@@ -125,8 +161,8 @@ public class OwlSparqlGenerator implements CommandLineRunner {
         LOGGER.info("  Generated queries: {}", result.getProcessedQueries());
         LOGGER.info("  Binary queries: {}", result.getBinaryQueries());
         LOGGER.info("  Multi-choice queries: {}", result.getMultiChoiceQueries());
-        LOGGER.info("  Processing time: {:.2f} minutes", result.getProcessingTimeMs() / 60000.0);
-        LOGGER.info("  Memory used: {:.2f} MB", result.getMemoryUsedMB());
+        LOGGER.info("  Processing time: {} minutes", formatDouble(result.getProcessingTimeMs() / 60000.0));
+        LOGGER.info("  Memory used: {} MB", formatDouble(result.getMemoryUsedMB()));
         LOGGER.info("  Success: {}", result.isSuccess());
 
         if (result.hasErrors()) {
@@ -142,7 +178,20 @@ public class OwlSparqlGenerator implements CommandLineRunner {
         // Performance insights
         if (result.getTotalInferences() > 0) {
             double avgTimePerInference = (double) result.getProcessingTimeMs() / result.getTotalInferences();
-            LOGGER.info("  Average time per inference: {:.2f} ms", avgTimePerInference);
+            LOGGER.info("  Average time per inference: {} ms", formatDouble(avgTimePerInference));
+        }
+    }
+
+    private String formatDouble(double value) {
+        return String.format(Locale.ROOT, "%.2f", value);
+    }
+
+    private int parsePositiveIntOption(String arg, String prefix) {
+        String value = arg.substring(prefix.length()).trim();
+        try {
+            return Math.max(0, Integer.parseInt(value));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid integer value for " + prefix + value, e);
         }
     }
 

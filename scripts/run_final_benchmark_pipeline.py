@@ -55,10 +55,10 @@ def parse_args():
     parser.add_argument(
         "--sampling-test-size",
         type=float,
-        default=0.95,
+        default=0.75,
         help=(
             "Fraction assigned to the stratified test split; the remaining "
-            "rows are used for the benchmark sample. Default: 0.95."
+            "rows are used for the benchmark sample. Default: 0.75."
         ),
     )
     parser.add_argument(
@@ -66,6 +66,25 @@ def parse_args():
         type=int,
         default=None,
         help="Optional hard cap on rows emitted by stratified sampling.",
+    )
+    parser.add_argument(
+        "--focus-root-individual-only",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "During Java core generation, extract inferred triples only for the "
+            "root individual named by each subgraph file. Default: true. "
+            "Use --no-focus-root-individual-only to process all individuals."
+        ),
+    )
+    parser.add_argument(
+        "--max-individuals-per-ontology",
+        type=int,
+        default=None,
+        help=(
+            "Optional cap on individuals processed per ontology during Java "
+            "core generation. Used after root-focus fallback, if any."
+        ),
     )
     parser.add_argument(
         "--no-maven-build",
@@ -76,6 +95,15 @@ def parse_args():
         "--dry-run",
         action="store_true",
         help="Print commands without running them.",
+    )
+    parser.add_argument(
+        "--no-explanations",
+        action="store_true",
+        help=(
+            "Reuse an existing valid Explanations.json and regenerate missing "
+            "SPARQL questions without recomputing explanations. If explanations "
+            "are missing, explanations are generated."
+        ),
     )
     return parser.parse_args()
 
@@ -224,8 +252,36 @@ def main():
                     f"Regenerating core benchmark generation for {hop}; "
                     f"existing core outputs are incomplete or invalid."
                 )
+            java_command = [
+                "java",
+                "-jar",
+                str(jar_path),
+                str(resources_dir),
+                str(output_dir),
+            ]
+            explanations_ready = is_valid_json(explanations)
+            if args.no_explanations and explanations_ready:
+                print(
+                    f"Reusing existing {explanations}; "
+                    "regenerating missing core questions without recomputing explanations."
+                )
+                java_command.append("--no-explanations")
+            elif args.no_explanations:
+                print(
+                    f"{explanations} is missing or invalid; "
+                    "generating explanations for this run."
+                )
+            java_command.append(
+                "--processing.focus-root-individual-only="
+                + str(args.focus_root_individual_only).lower()
+            )
+            if args.max_individuals_per_ontology is not None:
+                java_command.append(
+                    "--processing.max-individuals-per-ontology="
+                    + str(args.max_individuals_per_ontology)
+                )
             run_command(
-                ["java", "-jar", str(jar_path), str(resources_dir), str(output_dir)],
+                java_command,
                 dry_run=args.dry_run,
             )
 

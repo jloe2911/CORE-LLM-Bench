@@ -4,6 +4,7 @@ Optimized for heavy ontologies and thousands of questions
 """
 
 import os
+import errno
 import time
 import sys
 import json
@@ -63,6 +64,57 @@ total_tasks = 0
 display_results = defaultdict(list)
 question_counter = 0
 questions_completed = 0
+stop_requested = threading.Event()
+stop_reason = None
+
+
+CREDIT_ERROR_PATTERNS = (
+    "insufficient credit",
+    "insufficient credits",
+    "not enough credit",
+    "not enough credits",
+    "out of credit",
+    "out of credits",
+    "insufficient balance",
+    "balance too low",
+    "quota exceeded",
+    "billing",
+    "payment required",
+    "credit limit",
+    "rate limit exceeded",
+    "temporarily rate-limited",
+    "too-many-requests",
+    "free-models-per-day",
+    "free-models-per-min",
+    "429",
+    "402",
+)
+
+
+def is_insufficient_credit_error(value):
+    """Detect provider billing/credit failures that should stop a run."""
+    if value is None:
+        return False
+    text = str(value).lower()
+    return any(pattern in text for pattern in CREDIT_ERROR_PATTERNS)
+
+
+def is_no_space_left_error(error):
+    """Detect disk-full failures raised by pandas/Python on different platforms."""
+    if isinstance(error, OSError) and error.errno == errno.ENOSPC:
+        return True
+    if getattr(error, "winerror", None) == 112:
+        return True
+    text = str(error).lower()
+    return "no space left on device" in text or "not enough space on the disk" in text
+
+
+def request_stop(reason):
+    """Request an early stop and keep the first reason for the final summary."""
+    global stop_reason
+    if not stop_requested.is_set():
+        stop_reason = reason
+    stop_requested.set()
 
 
 def resolve_model_info(display_name, model_entry):
@@ -204,12 +256,17 @@ def get_model_params(models=None):
 
 
 def is_completed_response(value):
-    """A non-empty response means an API call was already spent for this cell."""
+    """Only successful non-empty responses should be skipped on resume."""
     if value is None:
         return False
     if pd.isna(value):
         return False
-    return str(value).strip() != ""
+    text = str(value).strip()
+    if text.startswith("[ERROR]"):
+        return False
+    if is_insufficient_credit_error(text):
+        return False
+    return text != ""
 
 
 def count_completed_questions(df, models):
@@ -222,23 +279,6 @@ def count_completed_questions(df, models):
     return completed
 
 
-def slugify_model_name(model_name):
-    slug = re.sub(r"[^A-Za-z0-9._-]+", "_", str(model_name).strip())
-    slug = re.sub(r"_+", "_", slug).strip("._-")
-    return slug or "unknown_model"
-
-
-def model_specific_dataframe(df, model_name, model_names):
-    model_prefixes = tuple(f"{name}_" for name in model_names)
-    model_prefix = f"{model_name}_"
-    columns = [
-        column
-        for column in df.columns
-        if not column.startswith(model_prefixes) or column.startswith(model_prefix)
-    ]
-    return df.loc[:, columns]
-
-
 def save_checkpoint_csv(
     df,
     logs,
@@ -248,119 +288,40 @@ def save_checkpoint_csv(
     total_questions,
     model_names=None,
 ):
-    """Save checkpoint CSV with memory optimization"""
+    """Save a rolling checkpoint without accumulating historical CSV copies."""
     with save_lock:
         try:
             model_names = list(model_names or MODELS.keys())
-            checkpoint_dir = output_dir / "checkpoints"
-            checkpoint_dir.mkdir(parents=True, exist_ok=True)
-
-            # Create checkpoint filename with timestamp and progress
-            timestamp = datetime.now().strftime("%H%M%S")
-            checkpoint_file = (
-                checkpoint_dir
-                / f"checkpoint_q{questions_completed:04d}_of_{total_questions:04d}_{timestamp}.csv"
-            )
-
-            # Save main results CSV
-            df.to_csv(checkpoint_file, index=False)
-
-            # Save logs CSV with chunking for large datasets
-            logs_file = (
-                checkpoint_dir
-                / f"checkpoint_logs_q{questions_completed:04d}_{timestamp}.csv"
-            )
-            if logs:
-                # Convert to DataFrame and save in chunks to reduce memory usage
-                logs_df = pd.DataFrame(logs)
-                logs_df.to_csv(logs_file, index=False)
-                del logs_df  # Immediate cleanup
-
-            # Save detailed metrics JSON with compression for large files
-            metrics_file = (
-                checkpoint_dir
-                / f"checkpoint_metrics_q{questions_completed:04d}_{timestamp}.json"
-            )
-            if detailed_metrics:
-                # Truncate detailed metrics to essential data for memory efficiency
-                essential_metrics = []
-                for metric in detailed_metrics:
-                    essential_metric = {
-                        "query_index": metric.get("query_index"),
-                        "model_display_name": metric.get("model_display_name"),
-                        "final_answer_extracted": metric.get("final_answer_extracted"),
-                        "quality_correctness": metric.get("quality_correctness"),
-                        "response_time_seconds": metric.get("response_time_seconds"),
-                        "error_occurred": metric.get("error_occurred"),
-                    }
-                    essential_metrics.append(essential_metric)
-
-                with open(metrics_file, "w") as f:
-                    json.dump(essential_metrics, f, indent=2, default=str)
-                del essential_metrics
-
-            # Always save a "LATEST" version for easy recovery
             latest_file = output_dir / "LATEST_checkpoint.csv"
             latest_logs = output_dir / "LATEST_checkpoint_logs.csv"
+            latest_metrics = output_dir / "LATEST_checkpoint_metrics.json"
 
             df.to_csv(latest_file, index=False)
             if logs:
                 logs_df = pd.DataFrame(logs)
                 logs_df.to_csv(latest_logs, index=False)
                 del logs_df
-
-            by_llm_dir = output_dir / "by_llm"
-            for model_name in model_names:
-                model_dir = by_llm_dir / slugify_model_name(model_name)
-                model_checkpoint_dir = model_dir / "checkpoints"
-                model_checkpoint_dir.mkdir(parents=True, exist_ok=True)
-
-                model_df = model_specific_dataframe(df, model_name, model_names)
-                model_checkpoint_file = (
-                    model_checkpoint_dir
-                    / f"checkpoint_q{questions_completed:04d}_of_{total_questions:04d}_{timestamp}.csv"
-                )
-                model_latest_file = model_dir / "LATEST_checkpoint.csv"
-                model_df.to_csv(model_checkpoint_file, index=False)
-                model_df.to_csv(model_latest_file, index=False)
-
-                model_logs = [log for log in logs if log.get("model") == model_name]
-                if model_logs:
-                    model_logs_file = (
-                        model_checkpoint_dir
-                        / f"checkpoint_logs_q{questions_completed:04d}_{timestamp}.csv"
+            if detailed_metrics:
+                essential_metrics = []
+                for metric in detailed_metrics:
+                    essential_metrics.append(
+                        {
+                            "query_index": metric.get("query_index"),
+                            "model_display_name": metric.get("model_display_name"),
+                            "final_answer_extracted": metric.get(
+                                "final_answer_extracted"
+                            ),
+                            "quality_correctness": metric.get("quality_correctness"),
+                            "response_time_seconds": metric.get(
+                                "response_time_seconds"
+                            ),
+                            "error_occurred": metric.get("error_occurred"),
+                        }
                     )
-                    model_latest_logs = model_dir / "LATEST_checkpoint_logs.csv"
-                    model_logs_df = pd.DataFrame(model_logs)
-                    model_logs_df.to_csv(model_logs_file, index=False)
-                    model_logs_df.to_csv(model_latest_logs, index=False)
-                    del model_logs_df
 
-                model_metrics = [
-                    metric
-                    for metric in detailed_metrics
-                    if metric.get("model_display_name") == model_name
-                ]
-                if model_metrics:
-                    model_metrics_file = (
-                        model_checkpoint_dir
-                        / f"checkpoint_metrics_q{questions_completed:04d}_{timestamp}.json"
-                    )
-                    with open(model_metrics_file, "w") as f:
-                        json.dump(model_metrics, f, indent=2, default=str)
-
-                model_recovery_info = {
-                    "model": model_name,
-                    "questions_completed": questions_completed,
-                    "total_questions": total_questions,
-                    "completion_percentage": (questions_completed / total_questions)
-                    * 100,
-                    "timestamp": datetime.now().isoformat(),
-                    "checkpoint_file": str(model_checkpoint_file),
-                    "memory_usage_percent": monitor_memory(),
-                }
-                with open(model_dir / "LATEST_recovery_info.json", "w") as f:
-                    json.dump(model_recovery_info, f, indent=2, default=str)
+                with open(latest_metrics, "w") as f:
+                    json.dump(essential_metrics, f, indent=2, default=str)
+                del essential_metrics
 
             # Create recovery info
             recovery_info = {
@@ -368,7 +329,7 @@ def save_checkpoint_csv(
                 "total_questions": total_questions,
                 "completion_percentage": (questions_completed / total_questions) * 100,
                 "timestamp": datetime.now().isoformat(),
-                "checkpoint_file": str(checkpoint_file),
+                "checkpoint_file": str(latest_file),
                 "total_api_calls_completed": completed_tasks,
                 "total_api_calls_expected": total_questions * len(model_names),
                 "memory_usage_percent": monitor_memory(),
@@ -416,7 +377,7 @@ def save_checkpoint_csv(
             print(
                 f"\nCHECKPOINT SAVED - Question {questions_completed}/{total_questions} ({(questions_completed / total_questions) * 100:.1f}%)"
             )
-            print(f"Saved to: {checkpoint_file}")
+            print(f"Saved to: {latest_file}")
             print(f"Memory usage: {memory_usage:.1f}%")
             print(f"Progress Summary:")
 
@@ -428,10 +389,13 @@ def save_checkpoint_csv(
             # Force cleanup after checkpoint
             force_cleanup()
 
-            return checkpoint_file
+            return latest_file
 
         except Exception as e:
             print(f"Error saving checkpoint: {e}")
+            if is_no_space_left_error(e):
+                request_stop("No space left on device while saving checkpoint.")
+                print("Stopping run before scheduling more API calls.")
             traceback.print_exc()
             return None
 
@@ -540,6 +504,9 @@ def update_progress(
     """Callback function to update progress and save checkpoints with memory management"""
     global completed_tasks, display_results, questions_completed
 
+    if future.cancelled():
+        return
+
     with progress_lock:
         completed_tasks += 1
         pbar.update(1)
@@ -547,6 +514,10 @@ def update_progress(
         # Get result for display and processing
         try:
             result = future.result()
+            if not result:
+                completed_tasks -= 1
+                return
+
             if result:
                 final_answer = result.get("final_answer_extracted", "ERROR")
                 is_correct = result.get("quality_correctness", 0.0) > 0.5
@@ -554,6 +525,17 @@ def update_progress(
                 reasoning = result.get("reasoning_extracted", "")
                 model_response = result.get("full_response", "")
                 error = result.get("error_message", None)
+
+                if error and is_insufficient_credit_error(error):
+                    if not stop_requested.is_set():
+                        print(
+                            "\nStopping run: provider reported a billing, quota, or rate-limit error."
+                        )
+                        print(f"Model: {model_name}")
+                        print(f"Error: {error}")
+                    request_stop(
+                        "Provider reported a billing, quota, or rate-limit error."
+                    )
 
                 # Display the question and response with reduced frequency for performance
                 if not silent_mode and (
@@ -632,7 +614,9 @@ def update_progress(
                 # Check if we completed all models for this question
                 question_complete = True
                 for model in models_list:
-                    if df.at[question_idx, f"{model}_response"] == "":
+                    if not is_completed_response(
+                        df.at[question_idx, f"{model}_response"]
+                    ):
                         question_complete = False
                         break
 
@@ -641,7 +625,7 @@ def update_progress(
                     questions_completed += 1
 
                     if questions_completed % checkpoint_frequency == 0:
-                        save_checkpoint_csv(
+                        checkpoint_file = save_checkpoint_csv(
                             df,
                             logs,
                             detailed_metrics,
@@ -652,8 +636,9 @@ def update_progress(
                         )
 
                         # Clear logs and metrics after checkpoint to free memory
-                        logs.clear()
-                        detailed_metrics.clear()
+                        if checkpoint_file is not None:
+                            logs.clear()
+                            detailed_metrics.clear()
 
                         if not silent_mode:
                             display_recent_summary(
@@ -975,6 +960,117 @@ def get_inline_context_from_row(row, context_mode):
     return row.get(context_column, "")
 
 
+def extract_sparql_terms(query):
+    """Return URI fragments/local names that should be prioritized in context."""
+    if not query:
+        return []
+
+    terms = []
+    text = str(query)
+    generic_terms = {
+        "type",
+        "rdf",
+        "rdfs",
+        "owl",
+        "xsd",
+        "resource",
+        "namedindividual",
+    }
+
+    for uri in re.findall(r"<([^>]+)>", text):
+        if "www.w3.org/" in uri:
+            continue
+        terms.append(uri)
+        fragment = re.split(r"[#/]", uri.rstrip("/"))[-1]
+        if fragment and fragment.lower() not in generic_terms:
+            terms.append(fragment)
+
+    for prefixed in re.findall(r"\b([A-Za-z_][\w.-]*:[A-Za-z_][\w.-]*)\b", text):
+        terms.append(prefixed)
+        local_name = prefixed.split(":", 1)[1]
+        if local_name and local_name.lower() not in generic_terms:
+            terms.append(local_name)
+
+    seen = set()
+    unique_terms = []
+    for term in terms:
+        term = term.strip()
+        if term and term not in seen:
+            seen.add(term)
+            unique_terms.append(term)
+    return unique_terms
+
+
+def split_symbolic_context_blocks(context):
+    """Split Turtle/RDF/XML context into chunks that keep related facts together."""
+    text = str(context or "")
+    if "</rdf:Description>" in text:
+        blocks = re.findall(
+            r"<rdf:Description\b.*?</rdf:Description>",
+            text,
+            flags=re.DOTALL,
+        )
+        if blocks:
+            return blocks
+
+    blocks = re.split(r"\n\s*\n", text)
+    return [block for block in blocks if block.strip()]
+
+
+def build_query_relevant_symbolic_context(query, ontology_context, max_chars=12000):
+    """Keep SPARQL-relevant symbolic evidence before applying any size limit."""
+    context = str(ontology_context or "")
+    if len(context) <= max_chars:
+        return context
+
+    terms = extract_sparql_terms(query)
+    if not terms:
+        return context[:max_chars] + "\n... [truncated for memory efficiency]"
+
+    lower_terms = [term.lower() for term in terms]
+    blocks = split_symbolic_context_blocks(context)
+    selected = []
+    selected_ids = set()
+
+    for block in blocks:
+        block_lower = block.lower()
+        if any(term in block_lower for term in lower_terms):
+            block_id = id(block)
+            if block_id not in selected_ids:
+                selected.append(block.strip())
+                selected_ids.add(block_id)
+
+    if not selected:
+        snippets = []
+        for term in terms:
+            index = context.lower().find(term.lower())
+            if index == -1:
+                continue
+            start = max(0, index - 2000)
+            end = min(len(context), index + 4000)
+            snippets.append(context[start:end].strip())
+        selected = snippets
+
+    header = (
+        "[Query-relevant symbolic context extracted before truncation]\n"
+        f"SPARQL query: {query}\n"
+    )
+    focused_context = header + "\n\n".join(selected)
+
+    if len(focused_context) < max_chars:
+        remaining = max_chars - len(focused_context)
+        prefix = context[: max(0, remaining)]
+        focused_context = focused_context + "\n\n[Ontology prefix]\n" + prefix
+
+    if len(focused_context) > max_chars:
+        focused_context = (
+            focused_context[:max_chars]
+            + "\n... [query-relevant symbolic context truncated]"
+        )
+
+    return focused_context
+
+
 def create_context_specific_prompt(query, ontology_context, context_mode, answer_type):
     """Enhanced prompting for confidence and reasoning steps with memory optimization"""
 
@@ -1006,13 +1102,10 @@ def create_context_specific_prompt(query, ontology_context, context_mode, answer
         "DO NOT include any additional text before or after this format.\n"
     )
 
-    # Aggressive truncation for memory efficiency
-    if len(ontology_context) > 10000:
-        ontology_context = (
-            ontology_context[:10000] + "\n... [truncated for memory efficiency]"
-        )
-
     if context_mode in {"ttl", "inline_owl"}:
+        ontology_context = build_query_relevant_symbolic_context(
+            query, ontology_context, max_chars=12000
+        )
         return f"""You are an expert in SPARQL and OWL ontologies. Analyze the ontology context and answer the SPARQL query precisely.
 
 {base_instruction}
@@ -1021,6 +1114,10 @@ Question: {query}
 Context: {ontology_context}"""
 
     else:  # Natural language mode
+        if len(ontology_context) > 10000:
+            ontology_context = (
+                ontology_context[:10000] + "\n... [truncated for memory efficiency]"
+            )
         return f"""You are an expert in ontologies, answer the following question based on the provided ontological relationships. Reason through the ontological context and answer based on what you can infer from the context.
 
 {base_instruction}
@@ -1055,6 +1152,9 @@ def process_single_model_request(args):
         context_mode,
         model_params,
     ) = args
+
+    if stop_requested.is_set():
+        return None
 
     query = row.get(question_column, "")
     ontology_name = row.get("Root Entity", "Unknown")
@@ -1461,13 +1561,20 @@ def run_llm_reasoning(
     silent_mode=False,
 ):
     """Optimized for heavy ontologies and thousands of questions"""
-    global completed_tasks, total_tasks, display_results, questions_completed
+    global \
+        completed_tasks, \
+        total_tasks, \
+        display_results, \
+        questions_completed, \
+        stop_reason
 
     if models is None:
         models = MODELS
     if model_params is None:
         model_params = get_model_params(models)
     checkpoint_frequency = max(1, int(checkpoint_frequency))
+    stop_requested.clear()
+    stop_reason = None
 
     for display_name in models:
         base_cols = [
@@ -1523,6 +1630,10 @@ def run_llm_reasoning(
     detailed_metrics, logs = [], []
 
     for batch_idx in range(total_batches):
+        if stop_requested.is_set():
+            print(f"\nStopping before next batch: {stop_reason or 'stop requested.'}")
+            break
+
         start_idx = batch_idx * batch_size
         end_idx = min(start_idx + batch_size, len(pending_tasks))
         df_batch_tasks = pending_tasks[start_idx:end_idx]
@@ -1549,6 +1660,9 @@ def run_llm_reasoning(
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_task = {}
             for task_args in batch_tasks:
+                if stop_requested.is_set():
+                    break
+
                 idx, row, display_name, model_entry = (
                     task_args[0],
                     task_args[1],
@@ -1582,7 +1696,11 @@ def run_llm_reasoning(
                 future_to_task[future] = task_args
 
             for future in concurrent.futures.as_completed(future_to_task):
-                pass
+                if stop_requested.is_set():
+                    for pending_future in future_to_task:
+                        if pending_future is not future and not pending_future.done():
+                            pending_future.cancel()
+                    break
 
         force_cleanup()
 
@@ -1595,21 +1713,31 @@ def run_llm_reasoning(
     pbar.close()
 
     if output_dir:
-        final_file = save_checkpoint_csv(
-            df,
-            logs,
-            detailed_metrics,
-            output_dir,
-            questions_completed,
-            total_questions,
-            list(models.keys()),
-        )
-        print(f"\n✅ Final results saved to: {final_file}")
+        if stop_requested.is_set() and stop_reason and "No space left" in stop_reason:
+            print("\nSkipping final save because the device is out of space.")
+            final_file = None
+        else:
+            final_file = save_checkpoint_csv(
+                df,
+                logs,
+                detailed_metrics,
+                output_dir,
+                questions_completed,
+                total_questions,
+                list(models.keys()),
+            )
+        if final_file is not None:
+            print(f"\nFinal results saved to: {final_file}")
+        else:
+            print("\nFinal results were not saved because checkpoint saving failed.")
 
     if not silent_mode:
         display_recent_summary(display_results, list(models.keys()), sample_size=5)
 
-    print("\n🎉 EXPERIMENT COMPLETED!")
+    if stop_requested.is_set():
+        print(f"\nSTOPPED EARLY: {stop_reason or 'stop requested.'}")
+    else:
+        print("\n🎉 EXPERIMENT COMPLETED!")
     print(f"📊 Total: {questions_completed}/{total_questions} questions processed")
     print(f"⏱️ Total API calls: {completed_tasks}/{total_tasks}")
     print(f"🧠 Final memory usage: {monitor_memory():.1f}%")

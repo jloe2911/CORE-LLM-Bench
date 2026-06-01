@@ -24,23 +24,29 @@ public class PelletReasoningService implements ReasoningService {
 
     private OpenlletReasoner reasoner;
     private OWLOntology ontology;
+    private boolean explanationSupportEnabled = true;
+
+    public void setExplanationSupportEnabled(boolean explanationSupportEnabled) {
+        this.explanationSupportEnabled = explanationSupportEnabled;
+    }
 
     @Override
     public void initializeReasoner(OWLOntology ontology) {
         this.ontology = ontology;
         OpenlletReasonerFactory factory = new OpenlletReasonerFactory();
 
-        // Create configuration for better explanation support
         OWLReasonerConfiguration config = new SimpleConfiguration();
         this.reasoner = factory.createReasoner(ontology, config);
 
-        // Enable explanation tracking
-        reasoner.getKB().setDoExplanation(true);
+        if (explanationSupportEnabled) {
+            reasoner.getKB().setDoExplanation(true);
+        }
 
         // Avoid eager full realization here. On larger OWL2Bench subgraphs,
         // prepareReasoner() can spend hours before the first output row is
         // written. Later calls perform the needed reasoning on demand.
-        LOGGER.info("Pellet reasoner initialized with explanation support");
+        LOGGER.info("Pellet reasoner initialized with explanation support: {}",
+                explanationSupportEnabled ? "enabled" : "disabled");
     }
 
 

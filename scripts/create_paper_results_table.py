@@ -18,6 +18,7 @@ import csv
 import json
 import math
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,15 @@ ANSWER_TYPE_LABELS = {
     "binary": "binary",
     "mc": "open",
 }
+
+
+max_csv_field_size = sys.maxsize
+while True:
+    try:
+        csv.field_size_limit(max_csv_field_size)
+        break
+    except OverflowError:
+        max_csv_field_size //= 10
 
 
 def parse_args() -> argparse.Namespace:
@@ -73,6 +83,7 @@ def pct_to_float(value: Any) -> float | None:
 
 def clean_answer_items(text: Any) -> set[str]:
     text = str(text).lower().strip()
+    text = re.sub(r"[_-]+", " ", text)
     text = re.sub(r"\s+", " ", text)
 
     if ";" in text:
@@ -85,10 +96,9 @@ def clean_answer_items(text: Any) -> set[str]:
     cleaned_items: set[str] = set()
     for item in items:
         item = item.strip()
-        item = re.sub(r'[_*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', "", item)
+        item = re.sub(r'[*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', " ", item)
         item = re.sub(r"\s+", " ", item).strip()
-        item = re.sub(r"\s+\d{4}$", "", item)
-        item = re.sub(r"\s+\d{4}\s+", " ", item)
+        item = re.sub(r"\b\d{4}\b", " ", item)
         item = re.sub(r"^\d+$", "", item)
         item = re.sub(r"[^a-z0-9\s]", "", item)
         item = re.sub(r"\s+", " ", item).strip()
@@ -245,12 +255,15 @@ def collect_rows(base_dir: Path) -> list[dict[str, str]]:
         hop_label = "1-hop" if hop == "1hop" else "2-hop"
         setting_label = SETTINGS[setting]
         csv_path, summary_path = get_metric_paths(run_dir, setting)
-        if not csv_path.exists() or not summary_path.exists():
+        if not summary_path.exists():
             skipped_runs.append(str(run_dir))
             continue
 
         summary = read_summary(summary_path)
-        models = sorted(set(summary.keys()) | set(detect_models_from_csv(csv_path)))
+        models = set(summary.keys())
+        if csv_path.exists():
+            models.update(detect_models_from_csv(csv_path))
+        models = sorted(models)
 
         for model_name in models:
             key = (dataset, model_name, setting_label)
@@ -266,16 +279,24 @@ def collect_rows(base_dir: Path) -> list[dict[str, str]]:
             model_summary = summary.get(model_name, {})
             by_type = model_summary.get("performance_by_answer_type", {})
             overall = model_summary.get("overall_metrics", {})
-            conf = confidence_by_type(csv_path, model_name)
+            conf = confidence_by_type(csv_path, model_name) if csv_path.exists() else {}
 
             table[key][f"binary_jaccard_accuracy_{hop_label}"] = pct_to_float(
                 by_type.get("binary", {}).get("average_accuracy")
             )
-            table[key][f"binary_confidence_{hop_label}"] = conf.get("binary")
+            table[key][f"binary_confidence_{hop_label}"] = pct_to_float(
+                by_type.get("binary", {}).get("confidence_calibration")
+            )
+            if table[key][f"binary_confidence_{hop_label}"] is None:
+                table[key][f"binary_confidence_{hop_label}"] = conf.get("binary")
             table[key][f"open_ended_jaccard_accuracy_{hop_label}"] = pct_to_float(
                 by_type.get("mc", {}).get("average_accuracy")
             )
-            table[key][f"open_ended_confidence_{hop_label}"] = conf.get("mc")
+            table[key][f"open_ended_confidence_{hop_label}"] = pct_to_float(
+                by_type.get("mc", {}).get("confidence_calibration")
+            )
+            if table[key][f"open_ended_confidence_{hop_label}"] is None:
+                table[key][f"open_ended_confidence_{hop_label}"] = conf.get("mc")
             table[key][f"open_ended_hallucination_{hop_label}"] = pct_to_float(
                 overall.get("hallucination_score")
             )
@@ -284,12 +305,12 @@ def collect_rows(base_dir: Path) -> list[dict[str, str]]:
         raise FileNotFoundError(
             f"No complete result runs found under {base_dir}. Expected "
             "{dataset}_{1hop,2hop}/{model}/{nl,abs,sparql}/"
-            "{setting}_final_benchmark_results_FINAL.csv and metrics JSON files."
+            "metrics/{setting}_key_findings_summary.json files."
         )
 
     if skipped_runs:
         print(
-            f"Skipped {len(skipped_runs)} incomplete run directories missing CSV or metrics JSON."
+            f"Skipped {len(skipped_runs)} incomplete run directories missing metrics JSON."
         )
 
     rows = list(table.values())

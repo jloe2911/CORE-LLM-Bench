@@ -25,12 +25,18 @@ public class ComprehensiveExplanationService {
     private OWLOntology ontology;
     private OWLDataFactory dataFactory;
     private EnhancedExplanationTagger tagger;
+    private int maxPaths;
 
     public ComprehensiveExplanationService(OpenlletReasoner reasoner, OWLOntology ontology) {
+        this(reasoner, ontology, 20);
+    }
+
+    public ComprehensiveExplanationService(OpenlletReasoner reasoner, OWLOntology ontology, int maxPaths) {
         this.reasoner = reasoner;
         this.ontology = ontology;
         this.dataFactory = ontology != null ? ontology.getOWLOntologyManager().getOWLDataFactory() : null;
         this.tagger = new EnhancedExplanationTagger();
+        this.maxPaths = maxPaths > 0 ? maxPaths : 20;
 
     }
 
@@ -573,22 +579,49 @@ public class ComprehensiveExplanationService {
 
             // Strategy 1: Find paths that trace back to ASSERTED facts
             addAssertedFactTracePaths(individual, clazz, allPaths);
-
-            // Strategy 2: Standard comprehensive strategies as fallback
-            Set<ExplanationPath> standardPaths = findAllExplanationPaths(individual, clazz);
-            allPaths.addAll(standardPaths);
-
-            // Deduplicate
             allPaths = deduplicatePaths(allPaths);
+            allPaths = keepClassPathsMentioningInference(allPaths, individual, clazz);
 
-            LOGGER.debug("Found {} explanation paths for INFERRED {} : {} (traced to asserted facts)",
-                    allPaths.size(), getShortForm(individual), getShortForm(clazz));
+            if (!allPaths.isEmpty()) {
+                LOGGER.debug("Found {} asserted-trace explanation paths for INFERRED {} : {}",
+                        allPaths.size(), getShortForm(individual), getShortForm(clazz));
+                return limitPaths(allPaths);
+            }
+
+            LOGGER.debug("No asserted-trace explanation found for INFERRED {} : {}; skipping exhaustive fallback",
+                    getShortForm(individual), getShortForm(clazz));
 
         } catch (Exception e) {
             LOGGER.error("Error finding explanation paths", e);
         }
 
-        return allPaths;
+        return limitPaths(allPaths);
+    }
+
+    private Set<ExplanationPath> keepClassPathsMentioningInference(
+            Set<ExplanationPath> paths, OWLNamedIndividual individual, OWLClass clazz) {
+        String individualName = getShortForm(individual);
+        String className = getShortForm(clazz);
+
+        return paths.stream()
+                .filter(path -> {
+                    String evidence = String.join(" ", ExplanationFormatter.extractJustificationsFromPath(path));
+                    return evidence.contains(individualName) && evidence.contains(className);
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Set<ExplanationPath> limitPaths(Set<ExplanationPath> paths) {
+        if (paths.size() <= maxPaths) {
+            return paths;
+        }
+
+        return paths.stream()
+                .sorted(Comparator
+                        .comparingInt(ExplanationPath::getComplexity)
+                        .thenComparing(ExplanationPath::getDescription))
+                .limit(maxPaths)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**
@@ -764,6 +797,8 @@ public class ComprehensiveExplanationService {
             addPropertyCharacteristicPaths(subject, property, object, allPaths);
             addPropertyChainReasoningPaths(subject, property, object, allPaths);
 
+            allPaths = keepPathsMentioningQueryEndpoints(allPaths, subject, object);
+
             LOGGER.debug("Found {} property assertion paths for {} {} {}",
                     allPaths.size(), getShortForm(subject), getShortForm(property), getShortForm(object));
 
@@ -773,6 +808,19 @@ public class ComprehensiveExplanationService {
         }
 
         return allPaths;
+    }
+
+    private Set<ExplanationPath> keepPathsMentioningQueryEndpoints(
+            Set<ExplanationPath> paths, OWLNamedIndividual subject, OWLNamedIndividual object) {
+        String subjectName = getShortForm(subject);
+        String objectName = getShortForm(object);
+
+        return paths.stream()
+                .filter(path -> {
+                    String evidence = String.join(" ", ExplanationFormatter.extractJustificationsFromPath(path));
+                    return evidence.contains(subjectName) && evidence.contains(objectName);
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**

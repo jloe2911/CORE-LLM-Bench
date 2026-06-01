@@ -89,6 +89,7 @@ def process_csv(
     output_file: Path,
     mapping_file: Path,
     question_column: str = "Question",
+    answer_column: str = "Answer",
 ) -> None:
     """
     Read input CSV, replace the Question column with its abstracted version,
@@ -111,10 +112,21 @@ def process_csv(
 
     pattern = build_replacement_pattern(list(mappings.keys()))
 
-    # Replace the Question column itself
+    # Replace the question and, when present, open-ended gold answers so
+    # abstract evaluation compares abstract labels against abstract labels.
     df[question_column] = df[question_column].apply(
         lambda q: abstract_question(q, mappings, pattern)
     )
+    if answer_column in df.columns:
+        answer_type = (
+            df["Answer Type"].astype(str).str.upper()
+            if "Answer Type" in df.columns
+            else pd.Series("", index=df.index)
+        )
+        mc_mask = answer_type.isin(["MC", "MULTI CHOICE", "MULTICHOICE"])
+        df.loc[mc_mask, answer_column] = df.loc[mc_mask, answer_column].apply(
+            lambda answer: abstract_question(answer, mappings, pattern)
+        )
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_file, index=False)
@@ -124,6 +136,8 @@ def process_csv(
     print(f"Output CSV:   {output_file}")
     print(f"Processed rows: {len(df)}")
     print(f"Replaced column: {question_column}")
+    if answer_column in df.columns:
+        print(f"Replaced MC answers in column: {answer_column}")
     print(f"Loaded mappings: {len(mappings)}")
 
 
@@ -151,6 +165,11 @@ def main():
         default="SPARQL Query",
         help="Name of the question column (default: Question)",
     )
+    parser.add_argument(
+        "--answer-column",
+        default="Answer",
+        help="Name of the answer column to abstract for MC rows (default: Answer)",
+    )
 
     args = parser.parse_args()
 
@@ -159,6 +178,7 @@ def main():
         output_file=Path(args.output_file),
         mapping_file=Path(args.mapping_file),
         question_column=args.question_column,
+        answer_column=args.answer_column,
     )
 
 

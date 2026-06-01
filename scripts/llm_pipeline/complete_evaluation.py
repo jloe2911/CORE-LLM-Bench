@@ -176,6 +176,7 @@ class JaccardAccuracyMetric(BaseMetric):
 
         def clean_answer(text):
             text = text.lower().strip()
+            text = re.sub(r"[_-]+", " ", text)
             text = re.sub(r"\s+", " ", text)
 
             if ";" in text:
@@ -188,10 +189,9 @@ class JaccardAccuracyMetric(BaseMetric):
             cleaned_items = []
             for item in items:
                 item = item.strip()
-                item = re.sub(r'[_*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', "", item)
+                item = re.sub(r'[*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', " ", item)
                 item = re.sub(r"\s+", " ", item).strip()
-                item = re.sub(r"\s+\d{4}$", "", item)
-                item = re.sub(r"\s+\d{4}\s+", " ", item)
+                item = re.sub(r"\b\d{4}\b", " ", item)
                 item = re.sub(r"^\d+$", "", item)
                 item = re.sub(r"[^a-z0-9\s]", "", item)
                 item = re.sub(r"\s+", " ", item).strip()
@@ -1263,6 +1263,11 @@ class CompleteEvaluator:
                                 "mean"
                             ]
                         ),
+                        "confidence_calibration": format_percent(
+                            model_results["summary"]["binary"][
+                                "confidence_calibration"
+                            ]["mean"]
+                        ),
                         "average_response_time_seconds": format_number(
                             model_results["summary"]["binary"]["response_time_ms"][
                                 "mean"
@@ -1277,6 +1282,11 @@ class CompleteEvaluator:
                         "successfully_evaluated": f"{model_results['summary']['mc']['total_test_cases']} ({model_results['summary']['mc']['dataset_percentage']:.1f}%)",
                         "average_accuracy": format_percent(
                             model_results["summary"]["mc"]["jaccard_accuracy"]["mean"]
+                        ),
+                        "confidence_calibration": format_percent(
+                            model_results["summary"]["mc"]["confidence_calibration"][
+                                "mean"
+                            ]
                         ),
                         "average_response_time_seconds": format_number(
                             model_results["summary"]["mc"]["response_time_ms"]["mean"]
