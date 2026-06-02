@@ -598,6 +598,11 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
                         String multiTaskId = URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "MC");
                         GlobalQueryTracker.addTaskId(multiQueryKey, multiTaskId);
+                        for (String answerObject : allAnswers) {
+                            String answerTripleKey = OntologyUtils.createTripleKey(subject, predicate, answerObject);
+                            String answerInferenceKey = createRootScopedQueryKey(rootEntity, answerTripleKey);
+                            GlobalQueryTracker.addTaskId(answerInferenceKey, multiTaskId);
+                        }
 
                         // MC query is SELECT - doesn't specify the object
                         String multiQuery = String.format("SELECT ?x WHERE { <%s> <%s> ?x }",

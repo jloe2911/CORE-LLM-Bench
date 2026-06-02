@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import random
 import shutil
 import subprocess
 import sys
@@ -66,6 +67,40 @@ def parse_args():
         type=int,
         default=None,
         help="Optional hard cap on rows emitted by stratified sampling.",
+    )
+    parser.add_argument(
+        "--max-subgraphs-per-hop",
+        type=int,
+        default=None,
+        help=(
+            "Optional deterministic pre-sample cap for extracted TTL subgraphs "
+            "before Java core generation. Applies to every requested hop."
+        ),
+    )
+    parser.add_argument(
+        "--max-2hop-subgraphs",
+        type=int,
+        default=None,
+        help=(
+            "Optional deterministic pre-sample cap for extracted 2-hop TTL "
+            "subgraphs before Java core generation."
+        ),
+    )
+    parser.add_argument(
+        "--subgraph-sample-seed",
+        type=int,
+        default=13,
+        help="Random seed for deterministic subgraph pre-sampling. Default: 13.",
+    )
+    parser.add_argument(
+        "--max-subgraph-file-size-mb",
+        type=float,
+        default=None,
+        help=(
+            "Optional maximum TTL file size, in MB, allowed in the paired "
+            "subgraph pre-sample. Useful for avoiding pathological 2-hop "
+            "OWL2Bench subgraphs during explanation generation."
+        ),
     )
     parser.add_argument(
         "--focus-root-individual-only",
@@ -151,6 +186,185 @@ def py_script(script, *args):
     return [sys.executable, str(PROJECT_ROOT / script), *map(str, args)]
 
 
+def get_subgraph_limit(args, hop):
+    if hop == "2hop" and args.max_2hop_subgraphs is not None:
+        return args.max_2hop_subgraphs
+    return args.max_subgraphs_per_hop
+
+
+def get_paired_subgraph_limit(args):
+    if args.max_2hop_subgraphs is not None:
+        return args.max_2hop_subgraphs
+    return args.max_subgraphs_per_hop
+
+
+def get_max_subgraph_file_size_bytes(args):
+    if args.max_subgraph_file_size_mb is None:
+        return None
+    return int(args.max_subgraph_file_size_mb * 1024 * 1024)
+
+
+def select_paired_subgraph_names(resource_dirs, limit, seed, max_file_size_bytes=None):
+    one_hop_files = {path.name: path for path in resource_dirs["1hop"].glob("*.ttl")}
+    two_hop_files = {path.name: path for path in resource_dirs["2hop"].glob("*.ttl")}
+    common_names = sorted(set(one_hop_files) & set(two_hop_files))
+
+    if not common_names:
+        raise FileNotFoundError(
+            "No matching TTL subgraph filenames found between 1hop and 2hop."
+        )
+    total_common = len(common_names)
+    if max_file_size_bytes is not None:
+        common_names = [
+            name
+            for name in common_names
+            if one_hop_files[name].stat().st_size <= max_file_size_bytes
+            and two_hop_files[name].stat().st_size <= max_file_size_bytes
+        ]
+        if not common_names:
+            raise FileNotFoundError(
+                "No paired TTL subgraphs remain after applying "
+                f"--max-subgraph-file-size-mb={max_file_size_bytes / 1024 / 1024:.2f}."
+            )
+        print(
+            "Subgraph size filter kept "
+            f"{len(common_names)}/{total_common} paired TTL filenames."
+        )
+    if limit is None or limit <= 0 or limit >= len(common_names):
+        return common_names
+
+    rng = random.Random(seed)
+    return sorted(rng.sample(common_names, limit))
+
+
+def find_existing_paired_manifest(dataset, requested_hops):
+    if len(requested_hops) != 1:
+        return None
+
+    requested_hop = requested_hops[0]
+    counterpart_hop = "1hop" if requested_hop == "2hop" else "2hop"
+    pattern = f"{dataset}_{counterpart_hop}_paired_sampled_*_seed_*"
+    candidates = []
+
+    for sampled_dir in (PROJECT_ROOT / "data" / "resources").glob(pattern):
+        if sampled_dir.name.endswith("_tmp"):
+            continue
+        manifest_path = sampled_dir / "sample_manifest.json"
+        if not manifest_path.exists():
+            continue
+        try:
+            with manifest_path.open("r", encoding="utf-8") as handle:
+                manifest = json.load(handle)
+        except json.JSONDecodeError:
+            continue
+        if manifest.get("paired") and manifest.get("selected_files"):
+            candidates.append((manifest_path.stat().st_mtime, manifest_path, manifest))
+
+    if not candidates:
+        return None
+
+    candidates.sort(reverse=True, key=lambda item: item[0])
+    if len(candidates) > 1:
+        print(
+            f"Found {len(candidates)} existing paired {counterpart_hop} samples; "
+            f"reusing the newest manifest: {candidates[0][1]}."
+        )
+    return candidates[0][2]
+
+
+def prepare_sampled_resources(
+    source_dir,
+    dataset,
+    hop,
+    limit,
+    seed,
+    dry_run=False,
+    selected_names=None,
+    paired=False,
+    max_file_size_bytes=None,
+):
+    source_dir = Path(source_dir)
+    ttl_files = sorted(source_dir.glob("*.ttl"))
+    if not ttl_files:
+        raise FileNotFoundError(f"No TTL subgraphs found in {source_dir}")
+
+    if selected_names is None and (
+        limit is None or limit <= 0 or limit >= len(ttl_files)
+    ):
+        return source_dir
+
+    ttl_by_name = {path.name: path for path in ttl_files}
+    if selected_names is None:
+        rng = random.Random(seed)
+        selected = sorted(rng.sample(ttl_files, limit), key=lambda path: path.name)
+        selected_names = [path.name for path in selected]
+    else:
+        missing_names = sorted(set(selected_names) - set(ttl_by_name))
+        if missing_names:
+            raise FileNotFoundError(
+                f"{hop} is missing {len(missing_names)} paired sampled TTL files; "
+                f"first missing file: {missing_names[0]}"
+            )
+        selected = [ttl_by_name[name] for name in selected_names]
+        limit = len(selected_names)
+
+    sample_kind = "paired_sampled" if paired else "sampled"
+    sampled_dir = (
+        PROJECT_ROOT
+        / "data"
+        / "resources"
+        / f"{dataset}_{hop}_{sample_kind}_{limit}_seed_{seed}"
+    )
+    manifest = {
+        "source_dir": str(source_dir),
+        "hop": hop,
+        "limit": limit,
+        "seed": seed,
+        "paired": paired,
+        "max_file_size_bytes": max_file_size_bytes,
+        "total_available": len(ttl_files),
+        "selected_files": selected_names,
+    }
+    manifest_path = sampled_dir / "sample_manifest.json"
+
+    if dry_run:
+        print(
+            f"Would pre-sample {limit}/{len(ttl_files)} {hop} subgraphs "
+            f"from {source_dir} into {sampled_dir}."
+        )
+        return sampled_dir
+
+    if manifest_path.exists():
+        try:
+            with manifest_path.open("r", encoding="utf-8") as handle:
+                existing_manifest = json.load(handle)
+            files_ready = all((sampled_dir / name).exists() for name in selected_names)
+            if existing_manifest == manifest and files_ready:
+                print(
+                    f"Reusing sampled {hop} resources: "
+                    f"{limit}/{len(ttl_files)} TTL files in {sampled_dir}."
+                )
+                return sampled_dir
+        except json.JSONDecodeError:
+            pass
+
+    if sampled_dir.exists():
+        shutil.rmtree(sampled_dir)
+    sampled_dir.mkdir(parents=True, exist_ok=True)
+
+    for path in selected:
+        shutil.copy2(path, sampled_dir / path.name)
+    with manifest_path.open("w", encoding="utf-8") as handle:
+        json.dump(manifest, handle, indent=2)
+        handle.write("\n")
+
+    print(
+        f"Prepared sampled {hop} resources: "
+        f"{limit}/{len(ttl_files)} TTL files in {sampled_dir}."
+    )
+    return sampled_dir
+
+
 def main():
     args = parse_args()
 
@@ -216,9 +430,53 @@ def main():
         )
 
     jar_path = PROJECT_ROOT / "target" / "llm-orbench-1.0-SNAPSHOT.jar"
+    paired_subgraph_names = None
+    paired_subgraph_limit = None
+    paired_subgraph_seed = args.subgraph_sample_seed
+    paired_max_file_size_bytes = get_max_subgraph_file_size_bytes(args)
+    requested_hops = list(args.hops)
+    explicit_paired_limit = get_paired_subgraph_limit(args)
+    if (
+        explicit_paired_limit is not None
+        and explicit_paired_limit > 0
+        or paired_max_file_size_bytes is not None
+    ):
+        paired_subgraph_limit = explicit_paired_limit
+        paired_subgraph_names = select_paired_subgraph_names(
+            resource_dirs,
+            paired_subgraph_limit,
+            paired_subgraph_seed,
+            paired_max_file_size_bytes,
+        )
+        print(
+            "Using paired subgraph pre-sample: "
+            f"{len(paired_subgraph_names)} matching TTL filenames."
+        )
+    else:
+        existing_manifest = find_existing_paired_manifest(args.dataset, requested_hops)
+        if existing_manifest:
+            paired_subgraph_names = existing_manifest["selected_files"]
+            paired_subgraph_limit = len(paired_subgraph_names)
+            paired_subgraph_seed = existing_manifest.get("seed", paired_subgraph_seed)
+            paired_max_file_size_bytes = existing_manifest.get("max_file_size_bytes")
+            print(
+                "Reusing paired subgraph selection from existing counterpart "
+                f"manifest: {paired_subgraph_limit} matching TTL filenames."
+            )
 
     for hop in args.hops:
-        resources_dir = resource_dirs[hop]
+        selected_names = paired_subgraph_names if paired_subgraph_names else None
+        resources_dir = prepare_sampled_resources(
+            resource_dirs[hop],
+            args.dataset,
+            hop,
+            paired_subgraph_limit if selected_names else get_subgraph_limit(args, hop),
+            paired_subgraph_seed if selected_names else args.subgraph_sample_seed,
+            dry_run=args.dry_run,
+            selected_names=selected_names,
+            paired=selected_names is not None,
+            max_file_size_bytes=paired_max_file_size_bytes if selected_names else None,
+        )
         output_dir = PROJECT_ROOT / "data" / "output" / args.dataset / hop
         abstracted_dir = (
             PROJECT_ROOT
