@@ -3,6 +3,7 @@ import json
 import os
 import argparse
 import sys
+import re
 from pathlib import Path
 from rdflib import Graph
 
@@ -141,9 +142,55 @@ def load_explanations(df, dataset, hop):
 
     task_lookup = {}
     exact_query_lookup = {}
+    select_query_lookup = {}
 
     def normalize_sparql(query):
         return " ".join(str(query).split())
+
+    def select_query_from_ask(query):
+        match = re.search(
+            r"ASK\s+(?:WHERE\s+)?\{\s*<([^>]+)>\s+<([^>]+)>\s+<([^>]+)>\s*\}",
+            str(query),
+            flags=re.IGNORECASE,
+        )
+        if not match:
+            return None
+        subject, predicate, _ = match.groups()
+        return normalize_sparql(f"SELECT ?x WHERE {{ <{subject}> <{predicate}> ?x }}")
+
+    def aggregate_explanations(records):
+        records = [record for record in records if record]
+        if not records:
+            return None
+
+        all_explanations = []
+        seen = set()
+        for record in records:
+            for explanation in record.get("Explanations") or []:
+                key = json.dumps(explanation, sort_keys=True)
+                if key not in seen:
+                    seen.add(key)
+                    all_explanations.append(explanation)
+
+        min_explanation = min(all_explanations, key=len) if all_explanations else None
+        min_sizes = [
+            record.get("Explanation Min")
+            for record in records
+            if record.get("Explanation Min") is not None
+        ]
+        max_sizes = [
+            record.get("Explanation Max")
+            for record in records
+            if record.get("Explanation Max") is not None
+        ]
+
+        return {
+            "Minimum Explanation": min_explanation,
+            "Explanations": all_explanations,
+            "Explanation Count": len(all_explanations),
+            "Explanation Min": min(min_sizes) if min_sizes else None,
+            "Explanation Max": max(max_sizes) if max_sizes else None,
+        }
 
     for _, value in explanations.items():
         expl_list = value["explanations"]
@@ -158,7 +205,18 @@ def load_explanations(df, dataset, hop):
         }
 
         for sparql_query in value.get("sparqlQueries", []):
-            exact_query_lookup[normalize_sparql(sparql_query)] = explanation_record
+            normalized_query = normalize_sparql(sparql_query)
+            if normalized_query.upper().startswith("SELECT"):
+                select_query_lookup.setdefault(normalized_query, []).append(
+                    explanation_record
+                )
+            else:
+                exact_query_lookup[normalized_query] = explanation_record
+                select_query = select_query_from_ask(sparql_query)
+                if select_query is not None:
+                    select_query_lookup.setdefault(select_query, []).append(
+                        explanation_record
+                    )
 
         for task_id in value["taskIds"]:
             # Older generated files can reuse the same Task ID for several BIN
@@ -178,9 +236,13 @@ def load_explanations(df, dataset, hop):
     ]
 
     def find_explanation(row):
-        exact_match = exact_query_lookup.get(normalize_sparql(row["SPARQL Query"]))
+        normalized_query = normalize_sparql(row["SPARQL Query"])
+        exact_match = exact_query_lookup.get(normalized_query)
         if exact_match is not None:
             return exact_match
+        select_matches = select_query_lookup.get(normalized_query)
+        if select_matches:
+            return aggregate_explanations(select_matches)
         return task_lookup.get(row["Task ID"])
 
     explanation_df = df.apply(find_explanation, axis=1).apply(pd.Series)
