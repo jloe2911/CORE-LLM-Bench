@@ -12,6 +12,18 @@ from dataclasses import dataclass, field
 import os
 from scipy import stats
 
+try:
+    from .answer_normalization import (
+        ANSWER_NORMALIZATION_VERSION,
+        normalized_jaccard_accuracy,
+    )
+except ImportError:
+    # Support direct execution: python scripts/llm_pipeline/complete_evaluation.py
+    from answer_normalization import (
+        ANSWER_NORMALIZATION_VERSION,
+        normalized_jaccard_accuracy,
+    )
+
 # Navigate to project root
 script_dir = Path(__file__).resolve().parent
 project_root = script_dir.parent.parent
@@ -173,49 +185,7 @@ class JaccardAccuracyMetric(BaseMetric):
         expected = str(test_case.expected_output).strip()
         actual = str(test_case.actual_output).strip()
         answer_type = metadata.get("answer_type", "BIN")
-
-        def clean_answer(text):
-            text = text.lower().strip()
-            text = re.sub(r"[_-]+", " ", text)
-            text = re.sub(r"\s+", " ", text)
-
-            if ";" in text:
-                items = text.split(";")
-            elif "," in text:
-                items = text.split(",")
-            else:
-                items = [text]
-
-            cleaned_items = []
-            for item in items:
-                item = item.strip()
-                item = re.sub(r'[*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', " ", item)
-                item = re.sub(r"\s+", " ", item).strip()
-                item = re.sub(r"\b\d{4}\b", " ", item)
-                item = re.sub(r"^\d+$", "", item)
-                item = re.sub(r"[^a-z0-9\s]", "", item)
-                item = re.sub(r"\s+", " ", item).strip()
-                if item:
-                    cleaned_items.append(item)
-
-            return set(cleaned_items)
-
-        expected_set = clean_answer(expected)
-        actual_set = clean_answer(actual)
-
-        if len(expected_set) == 0 and len(actual_set) == 0:
-            score = 1.0
-        elif len(expected_set) == 0 or len(actual_set) == 0:
-            score = 0.0
-        else:
-            intersection = len(expected_set.intersection(actual_set))
-            union = len(expected_set.union(actual_set))
-            jaccard_score = intersection / union if union > 0 else 0.0
-
-            if answer_type == "BIN":
-                score = 1.0 if jaccard_score == 1.0 else 0.0
-            else:
-                score = jaccard_score
+        score = normalized_jaccard_accuracy(expected, actual, answer_type)
 
         self.success = score >= self.threshold
         self.score = score
@@ -1190,6 +1160,7 @@ class CompleteEvaluator:
                 "csv_file": str(self.csv_file),
                 "explanations_file": str(self.explanations_file),
                 "output_dir": str(self.output_dir),
+                "answer_normalization": ANSWER_NORMALIZATION_VERSION,
                 "jaccard_threshold": self.jaccard_threshold,
                 "calibration_threshold": self.calibration_threshold,
                 "hallucination_threshold": self.hallucination_threshold,

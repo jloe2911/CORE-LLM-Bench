@@ -23,6 +23,12 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.llm_pipeline.answer_normalization import normalized_jaccard_accuracy
+except ImportError:
+    # Support direct execution: python scripts/create_paper_results_table.py
+    from llm_pipeline.answer_normalization import normalized_jaccard_accuracy
+
 
 DEFAULT_BASE_DIR = Path("data/output/final_benchmark_llm_results")
 DEFAULT_OUTPUT_CSV = Path(
@@ -60,6 +66,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-tex", type=Path, default=DEFAULT_OUTPUT_TEX)
     parser.add_argument("--decimals", type=int, default=1)
     parser.add_argument(
+        "--recompute-answer-metrics",
+        action="store_true",
+        help=(
+            "Recalculate Jaccard accuracy and confidence calibration from saved "
+            "CSV answers using lexical-v1 normalization. This is offline and "
+            "does not make model API calls."
+        ),
+    )
+    parser.add_argument(
         "--no-tex",
         action="store_true",
         help="Only write the CSV output.",
@@ -81,50 +96,8 @@ def pct_to_float(value: Any) -> float | None:
         return None
 
 
-def clean_answer_items(text: Any) -> set[str]:
-    text = str(text).lower().strip()
-    text = re.sub(r"[_-]+", " ", text)
-    text = re.sub(r"\s+", " ", text)
-
-    if ";" in text:
-        items = text.split(";")
-    elif "," in text:
-        items = text.split(",")
-    else:
-        items = [text]
-
-    cleaned_items: set[str] = set()
-    for item in items:
-        item = item.strip()
-        item = re.sub(r'[*#@$%^&()+=\[\]{}|\\:";\'<>?/~`]', " ", item)
-        item = re.sub(r"\s+", " ", item).strip()
-        item = re.sub(r"\b\d{4}\b", " ", item)
-        item = re.sub(r"^\d+$", "", item)
-        item = re.sub(r"[^a-z0-9\s]", "", item)
-        item = re.sub(r"\s+", " ", item).strip()
-        if item:
-            cleaned_items.add(item)
-    return cleaned_items
-
-
 def jaccard_accuracy(expected: Any, actual: Any, answer_type: str) -> float:
-    expected_set = clean_answer_items(expected)
-    actual_set = clean_answer_items(actual)
-
-    if not expected_set and not actual_set:
-        score = 1.0
-    elif not expected_set or not actual_set:
-        score = 0.0
-    else:
-        intersection = len(expected_set.intersection(actual_set))
-        union = len(expected_set.union(actual_set))
-        score = intersection / union if union else 0.0
-
-    return (
-        1.0
-        if answer_type == "BIN" and score == 1.0
-        else (0.0 if answer_type == "BIN" else score)
-    )
+    return normalized_jaccard_accuracy(expected, actual, answer_type)
 
 
 def confidence_calibration(confidence: Any, accuracy: float) -> float:
@@ -161,10 +134,14 @@ def mean(values: list[float]) -> float | None:
     return sum(values) / len(values)
 
 
-def confidence_by_type(csv_path: Path, model_name: str) -> dict[str, float | None]:
+def answer_metrics_by_type(
+    csv_path: Path,
+    model_name: str,
+) -> dict[str, dict[str, float | None]]:
     final_answer_col = f"{model_name}_final_answer"
     confidence_col = f"{model_name}_confidence_score"
-    values: dict[str, list[float]] = defaultdict(list)
+    accuracy_values: dict[str, list[float]] = defaultdict(list)
+    confidence_values: dict[str, list[float]] = defaultdict(list)
 
     with csv_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -178,11 +155,23 @@ def confidence_by_type(csv_path: Path, model_name: str) -> dict[str, float | Non
             accuracy = jaccard_accuracy(
                 row.get("Answer", ""), final_answer, answer_type
             )
-            values[bucket].append(
+            accuracy_values[bucket].append(accuracy * 100.0)
+            confidence_values[bucket].append(
                 confidence_calibration(row.get(confidence_col, 0.5), accuracy) * 100.0
             )
 
-    return {bucket: mean(scores) for bucket, scores in values.items()}
+    return {
+        bucket: {
+            "accuracy": mean(accuracy_values.get(bucket, [])),
+            "confidence": mean(confidence_values.get(bucket, [])),
+        }
+        for bucket in ("binary", "mc")
+    }
+
+
+def confidence_by_type(csv_path: Path, model_name: str) -> dict[str, float | None]:
+    metrics = answer_metrics_by_type(csv_path, model_name)
+    return {bucket: values["confidence"] for bucket, values in metrics.items()}
 
 
 def display_model_name(model_name: str) -> str:
@@ -247,7 +236,10 @@ def format_cell(value: float | None, decimals: int) -> str:
     return f"{value:.{decimals}f}"
 
 
-def collect_rows(base_dir: Path) -> list[dict[str, str]]:
+def collect_rows(
+    base_dir: Path,
+    recompute_answer_metrics: bool = False,
+) -> list[dict[str, str]]:
     table: dict[tuple[str, str, str], dict[str, float | None | str]] = {}
     skipped_runs: list[str] = []
 
@@ -279,24 +271,46 @@ def collect_rows(base_dir: Path) -> list[dict[str, str]]:
             model_summary = summary.get(model_name, {})
             by_type = model_summary.get("performance_by_answer_type", {})
             overall = model_summary.get("overall_metrics", {})
-            conf = confidence_by_type(csv_path, model_name) if csv_path.exists() else {}
+            local_metrics = (
+                answer_metrics_by_type(csv_path, model_name)
+                if csv_path.exists()
+                else {}
+            )
 
             table[key][f"binary_jaccard_accuracy_{hop_label}"] = pct_to_float(
                 by_type.get("binary", {}).get("average_accuracy")
             )
+            if recompute_answer_metrics:
+                table[key][f"binary_jaccard_accuracy_{hop_label}"] = local_metrics.get(
+                    "binary", {}
+                ).get("accuracy")
             table[key][f"binary_confidence_{hop_label}"] = pct_to_float(
                 by_type.get("binary", {}).get("confidence_calibration")
             )
-            if table[key][f"binary_confidence_{hop_label}"] is None:
-                table[key][f"binary_confidence_{hop_label}"] = conf.get("binary")
+            if (
+                recompute_answer_metrics
+                or table[key][f"binary_confidence_{hop_label}"] is None
+            ):
+                table[key][f"binary_confidence_{hop_label}"] = local_metrics.get(
+                    "binary", {}
+                ).get("confidence")
             table[key][f"open_ended_jaccard_accuracy_{hop_label}"] = pct_to_float(
                 by_type.get("mc", {}).get("average_accuracy")
             )
+            if recompute_answer_metrics:
+                table[key][f"open_ended_jaccard_accuracy_{hop_label}"] = (
+                    local_metrics.get("mc", {}).get("accuracy")
+                )
             table[key][f"open_ended_confidence_{hop_label}"] = pct_to_float(
                 by_type.get("mc", {}).get("confidence_calibration")
             )
-            if table[key][f"open_ended_confidence_{hop_label}"] is None:
-                table[key][f"open_ended_confidence_{hop_label}"] = conf.get("mc")
+            if (
+                recompute_answer_metrics
+                or table[key][f"open_ended_confidence_{hop_label}"] is None
+            ):
+                table[key][f"open_ended_confidence_{hop_label}"] = local_metrics.get(
+                    "mc", {}
+                ).get("confidence")
             table[key][f"open_ended_hallucination_{hop_label}"] = pct_to_float(
                 overall.get("hallucination_score")
             )
@@ -436,7 +450,10 @@ def write_latex(rows: list[dict[str, Any]], output_tex: Path, decimals: int) -> 
 
 def main() -> None:
     args = parse_args()
-    rows = collect_rows(args.base_dir)
+    rows = collect_rows(
+        args.base_dir,
+        recompute_answer_metrics=args.recompute_answer_metrics,
+    )
     write_csv(rows, args.output_csv, args.decimals)
     print(f"Wrote CSV: {args.output_csv}")
     if not args.no_tex:

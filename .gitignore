@@ -46,3 +46,5 @@ data/output
 data/resources
 final_benchmark/*.json
 !final_benchmark/toy_example_*.json
+paper_material/
+tests/
