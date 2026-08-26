@@ -48,3 +48,6 @@ final_benchmark/*.json
 !final_benchmark/toy_example_*.json
 paper_material/
 tests/
+!tests/
+tests/*
+!tests/test_sageqa_answer_metric_migration.py

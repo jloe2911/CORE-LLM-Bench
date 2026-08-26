@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""Create a combined benchmark results table.
-
-The script reads the final benchmark result CSVs plus their
-metrics/*_key_findings_summary.json files and writes:
-
-* a wide CSV with the same metric layout as the paper table
-* a LaTeX tabular fragment using grouped model rows
-
-By default it discovers all available runs under:
-data/output/final_benchmark_llm_results/{dataset}_{1hop,2hop}/{model}/{nl,abs,sparql}
-"""
+"""Regenerate Chapter 4 ontology tables from saved predictions only."""
 
 from __future__ import annotations
 
@@ -20,33 +10,36 @@ import math
 import re
 import sys
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 try:
-    from scripts.llm_pipeline.answer_normalization import normalized_jaccard_accuracy
+    from scripts.llm_pipeline.sageqa_answer_metrics import (
+        BenchmarkMismatchError,
+        benchmark_csv_path,
+        detect_models,
+        read_csv_rows,
+        score_checkpoint_rows,
+        validate_checkpoint_rows,
+    )
 except ImportError:
-    # Support direct execution: python scripts/create_paper_results_table.py
-    from llm_pipeline.answer_normalization import normalized_jaccard_accuracy
+    from llm_pipeline.sageqa_answer_metrics import (
+        BenchmarkMismatchError,
+        benchmark_csv_path,
+        detect_models,
+        read_csv_rows,
+        score_checkpoint_rows,
+        validate_checkpoint_rows,
+    )
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BASE_DIR = Path("data/output/final_benchmark_llm_results")
-DEFAULT_OUTPUT_CSV = Path(
-    "data/output/final_benchmark_llm_results/combined_1hop_2hop_results_table.csv"
-)
-DEFAULT_OUTPUT_TEX = Path(
-    "data/output/final_benchmark_llm_results/combined_1hop_2hop_results_table.tex"
-)
-SETTINGS = {
-    "nl": "NL",
-    "sparql": "FS",
-    "abs": "AR",
-}
-ANSWER_TYPE_LABELS = {
-    "binary": "binary",
-    "mc": "open",
-}
-
+DEFAULT_OUTPUT_CSV = DEFAULT_BASE_DIR / "combined_1hop_2hop_results_table.csv"
+DEFAULT_OUTPUT_TEX = DEFAULT_BASE_DIR / "combined_1hop_2hop_results_table.tex"
+SETTINGS = {"nl": "NL", "sparql": "FS", "abs": "AR"}
+CHAPTER4_DATASETS = {"FamilyOWL", "OWL2Bench"}
 
 max_csv_field_size = sys.maxsize
 while True:
@@ -57,121 +50,92 @@ while True:
         max_csv_field_size //= 10
 
 
+class DuplicateModelSettingSourceError(ValueError):
+    """More than one benchmark-valid artifact claims the same result cell."""
+
+
+@dataclass(frozen=True)
+class ValidatedSource:
+    dataset: str
+    hop: str
+    setting: str
+    model_name: str
+    checkpoint_path: Path
+    run_dir: Path
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Create a combined CSV and LaTeX table for available benchmark results."
+        description="Create Chapter 4 Answer EM/F1 CSV and LaTeX tables."
     )
     parser.add_argument("--base-dir", type=Path, default=DEFAULT_BASE_DIR)
     parser.add_argument("--output-csv", type=Path, default=DEFAULT_OUTPUT_CSV)
     parser.add_argument("--output-tex", type=Path, default=DEFAULT_OUTPUT_TEX)
     parser.add_argument("--decimals", type=int, default=1)
-    parser.add_argument(
-        "--recompute-answer-metrics",
-        action="store_true",
-        help=(
-            "Recalculate Jaccard accuracy and confidence calibration from saved "
-            "CSV answers using lexical-v1 normalization. This is offline and "
-            "does not make model API calls."
-        ),
-    )
-    parser.add_argument(
-        "--no-tex",
-        action="store_true",
-        help="Only write the CSV output.",
-    )
+    parser.add_argument("--no-tex", action="store_true")
     return parser.parse_args()
 
 
-def pct_to_float(value: Any) -> float | None:
-    if value is None:
-        return None
-    text = str(value).strip()
-    if not text or text.upper() == "N/A":
-        return None
-    if text.endswith("%"):
-        text = text[:-1]
-    try:
-        return float(text)
-    except ValueError:
-        return None
+def parse_dataset_hop_dir(path: Path) -> tuple[str, str] | None:
+    match = re.fullmatch(r"(.+)_(1hop|2hop)", path.name)
+    return (match.group(1), match.group(2)) if match else None
 
 
-def jaccard_accuracy(expected: Any, actual: Any, answer_type: str) -> float:
-    return normalized_jaccard_accuracy(expected, actual, answer_type)
+def iter_checkpoint_sources(base_dir: Path):
+    if not base_dir.is_dir():
+        raise FileNotFoundError(f"Missing results directory: {base_dir}")
+    for dataset_dir in sorted(path for path in base_dir.iterdir() if path.is_dir()):
+        parsed = parse_dataset_hop_dir(dataset_dir)
+        if parsed is None:
+            continue
+        dataset, hop = parsed
+        if dataset not in CHAPTER4_DATASETS:
+            continue
+        for model_dir in sorted(path for path in dataset_dir.iterdir() if path.is_dir()):
+            for setting in SETTINGS:
+                run_dir = model_dir / setting
+                checkpoint_path = run_dir / "LATEST_checkpoint.csv"
+                if checkpoint_path.is_file():
+                    yield dataset, hop, setting, run_dir, checkpoint_path
 
 
-def confidence_calibration(confidence: Any, accuracy: float) -> float:
-    try:
-        confidence_value = float(confidence)
-    except (TypeError, ValueError):
-        confidence_value = 0.5
-    confidence_value = max(0.0, min(1.0, confidence_value))
-    return 1.0 - abs(confidence_value - accuracy)
+def discover_validated_sources(
+    base_dir: Path, project_root: Path = PROJECT_ROOT
+) -> tuple[dict[tuple[str, str, str, str], ValidatedSource], list[str]]:
+    """Validate before keying, then reject duplicates instead of overwriting."""
 
+    sources: dict[tuple[str, str, str, str], ValidatedSource] = {}
+    rejected: list[str] = []
+    benchmark_cache: dict[tuple[str, str, str], list[dict[str, str]]] = {}
 
-def detect_models_from_csv(csv_path: Path) -> list[str]:
-    with csv_path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.reader(handle)
-        header = next(reader)
-    suffix = "_final_answer"
-    return sorted(col[: -len(suffix)] for col in header if col.endswith(suffix))
+    for dataset, hop, setting, run_dir, checkpoint_path in iter_checkpoint_sources(
+        base_dir
+    ):
+        benchmark_path = benchmark_csv_path(project_root, dataset, hop, setting)
+        if not benchmark_path.is_file():
+            continue
+        cache_key = (dataset, hop, setting)
+        benchmark_rows = benchmark_cache.setdefault(cache_key, read_csv_rows(benchmark_path))
+        checkpoint_rows = read_csv_rows(checkpoint_path)
+        try:
+            validate_checkpoint_rows(checkpoint_rows, benchmark_rows, checkpoint_path)
+        except BenchmarkMismatchError as exc:
+            rejected.append(str(exc))
+            continue
 
-
-def is_valid_answer(value: Any) -> bool:
-    if value is None:
-        return False
-    text = str(value)
-    return (
-        bool(text.strip())
-        and not text.startswith("[ERROR]")
-        and not text.startswith("ERROR")
-    )
-
-
-def mean(values: list[float]) -> float | None:
-    if not values:
-        return None
-    return sum(values) / len(values)
-
-
-def answer_metrics_by_type(
-    csv_path: Path,
-    model_name: str,
-) -> dict[str, dict[str, float | None]]:
-    final_answer_col = f"{model_name}_final_answer"
-    confidence_col = f"{model_name}_confidence_score"
-    accuracy_values: dict[str, list[float]] = defaultdict(list)
-    confidence_values: dict[str, list[float]] = defaultdict(list)
-
-    with csv_path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            final_answer = row.get(final_answer_col)
-            if not is_valid_answer(final_answer):
-                continue
-
-            answer_type = row.get("Answer Type", "BIN").strip().upper()
-            bucket = "binary" if answer_type == "BIN" else "mc"
-            accuracy = jaccard_accuracy(
-                row.get("Answer", ""), final_answer, answer_type
+        for model_name in detect_models(checkpoint_rows):
+            key = (dataset, hop, setting, model_name)
+            source = ValidatedSource(
+                dataset, hop, setting, model_name, checkpoint_path, run_dir
             )
-            accuracy_values[bucket].append(accuracy * 100.0)
-            confidence_values[bucket].append(
-                confidence_calibration(row.get(confidence_col, 0.5), accuracy) * 100.0
-            )
+            if key in sources:
+                raise DuplicateModelSettingSourceError(
+                    "Duplicate benchmark-valid model-setting source for "
+                    f"{key}: {sources[key].checkpoint_path} and {checkpoint_path}"
+                )
+            sources[key] = source
 
-    return {
-        bucket: {
-            "accuracy": mean(accuracy_values.get(bucket, [])),
-            "confidence": mean(confidence_values.get(bucket, [])),
-        }
-        for bucket in ("binary", "mc")
-    }
-
-
-def confidence_by_type(csv_path: Path, model_name: str) -> dict[str, float | None]:
-    metrics = answer_metrics_by_type(csv_path, model_name)
-    return {bucket: values["confidence"] for bucket, values in metrics.items()}
+    return sources, rejected
 
 
 def display_model_name(model_name: str) -> str:
@@ -183,7 +147,6 @@ def display_model_name(model_name: str) -> str:
     }
     if model_name in replacements:
         return replacements[model_name]
-
     name = model_name
     for prefix in ("openai_", "anthropic_", "google_", "meta_"):
         if name.startswith(prefix):
@@ -192,143 +155,69 @@ def display_model_name(model_name: str) -> str:
     return name.replace("_", "-")
 
 
-def read_summary(summary_path: Path) -> dict[str, Any]:
-    with summary_path.open(encoding="utf-8") as handle:
-        return json.load(handle).get("key_findings_summary", {})
-
-
-def get_metric_paths(run_dir: Path, setting: str) -> tuple[Path, Path]:
-    csv_path = run_dir / f"{setting}_final_benchmark_results_FINAL.csv"
-    summary_path = run_dir / "metrics" / f"{setting}_key_findings_summary.json"
-    return csv_path, summary_path
-
-
-def parse_dataset_hop_dir(path: Path) -> tuple[str, str] | None:
-    match = re.fullmatch(r"(.+)_(1hop|2hop)", path.name)
-    if not match:
+def pct_to_float(value: Any) -> float | None:
+    if value is None:
         return None
-    return match.group(1), match.group(2)
+    text = str(value).strip()
+    if not text or text.upper() == "N/A":
+        return None
+    try:
+        return float(text.removesuffix("%"))
+    except ValueError:
+        return None
 
 
-def iter_available_runs(base_dir: Path):
-    if not base_dir.exists():
-        raise FileNotFoundError(f"Missing results directory: {base_dir}")
-
-    dataset_dirs = sorted(path for path in base_dir.iterdir() if path.is_dir())
-    for dataset_dir in dataset_dirs:
-        parsed = parse_dataset_hop_dir(dataset_dir)
-        if parsed is None:
-            continue
-
-        dataset, hop = parsed
-        for model_dir in sorted(
-            path for path in dataset_dir.iterdir() if path.is_dir()
-        ):
-            for setting in SETTINGS:
-                run_dir = model_dir / setting
-                if run_dir.exists():
-                    yield dataset, hop, setting, run_dir
+def read_hallucination(source: ValidatedSource) -> float | None:
+    summary_path = source.run_dir / "metrics" / f"{source.setting}_key_findings_summary.json"
+    if not summary_path.is_file():
+        return None
+    with summary_path.open(encoding="utf-8") as handle:
+        summaries = json.load(handle).get("key_findings_summary", {})
+    return pct_to_float(
+        summaries.get(source.model_name, {})
+        .get("overall_metrics", {})
+        .get("hallucination_score")
+    )
 
 
-def format_cell(value: float | None, decimals: int) -> str:
-    if value is None or (isinstance(value, float) and math.isnan(value)):
-        return ""
-    return f"{value:.{decimals}f}"
+def collect_rows(base_dir: Path) -> list[dict[str, Any]]:
+    sources, rejected = discover_validated_sources(base_dir)
+    if not sources:
+        raise FileNotFoundError(f"No benchmark-valid checkpoint sources under {base_dir}")
 
-
-def collect_rows(
-    base_dir: Path,
-    recompute_answer_metrics: bool = False,
-) -> list[dict[str, str]]:
-    table: dict[tuple[str, str, str], dict[str, float | None | str]] = {}
-    skipped_runs: list[str] = []
-
-    for dataset, hop, setting, run_dir in iter_available_runs(base_dir):
-        hop_label = "1-hop" if hop == "1hop" else "2-hop"
-        setting_label = SETTINGS[setting]
-        csv_path, summary_path = get_metric_paths(run_dir, setting)
-        if not summary_path.exists():
-            skipped_runs.append(str(run_dir))
-            continue
-
-        summary = read_summary(summary_path)
-        models = set(summary.keys())
-        if csv_path.exists():
-            models.update(detect_models_from_csv(csv_path))
-        models = sorted(models)
-
-        for model_name in models:
-            key = (dataset, model_name, setting_label)
-            table.setdefault(
-                key,
-                {
-                    "dataset": dataset,
-                    "model_id": model_name,
-                    "model": display_model_name(model_name),
-                    "setting": setting_label,
-                },
-            )
-            model_summary = summary.get(model_name, {})
-            by_type = model_summary.get("performance_by_answer_type", {})
-            overall = model_summary.get("overall_metrics", {})
-            local_metrics = (
-                answer_metrics_by_type(csv_path, model_name)
-                if csv_path.exists()
-                else {}
-            )
-
-            table[key][f"binary_jaccard_accuracy_{hop_label}"] = pct_to_float(
-                by_type.get("binary", {}).get("average_accuracy")
-            )
-            if recompute_answer_metrics:
-                table[key][f"binary_jaccard_accuracy_{hop_label}"] = local_metrics.get(
-                    "binary", {}
-                ).get("accuracy")
-            table[key][f"binary_confidence_{hop_label}"] = pct_to_float(
-                by_type.get("binary", {}).get("confidence_calibration")
-            )
-            if (
-                recompute_answer_metrics
-                or table[key][f"binary_confidence_{hop_label}"] is None
-            ):
-                table[key][f"binary_confidence_{hop_label}"] = local_metrics.get(
-                    "binary", {}
-                ).get("confidence")
-            table[key][f"open_ended_jaccard_accuracy_{hop_label}"] = pct_to_float(
-                by_type.get("mc", {}).get("average_accuracy")
-            )
-            if recompute_answer_metrics:
-                table[key][f"open_ended_jaccard_accuracy_{hop_label}"] = (
-                    local_metrics.get("mc", {}).get("accuracy")
-                )
-            table[key][f"open_ended_confidence_{hop_label}"] = pct_to_float(
-                by_type.get("mc", {}).get("confidence_calibration")
-            )
-            if (
-                recompute_answer_metrics
-                or table[key][f"open_ended_confidence_{hop_label}"] is None
-            ):
-                table[key][f"open_ended_confidence_{hop_label}"] = local_metrics.get(
-                    "mc", {}
-                ).get("confidence")
-            table[key][f"open_ended_hallucination_{hop_label}"] = pct_to_float(
-                overall.get("hallucination_score")
-            )
-
-    if not table:
-        raise FileNotFoundError(
-            f"No complete result runs found under {base_dir}. Expected "
-            "{dataset}_{1hop,2hop}/{model}/{nl,abs,sparql}/"
-            "metrics/{setting}_key_findings_summary.json files."
+    table: dict[tuple[str, str, str], dict[str, Any]] = {}
+    rows_cache: dict[Path, list[dict[str, str]]] = {}
+    for source in sources.values():
+        hop_label = "1-hop" if source.hop == "1hop" else "2-hop"
+        setting_label = SETTINGS[source.setting]
+        table_key = (source.dataset, source.model_name, setting_label)
+        row = table.setdefault(
+            table_key,
+            {
+                "dataset": source.dataset,
+                "model_id": source.model_name,
+                "model": display_model_name(source.model_name),
+                "setting": setting_label,
+            },
         )
-
-    if skipped_runs:
-        print(
-            f"Skipped {len(skipped_runs)} incomplete run directories missing metrics JSON."
+        checkpoint_rows = rows_cache.setdefault(
+            source.checkpoint_path, read_csv_rows(source.checkpoint_path)
         )
+        scored = score_checkpoint_rows(checkpoint_rows, source.model_name)["aggregates"]
+        for answer_bucket, column_prefix in (("binary", "binary"), ("open", "open_ended")):
+            metrics = scored[answer_bucket]
+            row[f"{column_prefix}_answer_em_{hop_label}"] = 100.0 * metrics["answer_em"]
+            row[f"{column_prefix}_answer_f1_{hop_label}"] = 100.0 * metrics["answer_f1"]
+            row[f"{column_prefix}_confidence_correctness_alignment_{hop_label}"] = (
+                100.0 * metrics["confidence_correctness_alignment"]
+            )
+        row[f"open_ended_hallucination_{hop_label}"] = read_hallucination(source)
 
-    rows = list(table.values())
+    for message in rejected:
+        print(f"Rejected mismatched checkpoint: {message}")
+
     setting_order = {label: index for index, label in enumerate(SETTINGS.values())}
+    rows = list(table.values())
     rows.sort(
         key=lambda row: (
             str(row["dataset"]).lower(),
@@ -339,23 +228,23 @@ def collect_rows(
     return rows
 
 
+IDENTITY_COLUMNS = ["dataset", "model_id", "model", "setting"]
+METRIC_COLUMNS = [
+    f"{answer_type}_{metric}_{hop}"
+    for answer_type in ("binary", "open_ended")
+    for metric in ("answer_em", "answer_f1", "confidence_correctness_alignment")
+    for hop in ("1-hop", "2-hop")
+] + [f"open_ended_hallucination_{hop}" for hop in ("1-hop", "2-hop")]
+
+
+def format_cell(value: float | None, decimals: int) -> str:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return ""
+    return f"{value:.{decimals}f}"
+
+
 def write_csv(rows: list[dict[str, Any]], output_csv: Path, decimals: int) -> None:
-    columns = [
-        "dataset",
-        "model_id",
-        "model",
-        "setting",
-        "binary_jaccard_accuracy_1-hop",
-        "binary_jaccard_accuracy_2-hop",
-        "binary_confidence_1-hop",
-        "binary_confidence_2-hop",
-        "open_ended_jaccard_accuracy_1-hop",
-        "open_ended_jaccard_accuracy_2-hop",
-        "open_ended_confidence_1-hop",
-        "open_ended_confidence_2-hop",
-        "open_ended_hallucination_1-hop",
-        "open_ended_hallucination_2-hop",
-    ]
+    columns = IDENTITY_COLUMNS + METRIC_COLUMNS
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     with output_csv.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
@@ -363,8 +252,8 @@ def write_csv(rows: list[dict[str, Any]], output_csv: Path, decimals: int) -> No
         for row in rows:
             writer.writerow(
                 {
-                    column: row[column]
-                    if column in ("dataset", "model_id", "model", "setting")
+                    column: row.get(column, "")
+                    if column in IDENTITY_COLUMNS
                     else format_cell(row.get(column), decimals)
                     for column in columns
                 }
@@ -390,59 +279,36 @@ def write_latex(rows: list[dict[str, Any]], output_tex: Path, decimals: int) -> 
         grouped[(str(row["dataset"]), str(row["model"]))].append(row)
 
     lines = [
-        r"\begin{tabular}{@{}lllcccccccccc@{}}",
+        r"\begin{tabular}{@{}lllcccccccccccccc@{}}",
         r"\toprule",
-        r"& & & \multicolumn{4}{c}{\textbf{Binary Questions}} & \multicolumn{6}{c}{\textbf{Open-Ended Questions}} \\",
-        r"\cmidrule(lr){4-7} \cmidrule(lr){8-13}",
+        r"& & & \multicolumn{6}{c}{\textbf{Binary Questions}} & \multicolumn{8}{c}{\textbf{Open-Ended Questions}} \\",
+        r"\cmidrule(lr){4-9} \cmidrule(lr){10-17}",
         r"\textbf{Dataset} & \textbf{Model} & \textbf{Setting}",
-        r"& \multicolumn{2}{c}{\textbf{Jac. Acc.}} & \multicolumn{2}{c}{\textbf{Conf.}}",
-        r"& \multicolumn{2}{c}{\textbf{Jac. Acc.}} & \multicolumn{2}{c}{\textbf{Conf.}} & \multicolumn{2}{c}{\textbf{Hall.}} \\",
-        r"\cmidrule(lr){4-5} \cmidrule(lr){6-7}",
-        r"\cmidrule(lr){8-9} \cmidrule(lr){10-11} \cmidrule(lr){12-13}",
-        r"& & & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop \\",
+        r"& \multicolumn{2}{c}{\textbf{Ans. EM}} & \multicolumn{2}{c}{\textbf{Ans. F1}} & \multicolumn{2}{c}{\textbf{Conf.--Corr.}}",
+        r"& \multicolumn{2}{c}{\textbf{Ans. EM}} & \multicolumn{2}{c}{\textbf{Ans. F1}} & \multicolumn{2}{c}{\textbf{Conf.--Corr.}} & \multicolumn{2}{c}{\textbf{Hall.}} \\",
+        r"\cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} \cmidrule(lr){12-13} \cmidrule(lr){14-15} \cmidrule(lr){16-17}",
+        r"& & & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop & 1-hop & 2-hop \\",
         r"\midrule",
     ]
-
-    group_keys = sorted(
-        grouped.keys(), key=lambda item: (item[0].lower(), item[1].lower())
-    )
-    for group_index, (dataset, model) in enumerate(group_keys):
-        model_rows = grouped[(dataset, model)]
-        model_rows.sort(key=lambda row: list(SETTINGS.values()).index(row["setting"]))
+    keys = sorted(grouped, key=lambda item: (item[0].lower(), item[1].lower()))
+    for group_index, (dataset, model) in enumerate(keys):
+        model_rows = sorted(
+            grouped[(dataset, model)],
+            key=lambda row: list(SETTINGS.values()).index(row["setting"]),
+        )
         for row_index, row in enumerate(model_rows):
-            dataset_cell = (
+            cells = [
                 rf"\multirow{{{len(model_rows)}}}{{*}}{{{latex_escape(dataset)}}}"
                 if row_index == 0
-                else ""
-            )
-            model_cell = (
+                else "",
                 rf"\multirow{{{len(model_rows)}}}{{*}}{{{latex_escape(model)}}}"
                 if row_index == 0
-                else ""
-            )
-            lines.append(
-                " & ".join(
-                    [
-                        dataset_cell,
-                        model_cell,
-                        latex_escape(row["setting"]),
-                        row_value(row, "binary_jaccard_accuracy_1-hop", decimals),
-                        row_value(row, "binary_jaccard_accuracy_2-hop", decimals),
-                        row_value(row, "binary_confidence_1-hop", decimals),
-                        row_value(row, "binary_confidence_2-hop", decimals),
-                        row_value(row, "open_ended_jaccard_accuracy_1-hop", decimals),
-                        row_value(row, "open_ended_jaccard_accuracy_2-hop", decimals),
-                        row_value(row, "open_ended_confidence_1-hop", decimals),
-                        row_value(row, "open_ended_confidence_2-hop", decimals),
-                        row_value(row, "open_ended_hallucination_1-hop", decimals),
-                        row_value(row, "open_ended_hallucination_2-hop", decimals),
-                    ]
-                )
-                + r" \\"
-            )
-        if group_index != len(group_keys) - 1:
+                else "",
+                latex_escape(row["setting"]),
+            ] + [row_value(row, column, decimals) for column in METRIC_COLUMNS]
+            lines.append(" & ".join(cells) + r" \\")
+        if group_index != len(keys) - 1:
             lines.append(r"\midrule")
-
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     output_tex.parent.mkdir(parents=True, exist_ok=True)
     output_tex.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -450,10 +316,7 @@ def write_latex(rows: list[dict[str, Any]], output_tex: Path, decimals: int) -> 
 
 def main() -> None:
     args = parse_args()
-    rows = collect_rows(
-        args.base_dir,
-        recompute_answer_metrics=args.recompute_answer_metrics,
-    )
+    rows = collect_rows(args.base_dir)
     write_csv(rows, args.output_csv, args.decimals)
     print(f"Wrote CSV: {args.output_csv}")
     if not args.no_tex:

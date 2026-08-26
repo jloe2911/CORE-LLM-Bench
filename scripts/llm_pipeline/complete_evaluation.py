@@ -13,16 +13,13 @@ import os
 from scipy import stats
 
 try:
-    from .answer_normalization import (
-        ANSWER_NORMALIZATION_VERSION,
-        normalized_jaccard_accuracy,
+    from .sageqa_answer_metrics import (
+        SAGEQA_EVALUATOR_SHA256,
+        answer_set_scores,
     )
 except ImportError:
     # Support direct execution: python scripts/llm_pipeline/complete_evaluation.py
-    from answer_normalization import (
-        ANSWER_NORMALIZATION_VERSION,
-        normalized_jaccard_accuracy,
-    )
+    from sageqa_answer_metrics import SAGEQA_EVALUATOR_SHA256, answer_set_scores
 
 # Navigate to project root
 script_dir = Path(__file__).resolve().parent
@@ -90,16 +87,22 @@ def parse_args():
         help="Path to the output directory.",
     )
     parser.add_argument(
-        "--jaccard-threshold",
+        "--answer-em-threshold",
         type=float,
         default=1.0,
-        help="Threshold for Jaccard Accuracy success.",
+        help="Threshold for Answer EM success.",
+    )
+    parser.add_argument(
+        "--answer-f1-threshold",
+        type=float,
+        default=1.0,
+        help="Threshold for Answer F1 success.",
     )
     parser.add_argument(
         "--calibration-threshold",
         type=float,
         default=0.7,
-        help="Threshold for Confidence Calibration success.",
+        help="Threshold for Confidence-Correctness Alignment success.",
     )
     parser.add_argument(
         "--hallucination-threshold",
@@ -170,7 +173,7 @@ class EvalCase:
     metrics_data: Dict[str, Any] = field(default_factory=dict)
 
 
-class JaccardAccuracyMetric(BaseMetric):
+class AnswerEMMetric(BaseMetric):
     def __init__(self, threshold: float = 0.0):
         self.threshold = threshold
         self.async_mode = False
@@ -184,8 +187,7 @@ class JaccardAccuracyMetric(BaseMetric):
 
         expected = str(test_case.expected_output).strip()
         actual = str(test_case.actual_output).strip()
-        answer_type = metadata.get("answer_type", "BIN")
-        score = normalized_jaccard_accuracy(expected, actual, answer_type)
+        score = answer_set_scores(actual, expected)[0]
 
         self.success = score >= self.threshold
         self.score = score
@@ -196,7 +198,32 @@ class JaccardAccuracyMetric(BaseMetric):
 
     @property
     def __name__(self):
-        return "Jaccard Accuracy"
+        return "Answer EM"
+
+
+class AnswerF1Metric(BaseMetric):
+    def __init__(self, threshold: float = 0.0):
+        self.threshold = threshold
+        self.async_mode = False
+
+    async def a_measure(self, case):
+        return self.measure(case)
+
+    def measure(self, case):
+        test_case = case.test_case
+        expected = str(test_case.expected_output).strip()
+        actual = str(test_case.actual_output).strip()
+        score = answer_set_scores(actual, expected)[1]
+        self.success = score >= self.threshold
+        self.score = score
+        return score
+
+    def is_successful(self):
+        return self.success
+
+    @property
+    def __name__(self):
+        return "Answer F1"
 
 
 class ConfidenceCalibrationMetric(BaseMetric):
@@ -210,10 +237,16 @@ class ConfidenceCalibrationMetric(BaseMetric):
     def measure(self, case):
         metadata = case.metadata
         confidence = metadata.get("confidence_score", 0.5)
+        try:
+            confidence = float(confidence)
+        except (TypeError, ValueError):
+            confidence = 0.5
+        if pd.isna(confidence):
+            confidence = 0.5
         confidence = max(0.0, min(1.0, confidence))
 
-        jaccard_accuracy = case.metrics_data.get("Jaccard Accuracy", {}).get("score", 0)
-        calibration_error = abs(confidence - jaccard_accuracy)
+        answer_f1 = case.metrics_data.get("Answer F1", {}).get("score", 0)
+        calibration_error = abs(confidence - answer_f1)
         calibration_score = 1.0 - calibration_error
 
         self.score = calibration_score
@@ -225,7 +258,7 @@ class ConfidenceCalibrationMetric(BaseMetric):
 
     @property
     def __name__(self):
-        return "Confidence Calibration"
+        return "Confidence-Correctness Alignment"
 
 
 class OntologyHallucinationMetric(BaseMetric):
@@ -363,7 +396,8 @@ class CompleteEvaluator:
         csv_file: str,
         explanations_file: str,
         output_dir: str,
-        jaccard_threshold: float = 1.0,
+        answer_em_threshold: float = 1.0,
+        answer_f1_threshold: float = 1.0,
         calibration_threshold: float = 0.7,
         hallucination_threshold: float = 0.7,
         bootstrap_samples: int = 1000,
@@ -374,7 +408,8 @@ class CompleteEvaluator:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        self.jaccard_threshold = jaccard_threshold
+        self.answer_em_threshold = answer_em_threshold
+        self.answer_f1_threshold = answer_f1_threshold
         self.calibration_threshold = calibration_threshold
         self.hallucination_threshold = hallucination_threshold
         self.bootstrap_samples = bootstrap_samples
@@ -429,35 +464,35 @@ class CompleteEvaluator:
         model_stats = {}
 
         for model_name, results in all_results.items():
-            jaccard_scores = [
-                r.metrics_data.get("Jaccard Accuracy", {}).get("score", 0)
+            answer_f1_scores = [
+                r.metrics_data.get("Answer F1", {}).get("score", 0)
                 for r in results["eval_results"]
             ]
 
-            if len(jaccard_scores) > self.min_samples_statistics:
+            if len(answer_f1_scores) > self.min_samples_statistics:
                 bootstrap_means = []
-                n = len(jaccard_scores)
+                n = len(answer_f1_scores)
 
                 for _ in range(self.bootstrap_samples):
                     bootstrap_sample = np.random.choice(
-                        jaccard_scores, size=n, replace=True
+                        answer_f1_scores, size=n, replace=True
                     )
                     bootstrap_means.append(np.mean(bootstrap_sample))
 
                 ci_lower = np.percentile(bootstrap_means, 2.5)
                 ci_upper = np.percentile(bootstrap_means, 97.5)
-                mean_score = np.mean(jaccard_scores)
+                mean_score = np.mean(answer_f1_scores)
 
                 model_stats[model_name] = {
                     "mean": mean_score,
                     "ci_lower": ci_lower,
                     "ci_upper": ci_upper,
                     "margin_of_error": (ci_upper - ci_lower) / 2,
-                    "n": len(jaccard_scores),
+                    "n": len(answer_f1_scores),
                 }
 
                 print(
-                    f"   {model_name}: {mean_score:.1%} [{ci_lower:.1%}, {ci_upper:.1%}] (n={len(jaccard_scores)})"
+                    f"   {model_name}: {mean_score:.1%} [{ci_lower:.1%}, {ci_upper:.1%}] (n={len(answer_f1_scores)})"
                 )
 
         print("\n🔄 Pairwise Comparisons (Mann-Whitney U test):")
@@ -470,11 +505,11 @@ class CompleteEvaluator:
                     model1, model2 = model_names[i], model_names[j]
 
                     scores1 = [
-                        r.metrics_data.get("Jaccard Accuracy", {}).get("score", 0)
+                        r.metrics_data.get("Answer F1", {}).get("score", 0)
                         for r in all_results[model1]["eval_results"]
                     ]
                     scores2 = [
-                        r.metrics_data.get("Jaccard Accuracy", {}).get("score", 0)
+                        r.metrics_data.get("Answer F1", {}).get("score", 0)
                         for r in all_results[model2]["eval_results"]
                     ]
 
@@ -687,6 +722,7 @@ class CompleteEvaluator:
         bin_total = len(self.df[self.df["Answer Type"] == "BIN"])
         mc_total = len(self.df[self.df["Answer Type"] == "MC"])
 
+        # Kept for the existing progress report: no predictions are skipped.
         bin_skipped = 0
         mc_skipped = 0
         bin_processed = 0
@@ -700,18 +736,6 @@ class CompleteEvaluator:
 
             if final_answer_col not in self.df.columns:
                 raise ValueError(f"Missing required model column: {final_answer_col}")
-
-            if (
-                pd.isna(row[final_answer_col])
-                or row[final_answer_col] == ""
-                or str(row[final_answer_col]).startswith("[ERROR]")
-                or str(row[final_answer_col]).startswith("ERROR")
-            ):
-                if answer_type == "BIN":
-                    bin_skipped += 1
-                else:
-                    mc_skipped += 1
-                continue
 
             if answer_type == "BIN":
                 bin_processed += 1
@@ -774,9 +798,11 @@ class CompleteEvaluator:
             if tokens_col in self.df.columns and not pd.isna(row.get(tokens_col)):
                 metadata["token_count"] = row.get(tokens_col)
 
+            raw_prediction = row[final_answer_col]
+            prediction = "" if pd.isna(raw_prediction) else str(raw_prediction)
             test_case = LLMTestCase(
                 input=sparql_query,
-                actual_output=str(row[final_answer_col]),
+                actual_output=prediction,
                 expected_output=str(row.get("Answer", "")),
                 context=context_parts,
             )
@@ -822,7 +848,8 @@ class CompleteEvaluator:
             return None
 
         metrics = [
-            JaccardAccuracyMetric(threshold=self.jaccard_threshold),
+            AnswerEMMetric(threshold=self.answer_em_threshold),
+            AnswerF1Metric(threshold=self.answer_f1_threshold),
             ConfidenceCalibrationMetric(threshold=self.calibration_threshold),
             OntologyHallucinationMetric(threshold=self.hallucination_threshold),
         ]
@@ -868,11 +895,10 @@ class CompleteEvaluator:
 
         for result in eval_results:
             tag_groups = result.metadata.get("tag_groups", [])
-            jaccard_score = result.metrics_data.get("Jaccard Accuracy", {}).get(
-                "score", 0
-            )
+            answer_em = result.metrics_data.get("Answer EM", {}).get("score", 0)
+            answer_f1 = result.metrics_data.get("Answer F1", {}).get("score", 0)
             calibration_score = result.metrics_data.get(
-                "Confidence Calibration", {}
+                "Confidence-Correctness Alignment", {}
             ).get("score", 0)
             hallucination_score = result.metrics_data.get(
                 "Ontology Hallucination Detection", {}
@@ -883,12 +909,13 @@ class CompleteEvaluator:
             for group in tag_groups:
                 group_analysis[group].append(
                     {
-                        "jaccard": jaccard_score,
+                        "answer_em": answer_em,
+                        "answer_f1": answer_f1,
                         "calibration": calibration_score,
                         "hallucination": hallucination_score,
                         "answer_type": answer_type,
                         "inference_count": inference_count,
-                        "is_correct": jaccard_score >= 1.0,
+                        "is_correct": answer_em >= 1.0,
                     }
                 )
 
@@ -909,8 +936,10 @@ class CompleteEvaluator:
                 "percentage_of_total": percentage_of_total,
                 "sample_count": total_count,
                 "accuracy_rate": correct_count / total_count if total_count else 0,
-                "jaccard_mean": np.mean([r["jaccard"] for r in results]),
-                "jaccard_std": np.std([r["jaccard"] for r in results]),
+                "answer_em_mean": np.mean([r["answer_em"] for r in results]),
+                "answer_em_std": np.std([r["answer_em"] for r in results]),
+                "answer_f1_mean": np.mean([r["answer_f1"] for r in results]),
+                "answer_f1_std": np.std([r["answer_f1"] for r in results]),
                 "calibration_mean": np.mean([r["calibration"] for r in results]),
                 "calibration_std": np.std([r["calibration"] for r in results]),
                 "hallucination_mean": np.mean(valid_hallucination_scores)
@@ -973,7 +1002,8 @@ class CompleteEvaluator:
         if total_cases == 0:
             return {
                 "total_test_cases": 0,
-                "jaccard_accuracy": {
+                "answer_em": {"mean": 0, "std": 0},
+                "answer_f1": {
                     "mean": 0,
                     "std": 0,
                     "perfect_answers": 0,
@@ -983,7 +1013,11 @@ class CompleteEvaluator:
                     "partial_rate": 0,
                     "wrong_rate": 0,
                 },
-                "confidence_calibration": {"mean": 0, "std": 0, "well_calibrated": 0},
+                "confidence_correctness_alignment": {
+                    "mean": 0,
+                    "std": 0,
+                    "well_aligned": 0,
+                },
                 "hallucination_detection": {
                     "mean": None,
                     "std": None,
@@ -996,7 +1030,8 @@ class CompleteEvaluator:
                 "dataset_percentage": 0.0,
             }
 
-        jaccard_scores = []
+        answer_em_scores = []
+        answer_f1_scores = []
         answer_categories = {"perfect": 0, "partial": 0, "wrong": 0}
         calibration_scores = []
         hallucination_scores = []
@@ -1007,26 +1042,28 @@ class CompleteEvaluator:
             metrics_data = result.metrics_data
             answer_type = result.metadata.get("answer_type", "BIN")
 
-            if "Jaccard Accuracy" in metrics_data:
-                score = metrics_data["Jaccard Accuracy"]["score"]
-                jaccard_scores.append(score)
+            if "Answer EM" in metrics_data and "Answer F1" in metrics_data:
+                em_score = metrics_data["Answer EM"]["score"]
+                score = metrics_data["Answer F1"]["score"]
+                answer_em_scores.append(em_score)
+                answer_f1_scores.append(score)
 
                 if answer_type == "BIN":
-                    if score == 1.0:
+                    if em_score == 1.0:
                         answer_categories["perfect"] += 1
                     else:
                         answer_categories["wrong"] += 1
                 else:
-                    if score == 1.0:
+                    if em_score == 1.0:
                         answer_categories["perfect"] += 1
                     elif score > 0.0:
                         answer_categories["partial"] += 1
                     else:
                         answer_categories["wrong"] += 1
 
-            if "Confidence Calibration" in metrics_data:
+            if "Confidence-Correctness Alignment" in metrics_data:
                 calibration_scores.append(
-                    metrics_data["Confidence Calibration"]["score"]
+                    metrics_data["Confidence-Correctness Alignment"]["score"]
                 )
 
             if "Ontology Hallucination Detection" in metrics_data:
@@ -1052,9 +1089,13 @@ class CompleteEvaluator:
         return {
             "total_test_cases": total_cases,
             "dataset_percentage": dataset_percentage,
-            "jaccard_accuracy": {
-                "mean": np.mean(jaccard_scores) if jaccard_scores else 0,
-                "std": np.std(jaccard_scores) if jaccard_scores else 0,
+            "answer_em": {
+                "mean": np.mean(answer_em_scores) if answer_em_scores else 0,
+                "std": np.std(answer_em_scores) if answer_em_scores else 0,
+            },
+            "answer_f1": {
+                "mean": np.mean(answer_f1_scores) if answer_f1_scores else 0,
+                "std": np.std(answer_f1_scores) if answer_f1_scores else 0,
                 "perfect_answers": answer_categories["perfect"],
                 "partial_answers": answer_categories["partial"],
                 "wrong_answers": answer_categories["wrong"],
@@ -1068,10 +1109,10 @@ class CompleteEvaluator:
                 if total_cases > 0
                 else 0,
             },
-            "confidence_calibration": {
+            "confidence_correctness_alignment": {
                 "mean": np.mean(calibration_scores) if calibration_scores else 0,
                 "std": np.std(calibration_scores) if calibration_scores else 0,
-                "well_calibrated": sum(
+                "well_aligned": sum(
                     1 for s in calibration_scores if s >= self.calibration_threshold
                 )
                 if calibration_scores
@@ -1160,8 +1201,9 @@ class CompleteEvaluator:
                 "csv_file": str(self.csv_file),
                 "explanations_file": str(self.explanations_file),
                 "output_dir": str(self.output_dir),
-                "answer_normalization": ANSWER_NORMALIZATION_VERSION,
-                "jaccard_threshold": self.jaccard_threshold,
+                "authoritative_sageqa_evaluator_sha256": SAGEQA_EVALUATOR_SHA256,
+                "answer_em_threshold": self.answer_em_threshold,
+                "answer_f1_threshold": self.answer_f1_threshold,
                 "calibration_threshold": self.calibration_threshold,
                 "hallucination_threshold": self.hallucination_threshold,
                 "bootstrap_samples": self.bootstrap_samples,
@@ -1177,7 +1219,8 @@ class CompleteEvaluator:
             for group, stats_dict in tag_groups.items():
                 tag_group_data[group] = {
                     "sample_count": stats_dict["sample_count"],
-                    "accuracy": format_percent(stats_dict["jaccard_mean"]),
+                    "answer_em": format_percent(stats_dict["answer_em_mean"]),
+                    "answer_f1": format_percent(stats_dict["answer_f1_mean"]),
                     "percentage_of_total": f"{stats_dict['percentage_of_total']:.1f}%",
                     "binary_count": stats_dict["binary_count"],
                     "mc_count": stats_dict["mc_count"],
@@ -1189,26 +1232,29 @@ class CompleteEvaluator:
             summary_data["key_findings_summary"][model_name] = {
                 "overall_metrics": {
                     "successfully_evaluated": f"{model_results['summary']['overall']['total_test_cases']} ({model_results['summary']['overall']['dataset_percentage']:.1f}%)",
-                    "average_accuracy": format_percent(
-                        model_results["summary"]["overall"]["jaccard_accuracy"]["mean"]
+                    "average_answer_em": format_percent(
+                        model_results["summary"]["overall"]["answer_em"]["mean"]
+                    ),
+                    "average_answer_f1": format_percent(
+                        model_results["summary"]["overall"]["answer_f1"]["mean"]
                     ),
                     "perfect_answers": format_percent(
-                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                        model_results["summary"]["overall"]["answer_f1"][
                             "perfect_rate"
                         ]
                     ),
                     "partial_answers": format_percent(
-                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                        model_results["summary"]["overall"]["answer_f1"][
                             "partial_rate"
                         ]
                     ),
                     "wrong_answers": format_percent(
-                        model_results["summary"]["overall"]["jaccard_accuracy"][
+                        model_results["summary"]["overall"]["answer_f1"][
                             "wrong_rate"
                         ]
                     ),
-                    "confidence_calibration": format_percent(
-                        model_results["summary"]["overall"]["confidence_calibration"][
+                    "confidence_correctness_alignment": format_percent(
+                        model_results["summary"]["overall"]["confidence_correctness_alignment"][
                             "mean"
                         ]
                     ),
@@ -1229,14 +1275,15 @@ class CompleteEvaluator:
                     "binary": {
                         "dataset_questions": f"{dataset_composition['bin_questions']} ({dataset_composition['bin_percentage']:.1f}%)",
                         "successfully_evaluated": f"{model_results['summary']['binary']['total_test_cases']} ({model_results['summary']['binary']['dataset_percentage']:.1f}%)",
-                        "average_accuracy": format_percent(
-                            model_results["summary"]["binary"]["jaccard_accuracy"][
-                                "mean"
-                            ]
+                        "average_answer_em": format_percent(
+                            model_results["summary"]["binary"]["answer_em"]["mean"]
                         ),
-                        "confidence_calibration": format_percent(
+                        "average_answer_f1": format_percent(
+                            model_results["summary"]["binary"]["answer_f1"]["mean"]
+                        ),
+                        "confidence_correctness_alignment": format_percent(
                             model_results["summary"]["binary"][
-                                "confidence_calibration"
+                                "confidence_correctness_alignment"
                             ]["mean"]
                         ),
                         "average_response_time_seconds": format_number(
@@ -1251,11 +1298,14 @@ class CompleteEvaluator:
                     "mc": {
                         "dataset_questions": f"{dataset_composition['mc_questions']} ({dataset_composition['mc_percentage']:.1f}%)",
                         "successfully_evaluated": f"{model_results['summary']['mc']['total_test_cases']} ({model_results['summary']['mc']['dataset_percentage']:.1f}%)",
-                        "average_accuracy": format_percent(
-                            model_results["summary"]["mc"]["jaccard_accuracy"]["mean"]
+                        "average_answer_em": format_percent(
+                            model_results["summary"]["mc"]["answer_em"]["mean"]
                         ),
-                        "confidence_calibration": format_percent(
-                            model_results["summary"]["mc"]["confidence_calibration"][
+                        "average_answer_f1": format_percent(
+                            model_results["summary"]["mc"]["answer_f1"]["mean"]
+                        ),
+                        "confidence_correctness_alignment": format_percent(
+                            model_results["summary"]["mc"]["confidence_correctness_alignment"][
                                 "mean"
                             ]
                         ),
@@ -1310,7 +1360,8 @@ def main():
         csv_file=args.csv_file,
         explanations_file=args.explanations_file,
         output_dir=args.output_dir,
-        jaccard_threshold=args.jaccard_threshold,
+        answer_em_threshold=args.answer_em_threshold,
+        answer_f1_threshold=args.answer_f1_threshold,
         calibration_threshold=args.calibration_threshold,
         hallucination_threshold=args.hallucination_threshold,
         bootstrap_samples=args.bootstrap_samples,
@@ -1328,15 +1379,17 @@ def main():
     for model_name, model_results in results.items():
         print(f"\n🤖 {model_name.upper()}:")
         summary_overall = model_results["summary"]["overall"]
-        jaccard_overall = summary_overall["jaccard_accuracy"]
+        answer_em_overall = summary_overall["answer_em"]
+        answer_f1_overall = summary_overall["answer_f1"]
 
         print("   Overall:")
-        print(f"     Average Accuracy: {jaccard_overall['mean']:.1%}")
+        print(f"     Answer EM: {answer_em_overall['mean']:.1%}")
+        print(f"     Answer F1: {answer_f1_overall['mean']:.1%}")
         print(
-            f"     Perfect Answers: {jaccard_overall['perfect_answers']}/{summary_overall['total_test_cases']} ({jaccard_overall['perfect_rate']:.1%})"
+            f"     Perfect Answers: {answer_f1_overall['perfect_answers']}/{summary_overall['total_test_cases']} ({answer_f1_overall['perfect_rate']:.1%})"
         )
         print(
-            f"     Confidence Calibration: {summary_overall['confidence_calibration']['mean']:.1%}"
+            f"     Confidence-Correctness Alignment: {summary_overall['confidence_correctness_alignment']['mean']:.1%}"
         )
         hallucination_mean = summary_overall["hallucination_detection"]["mean"]
         hallucination_display = (
@@ -1346,14 +1399,14 @@ def main():
 
         tag_groups = model_results["tag_group_analysis"]
         sorted_groups = sorted(
-            tag_groups.items(), key=lambda x: x[1]["jaccard_mean"], reverse=True
+            tag_groups.items(), key=lambda x: x[1]["answer_f1_mean"], reverse=True
         )
 
         if sorted_groups:
             print("\n   💪 Best performing groups:")
             for group, stats_dict in sorted_groups[: min(3, len(sorted_groups))]:
                 print(
-                    f"      {group}: {stats_dict['jaccard_mean']:.1%} accuracy ({stats_dict['percentage_of_total']:.1f}% of queries)"
+                    f"      {group}: {stats_dict['answer_f1_mean']:.1%} Answer F1 ({stats_dict['percentage_of_total']:.1f}% of queries)"
                 )
 
 
