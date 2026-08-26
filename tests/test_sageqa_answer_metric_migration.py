@@ -92,7 +92,7 @@ class SageQAAnswerMetricMigrationTests(unittest.TestCase):
 
     def test_all_chapter4_predictions_match_sageqa_evaluate_per_example(self):
         sources, rejected = discover_validated_sources(RESULTS_ROOT)
-        self.assertEqual(len(sources), 36)
+        self.assertEqual(len(sources), 72)
         self.assertTrue(any("checkpoint=489" in message for message in rejected))
 
         qwen_family_2hop = [
@@ -119,6 +119,8 @@ class SageQAAnswerMetricMigrationTests(unittest.TestCase):
             scored = score_checkpoint_rows(rows, source.model_name)
             self.assertEqual(len(scored["per_question"]), len(rows))
             for item in scored["per_question"]:
+                if item["answer_type"] == "BIN":
+                    self.assertEqual(item["answer_em"], item["answer_f1"])
                 example_id = "::".join((*key, item["task_id"]))
                 details.append(
                     {
@@ -155,7 +157,7 @@ class SageQAAnswerMetricMigrationTests(unittest.TestCase):
             actual = (item["answer_em"], item["answer_f1"])
             if actual != expected:
                 mismatches.append((item["example_id"], expected, actual))
-        self.assertEqual(len(adapter_scores), 61_344)
+        self.assertEqual(len(adapter_scores), 81_288)
         self.assertEqual(mismatches, [])
 
 
