@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use CORE-LLM-Bench, please cite the benchmark paper and this software artifact."
+title: "CORE-LLM-Bench"
+type: dataset
+version: 1.0.0
+# Add date-released in YYYY-MM-DD form when the publication date is fixed.
+authors:
+  - family-names: "Loesch"
+    given-names: "Julie"
+  - name: "CORE-LLM-Bench contributors"
+repository-code: "https://github.com/jloe2911/CORE-LLM-Bench"
+url: "https://github.com/jloe2911/CORE-LLM-Bench"
+preferred-citation:
+  type: article
+  title: "CORE-LLM-Bench"
+  authors:
+    - family-names: "Loesch"
+      given-names: "Julie"
+    - name: "CORE-LLM-Bench contributors"
+  # Add journal, year, volume, pages, and DOI after paper acceptance.

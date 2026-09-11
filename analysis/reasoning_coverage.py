@@ -15,6 +15,7 @@ import csv
 import json
 import re
 import sys
+import zipfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -289,14 +290,25 @@ def collect_final_json_task_ids(value: Any, task_ids: list[str]) -> None:
 
 
 def validate_final_json(path: Path, sampled_ids: set[str]) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+    if path.exists():
+        value = json.loads(path.read_text(encoding="utf-8"))
+        source = str(path.resolve())
+    else:
+        zip_path = path.parent / f"{path.stem.rsplit('_', 1)[0]}.zip"
+        if not zip_path.exists():
+            raise FileNotFoundError(
+                f"Neither {path} nor its packaged ZIP {zip_path} exists"
+            )
+        with zipfile.ZipFile(zip_path) as archive:
+            value = json.loads(archive.read(path.name).decode("utf-8"))
+        source = f"{zip_path.resolve()}::{path.name}"
     task_ids: list[str] = []
     collect_final_json_task_ids(value, task_ids)
     if len(task_ids) != len(set(task_ids)):
         raise ValueError(f"Duplicate Task IDs in {path}")
     if set(task_ids) != sampled_ids:
         raise ValueError(f"Task-ID mismatch between sampled CSV and {path}")
-    return {"path": str(path.resolve()), "task_ids": len(task_ids)}
+    return {"path": source, "task_ids": len(task_ids)}
 
 
 def analyze(skip_final_json_validation: bool) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -442,6 +454,8 @@ def analyze(skip_final_json_validation: bool) -> tuple[list[dict[str, Any]], dic
                         "task_id": task_id,
                         "task_group": task_group,
                         "tags": tags,
+                        "min_tag_length": int(float(row["Min Tag Length"])),
+                        "max_tag_length": int(float(row["Max Tag Length"])),
                         "is_negative_bqa": task_group == "BQA" and answer == "FALSE",
                         "linked_positive_task_id": linked_positive_task_id,
                     }
@@ -570,6 +584,38 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=output_columns())
         writer.writeheader()
         writer.writerows(rows)
+
+
+def write_reasoning_metadata(path: Path, questions: list[dict[str, Any]]) -> None:
+    """Write the release-facing, one-row-per-question-hop reasoning index."""
+    tag_order = {tag: index for index, (tag, _) in enumerate(REASONING_TYPES)}
+    fields = [
+        "dataset",
+        "hop",
+        "task_id",
+        "task_group",
+        "min_tag_length",
+        "max_tag_length",
+        "reasoning_tags",
+        "is_negative_bqa",
+        "linked_positive_task_id",
+        "benchmark_version",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for question in questions:
+            writer.writerow(
+                {
+                    **{field: question.get(field, "") for field in fields},
+                    "reasoning_tags": "".join(
+                        sorted(question["tags"], key=tag_order.__getitem__)
+                    ),
+                    "is_negative_bqa": str(question["is_negative_bqa"]).lower(),
+                    "benchmark_version": "1.0.0",
+                }
+            )
 
 
 def latex_tag(tag: str) -> str:
@@ -726,6 +772,9 @@ def main() -> None:
 
     write_csv(output_dir / "reasoning_coverage_counts.csv", count_rows)
     write_csv(output_dir / "reasoning_coverage_percentages.csv", percentage_rows)
+    write_reasoning_metadata(
+        PROJECT_ROOT / "final_benchmark" / "reasoning_metadata.csv", questions
+    )
     write_combined_latex(output_dir / "reasoning_coverage_combined.tex", count_rows)
     write_split_latex(output_dir / "reasoning_coverage_by_task.tex", count_rows)
     (output_dir / "reasoning_coverage_audit.json").write_text(

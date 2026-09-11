@@ -1,0 +1,20 @@
+{
+  "title": "CORE-LLM-Bench",
+  "upload_type": "dataset",
+  "description": "CORE-LLM-Bench v1.0: a neurosymbolic benchmark of 9,032 unique question-hop instances across Family, Pizza 100, Pizza 250, and OWL2Bench, with BQA/OEQA tasks and NL/FS/AR representations.",
+  "creators": [
+    {"name": "Loesch, Julie"},
+    {"name": "CORE-LLM-Bench contributors"}
+  ],
+  "keywords": ["ontology reasoning", "neurosymbolic AI", "question answering", "OWL", "benchmark", "large language models"],
+  "version": "1.0.0",
+  "license": "other-open",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/jloe2911/CORE-LLM-Bench",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "notes": "TODO before deposit: set publication_date, finalize creators and affiliations, resolve Family redistribution licensing, select the final mixed/dataset license wording, add the benchmark-paper citation, and replace the repository URL with the immutable v1.0 source snapshot URL. No DOI has been assigned or invented."
+}

@@ -1,0 +1,62 @@
+{
+  "benchmark_name": "CORE-LLM-Bench",
+  "benchmark_version": "1.0.0",
+  "identity": ["dataset", "hop", "task_id"],
+  "unit": "unique question-hop instance",
+  "representations": ["NL", "FS", "AR"],
+  "totals": {
+    "overall": 9032,
+    "BQA": 5999,
+    "OEQA": 3033,
+    "Family": 3760,
+    "Pizza100": 984,
+    "Pizza250": 1232,
+    "OWL2Bench": 3056
+  },
+  "packages": [
+    {
+      "path": "final_benchmark/FamilyOWL.zip",
+      "bytes": 57106996,
+      "sha256": "52dd813e3492c912acc0a7b3824a848f8140fabe312e4f4b80be1704cf4d9a66",
+      "members": [
+        {"path": "FamilyOWL_1hop.json", "bytes": 122720082, "sha256": "4cdc9ab099da180e066968cdcc4eb60a3ae6d9cfbb0f4cc92c9a219c0cb8c8a9", "rows": 1880},
+        {"path": "FamilyOWL_2hop.json", "bytes": 307362774, "sha256": "2ed7ef66c2a07ac1972dc241e2b2e8a8511179761c09cc0d8754262046f04e7d", "rows": 1880}
+      ]
+    },
+    {
+      "path": "final_benchmark/pizza_100.zip",
+      "bytes": 5718826,
+      "sha256": "57457fdf47ae6a94c8ddef5b4610e157ff329e1a1027b033320c1441f5cfe9f9",
+      "members": [
+        {"path": "pizza_100_1hop.json", "bytes": 24270984, "sha256": "474b75ee3adcd0b71922a919b63a4e8448a6e98e232dd139cff52a8040593cf1", "rows": 492},
+        {"path": "pizza_100_2hop.json", "bytes": 54044179, "sha256": "7efca8c953c43a3279a222cc3d640c46a5216b9e3de1dbe4ad5110435598a0ad", "rows": 492}
+      ]
+    },
+    {
+      "path": "final_benchmark/pizza_250.zip",
+      "bytes": 7630714,
+      "sha256": "cbb0a35c1be25001be49b083e4e79013e2d6c35765dfa3cc2e367c819dad65a9",
+      "members": [
+        {"path": "pizza_250_1hop.json", "bytes": 31467134, "sha256": "c385e7c0a13fd666d192816bc972cf7039ee2807db4aef3b5ccefbfb47d903fb", "rows": 616},
+        {"path": "pizza_250_2hop.json", "bytes": 83858330, "sha256": "918e6764cb90cdc7387300107df486e813895945c8194d2431f65b3c4ccb25ba", "rows": 616}
+      ]
+    },
+    {
+      "path": "final_benchmark/OWL2Bench.zip",
+      "bytes": 12078871,
+      "sha256": "89ad87fc599662fd753f9a4e9a4efcd41cfbe08033decc6fcf6e8391a7cde603",
+      "members": [
+        {"path": "OWL2Bench_1hop.json", "bytes": 30961868, "sha256": "400650df9e59a46561bf05c3618eec9e0d31bc26a8c9aa1e13e207344a7b7e0a", "rows": 1466},
+        {"path": "OWL2Bench_2hop.json", "bytes": 76557127, "sha256": "43f98a42ec21c8b076b8a3737e686ddedb6673eda401a99a2aaea62d434fd146", "rows": 1590}
+      ]
+    },
+    {
+      "path": "final_benchmark/reasoning_metadata.csv",
+      "bytes": 1400188,
+      "sha256": "c512ed5b812fbbeb39896d3b2dc0753182b67202e62ab9a69b2cc2474bc86865"
+    }
+  ],
+  "reasoning_taxonomy_size": 20,
+  "instantiated_reasoning_counts": {"D": 9032, "H": 3278, "I": 2324, "R": 1660, "M": 1020, "N": 168, "S": 55, "T": 2},
+  "version_note": "Version is carried by this manifest and reasoning_metadata.csv; the frozen JSON packages are unchanged for compatibility."
+}

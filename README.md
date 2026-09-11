@@ -1,348 +1,170 @@
 # CORE-LLM-Bench
 
-CORE-LLM-Bench is a benchmark and generation pipeline for evaluating large language models on verifiable ontology reasoning tasks. It extracts individual-centered OWL subgraphs, derives entailed facts with Pellet, generates SPARQL `ASK` and `SELECT` questions, creates natural-language and abstracted variants, and evaluates LLM answers against symbolic gold labels.
+CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
-The benchmark compares three settings:
+Version 1.0 contains **9,032 unique question-hop instances** from four source datasets:
 
-- `NL`: natural-language questions with verbalized ontology context; CLI setting `nl`.
-- `AR`: abstracted natural-language questions with abstracted context; CLI setting `abs`.
-- `FS`: formal SPARQL queries with OWL/Turtle context; CLI setting `sparql`.
+| Dataset | 1-hop | 2-hop | Total |
+| --- | ---: | ---: | ---: |
+| Family / FamilyOWL | 1,880 | 1,880 | 3,760 |
+| Pizza 100 | 492 | 492 | 984 |
+| Pizza 250 | 616 | 616 | 1,232 |
+| OWL2Bench | 1,466 | 1,590 | 3,056 |
+| **Total** | **4,454** | **4,578** | **9,032** |
 
-For each subject-predicate reasoning instance, the generator creates one open-ended `SELECT` question, one positive binary `ASK` question, and, one negative binary `ASK` question. The final benchmark subsets are then produced with stratified sampling over ontology size and reasoning-complexity bins.
+The task totals are 5,999 binary questions (BQA) and 3,033 open-ended questions (OEQA). Dataset, hop, and `Task ID` jointly identify a benchmark instance. NL, FS, and AR are aligned representations of that instance and are not separate questions.
 
-## Repository Contents
+## Benchmark design
 
-- `final_benchmark/*.json`: ready-to-use benchmark files for evaluation, when unpacked.
-- `final_benchmark/FamilyOWL.zip`: compressed FamilyOWL final benchmark JSONs (`FamilyOWL_1hop.json` and `FamilyOWL_2hop.json`) for distribution when the large JSON files are not unpacked.
-- `final_benchmark/OWL2Bench.zip`: compressed OWL2Bench final benchmark JSONs (`OWL2Bench_1hop.json` and `OWL2Bench_2hop.json`) for distribution when the large JSON files are not unpacked.
-- `data/input/*.owl`: source ontologies used by the generation pipeline.
-- `scripts/run_final_benchmark_pipeline.py`: one-command benchmark generation.
-- `scripts/llm_pipeline/run_final_benchmark.py`: resumable LLM evaluation from final benchmark JSON files.
-- `scripts/create_paper_results_table.py`: combines final LLM metrics into paper-ready CSV/LaTeX tables.
-- `src/main/java`: Java extraction, reasoning, explanation, and SPARQL generation code.
-- `scripts/ontology_tools`: ontology abstraction utilities.
+Two task types are included:
 
-## Reproducing Manuscript Results
+- **BQA** uses an `ASK` query and a `TRUE` or `FALSE` gold label.
+- **OEQA** uses a `SELECT` query and a set-valued gold answer.
 
-There are two levels of reproduction:
+Each instance carries three representations:
 
-1. **Evaluate the released benchmark artifact.** Use the checked-in or zipped files in `final_benchmark/`, run the LLM evaluation script on each dataset/hop/setting/model combination, and rebuild the paper results table.
-2. **Regenerate the benchmark from OWL sources.** Run the generation pipeline from `data/input/*.owl`, then rerun the LLM evaluations and table script. This is slower and uses API calls for verbalization.
+- **NL**: a natural-language question and verbalized ontology context.
+- **FS**: the formal SPARQL query and serialized OWL/Turtle context.
+- **AR**: an abstracted question and context in which ontology entities are systematically replaced.
 
-The main manuscript workflow is:
+The **1-hop/2-hop designation describes ontology-context extraction depth** around a root entity. It does not describe proof length. **Explanation complexity** is derived independently from Pellet explanations and is represented by minimum and maximum reasoning-tag length. The 20-tag taxonomy and coverage analysis are documented under `results/reasoning_coverage/`.
 
-1. Follow [Quickstart](#quickstart) to install dependencies, compile Java code, extract benchmark zips, and verify that the benchmark JSON files load.
-2. Use [Regenerating Benchmarks](#regenerating-benchmarks) only if you want to rebuild `final_benchmark/*.json` from the OWL files.
-3. Run [LLM Evaluation](#llm-evaluation) for each reported benchmark: `FamilyOWL`, `OWL2Bench`, and `toy_example`; each hop: `1hop` and `2hop`; each setting: `nl`, `abs`, and `sparql`; and each manuscript model.
-4. Run `python scripts/create_paper_results_table.py` to rebuild `data/output/final_benchmark_llm_results/combined_1hop_2hop_results_table.csv` and `.tex`.
+## Repository map
 
-The manuscript model identifiers used by the evaluation CLI are:
+| Purpose | Location |
+| --- | --- |
+| Ready-to-use benchmark packages | `final_benchmark/*.zip` |
+| Version, hashes, counts, and identity definition | `final_benchmark/manifest.json` |
+| Per-instance complexity, reasoning tags, and negative-BQA proof links | `final_benchmark/reasoning_metadata.csv` |
+| Source ontologies used for generation | `data/input/*.owl` |
+| Benchmark generation | `scripts/run_final_benchmark_pipeline.py`, `final_benchmark/create_final_bench.py`, `src/` |
+| LLM evaluation | `scripts/llm_pipeline/run_final_benchmark.py` |
+| Manuscript and diagnostic analysis | `scripts/create_paper_results_table.py`, `scripts/create_explanation_complexity_analysis.py`, `analysis/` |
+| Offline release checks and exports | `scripts/validate_release.py`, `scripts/export_huggingface.py`, `scripts/prepare_zenodo.py` |
+| Tests | `tests/` |
 
-- `openai:gpt-5-mini-2025-08-07`
-- `openrouter:google/gemini-2.5-flash-lite`
-- `openrouter:qwen/qwen3-30b-a3b-instruct-2507`
+## Using the released benchmark
 
-The 5-question toy command in [Credit-Safe LLM Smoke Test](#credit-safe-llm-smoke-test) is only a low-cost sanity check. It does not reproduce the manuscript table.
+You do **not** need to regenerate the benchmark or use an API to load and validate it.
 
-## Final Benchmark Sizes
+### Validate the packages
 
-Current generated question pools and sampled benchmark subsets contain:
-
-| Ontology | Hop | BQ (pos/neg) | OEQ | Sampled BQ (pos/neg) | Sampled OEQ | Sampled Questions |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `FamilyOWL` | 1-hop | 5012 (2506/2506) | 2506 | 1272 (603/669) | 608 | 1880 |
-| `FamilyOWL` | 2-hop | 5012 (2506/2506) | 2506 | 1272 (602/670) | 608 | 1880 |
-| `OWL2Bench` | 1-hop | 3912 (1956/1956) | 1956 | 957 (484/473) | 509 | 1466 |
-| `OWL2Bench` | 2-hop | 4246 (2123/2123) | 2123 | 1044 (508/536) | 546 | 1590 |
-| `toy_example` | 1-hop | 98 (49/49) | 49 | 25 (12/13) | 11 | 36 |
-| `toy_example` | 2-hop | 98 (49/49) | 49 | 20 (11/9) | 16 | 36 |
-
-`BQ` means binary questions and `OEQ` means open-ended `SELECT` questions. The positive/negative split is shown for binary questions as `TRUE`/`FALSE`.
-
-The 1-hop and 2-hop OWL2Bench runs are paired at the root-individual subgraph
-level, but the generator does not force identical question counts across hops.
-FamilyOWL happens to yield equal 1-hop and 2-hop eligible question pools. For
-OWL2Bench, the 2-hop extraction exposes additional inferred `isMemberOf`
-property assertions for 167 root-focused subject-predicate groups; each group
-contributes one positive `ASK`, one negative `ASK`, and one `SELECT` question,
-adding 501 raw questions before independent stratified sampling.
-
-The final benchmark JSON files currently have the following group counts, file sizes, and symbolic-context sizes after any benchmark zips are extracted. `OWL Context` is serialized as Turtle for the FS setting.
-
-| Ontology | Hop | Groups | Questions | JSON size | Avg. OWL context chars | Max OWL context chars |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `FamilyOWL` | 1-hop | 1086 | 1880 | 117.0 MB | 57556 | 58290 |
-| `FamilyOWL` | 2-hop | 1086 | 1880 | 293.1 MB | 110423 | 110441 |
-| `OWL2Bench` | 1-hop | 866 | 1466 | 29.5 MB | 30775 | 55414 |
-| `OWL2Bench` | 2-hop | 869 | 1590 | 73.0 MB | 51225 | 123280 |
-| `toy_example` | 1-hop | 25 | 36 | 0.2 MB | 6989 | 7424 |
-| `toy_example` | 2-hop | 26 | 36 | 0.3 MB | 7602 | 8053 |
-
-To recompute these counts:
-
-```powershell
-python -c "import csv; from pathlib import Path; names=['FamilyOWL','OWL2Bench','toy_example']; f=lambda rows: (sum(r.get('Answer Type','').upper()=='BIN' for r in rows),sum(r.get('Answer Type','').upper()=='MC' for r in rows),sum(r.get('Answer Type','').upper()=='BIN' and str(r.get('Answer','')).upper()=='TRUE' for r in rows),sum(r.get('Answer Type','').upper()=='BIN' and str(r.get('Answer','')).upper()=='FALSE' for r in rows)); [print(n,h,'raw BQ/OEQ/pos/neg=',f(list(csv.DictReader(open(Path('data/output')/n/h/'SPARQL_questions.csv',encoding='utf-8-sig')))),'sampled BQ/OEQ/pos/neg=',f(list(csv.DictReader(open(Path('data/output')/n/h/'SPARQL_questions_sampling.csv',encoding='utf-8-sig'))))) for n in names for h in ['1hop','2hop']]"
-```
-
-To recompute the JSON file statistics:
-
-```powershell
-python -c "import json; from pathlib import Path; pairs=[('FamilyOWL','1hop'),('FamilyOWL','2hop'),('OWL2Bench','1hop'),('OWL2Bench','2hop'),('toy_example','1hop'),('toy_example','2hop')]; [print(n,h,'groups=',len(d:=json.loads((p:=Path('final_benchmark')/f'{n}_{h}.json').read_text(encoding='utf-8'))),'questions=',sum(len(g.get('QAs',[])) for g in d),'size_mb=',round(p.stat().st_size/1024/1024,1),'avg_owl_chars=',round(sum(len(str(g.get('OWL Context',''))) for g in d)/len(d)),'max_owl_chars=',max(len(str(g.get('OWL Context',''))) for g in d)) for n,h in pairs]"
-```
-
-During FS evaluation, large symbolic contexts are additionally trimmed query-aware at prompt time: SPARQL terms are prioritized before any size limit is applied.
-
-
-## Quickstart
-
-These steps validate the benchmark files without using any API credits. The Java components target Java 17; Maven and Python 3.10 or newer are recommended.
-
-```powershell
-git clone <repository-url>
-cd CORE-LLM-Bench
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r scripts/llm_pipeline/requirements.txt
-pip install -r scripts/ontology_tools/requirements.txt
-mvn -q -DskipTests compile
-Get-ChildItem final_benchmark -Filter *.zip | ForEach-Object { Expand-Archive -Path $_.FullName -DestinationPath final_benchmark -Force }
-python -c "import json; from pathlib import Path; [print(p.name, len(json.loads(p.read_text(encoding='utf-8'))), 'groups') for p in sorted(Path('final_benchmark').glob('*.json'))]"
-```
-
-On macOS/Linux, activate the environment and extract benchmark zips with:
+Python 3.10 or newer is recommended. The validator uses only the standard library:
 
 ```bash
-source .venv/bin/activate
-python - <<'PY'
+python scripts/validate_release.py
+```
+
+It checks ZIP and JSON readability, recorded SHA-256 hashes, all eight dataset-hop artifacts, required fields, unique identities, aligned representations, labels and gold answers, explanation links, complexity metadata, reasoning tags, and the frozen totals.
+
+### Load one record without API spending
+
+```python
+import json
+from zipfile import ZipFile
+
+with ZipFile("final_benchmark/pizza_100.zip") as archive:
+    groups = json.loads(archive.read("pizza_100_1hop.json"))
+
+group = groups[0]
+qa = group["QAs"][0]
+print(qa["Task ID"])
+print(qa["NL Question"])
+print(qa["Answer"])
+```
+
+The grouped JSON schema avoids repeating large contexts for related questions. Group fields are `Task Type`, `Answer Type`, `Root Entity`, `OWL Context`, `NL Context`, `ABS Context`, and `QAs`. Each QA provides its task ID, three question/query views, original and abstract gold answers, and explanation fields. Negative BQA explanations are linked in `reasoning_metadata.csv` to the source positive entailment from which the false query was constructed.
+
+### Evaluate a new model
+
+Extract the packages first:
+
+```python
 from pathlib import Path
 from zipfile import ZipFile
+
 for path in Path("final_benchmark").glob("*.zip"):
     with ZipFile(path) as archive:
         archive.extractall("final_benchmark")
-PY
 ```
 
-## Credit-Safe LLM Smoke Test
+Then run one or all representation settings. Provider calls require the corresponding API credentials; loading and validation do not.
 
-Configure an API key in `.env`, for example:
-
-```dotenv
-OPENAI_API_KEY=your_openai_key
-```
-
-Then run a small evaluation:
-
-```powershell
-python scripts/llm_pipeline/run_final_benchmark.py `
-  --benchmark-json final_benchmark/toy_example_1hop.json `
-  --setting nl `
-  --models openai:gpt-4.1-mini `
-  --limit-questions 5 `
-  --max-workers 1 `
-  --batch-size 5 `
-  --checkpoint-frequency 5 `
+```bash
+python scripts/llm_pipeline/run_final_benchmark.py \
+  --dataset pizza_100 \
+  --hop 1hop \
+  --setting all \
+  --models openai:gpt-4.1-mini \
+  --max-workers 1 \
+  --batch-size 5 \
+  --checkpoint-frequency 25 \
   --silent-mode
 ```
 
-Results are written under:
+Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is resumable. Use `--limit-questions` and `--max-api-calls` for a deliberately bounded smoke test. Answer EM/F1 manuscript processing delegates to the hash-pinned SAGE-QA evaluator through `scripts/llm_pipeline/sageqa_answer_metrics.py`; it does not silently substitute Jaccard similarity.
 
-```text
-data/output/final_benchmark_llm_results/<benchmark>/<model>/<setting>/
+### Tabular Hugging Face export
+
+Install the one optional release dependency, then export locally:
+
+```bash
+python -m pip install -r requirements-release.txt
+python scripts/export_huggingface.py
 ```
 
-Each setting directory contains resumable `LATEST_checkpoint*` files and metric summaries. Add `--write-final-artifacts` when you also want the legacy `FINAL` CSV/log/detailed-metrics files used for paper-table inspection. Use `--restart` only when intentionally ignoring previous checkpoints.
+This writes one Parquet row per unique question-hop instance to `release/huggingface/`, together with `dataset_info.json`. NL, FS, and AR remain columns in one row. The draft dataset card is `release/huggingface/README.md`. Nothing is uploaded.
 
-## Regenerating Benchmarks
+## Regenerating the benchmark from source ontologies
 
-The end-to-end pipeline uses an LLM for ontology/context verbalization and SPARQL-to-natural-language conversion. Configure the provider key for the model you choose.
+Regeneration is optional and separate from benchmark use. It requires Java 17, Maven, the Python requirements under `scripts/`, and API credentials for LLM-based ontology/SPARQL verbalization.
 
-Toy example:
-
-```powershell
-python scripts/run_final_benchmark_pipeline.py `
-  --input-owl data/input/toy_example.owl `
-  --dataset toy_example `
-  --hops 1hop 2hop `
+```bash
+python scripts/run_final_benchmark_pipeline.py \
+  --input-owl data/input/toy_example.owl \
+  --dataset toy_example \
+  --hops 1hop 2hop \
   --model gpt-4.1-mini
 ```
 
-FamilyOWL example:
+For a production source, replace the input and dataset, for example `data/input/family.owl` with `FamilyOWL`, `data/input/pizza_100.owl` with `pizza_100`, `data/input/pizza_250.owl` with `pizza_250`, or `data/input/OWL2DL-1.owl` with `OWL2Bench`. See `python scripts/run_final_benchmark_pipeline.py --help` for deterministic sampling, paired-subgraph, skip, and OWL2Bench size-cap options.
 
-```powershell
-python scripts/run_final_benchmark_pipeline.py `
-  --input-owl data/input/family.owl `
-  --dataset FamilyOWL `
-  --hops 1hop 2hop `
-  --model gpt-4.1-mini `
-  --no-maven-build
+The pipeline performs subgraph extraction, Pellet reasoning/explanation generation, SPARQL task creation, stratified sampling, abstraction, verbalization, and final JSON assembly. Do not overwrite the v1.0 packages when experimenting; use a separate output checkout or preserve and revalidate the hashes in `final_benchmark/manifest.json`.
+
+## Reproducing manuscript analyses
+
+The release-facing, API-free analyses are:
+
+```bash
+python analysis/reasoning_coverage.py
+python scripts/validate_release.py
 ```
 
-OWL2Bench reproducibility command used for the reported 2-hop benchmark:
+Reasoning coverage outputs are in `results/reasoning_coverage/`. Version 1.0 defines 20 taxonomy tags and instantiates eight: D 9,032; H 3,278; I 2,324; R 1,660; M 1,020; N 168; S 55; T 2. Counts are not mutually exclusive.
 
-```powershell
-python scripts/run_final_benchmark_pipeline.py `
-  --input-owl data/input/OWL2DL-1.owl `
-  --dataset OWL2Bench `
-  --hops 2hop `
-  --max-2hop-subgraphs 500 `
-  --max-subgraph-file-size-mb 0.5 `
-  --no-maven-build
-```
+The manuscript result and explanation-complexity scripts consume saved model predictions under the local `data/output/final_benchmark_llm_results/` hierarchy:
 
-This deterministically samples 500 paired root-individual subgraphs from the
-1-hop/2-hop filename intersection after excluding TTL files larger than 0.5 MB.
-The default seed is `13`. To regenerate the matching 1-hop OWL2Bench benchmark
-after the 2-hop run, omit the subgraph cap; the pipeline reuses the paired
-sample manifest:
-
-```powershell
-python scripts/run_final_benchmark_pipeline.py `
-  --input-owl data/input/OWL2DL-1.owl `
-  --dataset OWL2Bench `
-  --hops 1hop `
-  --no-maven-build
-```
-
-Useful defaults:
-
-- `--sampling-test-size 0.75` is the default; the retained benchmark sample is the remaining 25%.
-- `--focus-root-individual-only` is the default; use `--no-focus-root-individual-only` to process all individuals in each extracted ontology.
-- Use `--max-2hop-subgraphs N` to deterministically pre-sample extracted 2-hop TTL subgraphs before Java reasoning/explanation generation. The pipeline samples matching TTL filenames so the same root individuals can be used for both hops. The paired sample is copied to `data/resources/<dataset>_<hop>_paired_sampled_N_seed_<seed>` and reused by downstream stages. If one hop is run later without a subgraph cap, it reuses the newest existing paired sample manifest from the other hop.
-- Use `--subgraph-sample-seed N` to change the deterministic pre-sampling seed.
-- Use `--max-subgraph-file-size-mb N` with OWL2Bench 2-hop if explanation extraction stalls on very large sampled TTLs.
-- Use `--skip-existing` only when dependent outputs are already valid for the current generator code.
-- Use `--no-explanations` to reuse an existing valid `Explanations.json` while regenerating SPARQL questions.
-
-If generator code changes, regenerate dependent outputs rather than using stale files:
-
-- `SPARQL_questions.csv`
-- `SPARQL_questions_sampling.csv`
-- `SPARQL_questions_sampling_nl.csv`
-- `SPARQL_questions_sampling_abs.csv`
-- `final_benchmark/*.json`
-
-## Pipeline Stages
-
-The one-command pipeline performs:
-
-1. Java build, unless `--no-maven-build` is passed.
-2. 1-hop and 2-hop individual-centered subgraph extraction.
-3. Pellet reasoning and explanation extraction.
-4. SPARQL `ASK`/`SELECT` question generation.
-5. Stratified sampling by ontology size and reasoning complexity.
-6. Ontology abstraction and abstract question creation.
-7. Ontology and SPARQL verbalization.
-8. Final benchmark JSON assembly.
-
-Manual debugging entry points:
-
-```powershell
-java -jar target/llm-orbench-1.0-SNAPSHOT.jar `
-  data/resources/toy_example_1hop `
-  data/output/toy_example/1hop
-
-python scripts/llm_pipeline/stratified_sampling.py `
-  --input_file data/output/toy_example/1hop/SPARQL_questions.csv `
-  --output_file data/output/toy_example/1hop/SPARQL_questions_sampling.csv
-
-python final_benchmark/create_final_bench.py --dataset toy_example --hop 1hop
-```
-
-## LLM Evaluation
-
-Run all three settings for a benchmark:
-
-```powershell
-python scripts/llm_pipeline/run_final_benchmark.py `
-  --dataset toy_example `
-  --hop 1hop `
-  --setting all `
-  --models openai:gpt-4.1-mini `
-  --max-workers 1 `
-  --batch-size 5 `
-  --checkpoint-frequency 5 `
-  --max-api-calls 20 `
-  --silent-mode
-```
-
-To reproduce the manuscript-scale evaluation from the released benchmark JSON files, run all reported datasets, hops, settings, and models:
-
-```powershell
-$datasets = @("FamilyOWL", "OWL2Bench", "toy_example")
-$hops = @("1hop", "2hop")
-$models = @(
-  "openai:gpt-5-mini-2025-08-07",
-  "openrouter:google/gemini-2.5-flash-lite",
-  "openrouter:qwen/qwen3-30b-a3b-instruct-2507"
-)
-
-foreach ($dataset in $datasets) {
-  foreach ($hop in $hops) {
-    python scripts/llm_pipeline/run_final_benchmark.py `
-      --dataset $dataset `
-      --hop $hop `
-      --setting all `
-      --models $models `
-      --max-workers 1 `
-      --batch-size 5 `
-      --checkpoint-frequency 25 `
-      --silent-mode `
-      --write-final-artifacts
-  }
-}
-```
-
-Supported model identifiers use `provider:model`, for example:
-
-- `openai:gpt-4.1-mini`
-- `openai:gpt-5-mini-2025-08-07`
-- `openrouter:google/gemini-2.5-flash-lite`
-- `openrouter:qwen/qwen3-30b-a3b-instruct-2507`
-
-After evaluation, rebuild the paper table:
-
-```powershell
+```bash
 python scripts/create_paper_results_table.py
+python scripts/create_explanation_complexity_analysis.py
+python scripts/create_chapter4_interpretation_audit.py
 ```
 
-## Final Benchmark JSON Schema
+Those scripts do not need new model calls when the saved predictions are present. Large intermediate generation artifacts and saved experimental responses are intentionally not part of the compact benchmark packages; archive them separately if full response-level reproduction is required.
 
-Each final benchmark file is a list of groups. Each group contains ontology context and one or more related QA records.
+## Preparing archival deposits
 
-Group-level fields include:
+`python scripts/prepare_zenodo.py` builds a local, checksum-indexed package under `release/zenodo/package/`. The draft metadata is `release/zenodo/zenodo_metadata.json`. It does not publish, reserve a DOI, or contact Zenodo.
 
-- `Task Type`: membership or property assertion.
-- `Answer Type`: `BIN` for binary questions or `MC` for open-ended `SELECT` questions.
-- `Root Entity`
-- `OWL Context`
-- `NL Context`
-- `ABS Context`
-- `QAs`
+## Known limitations
 
-Each QA contains:
+- The four ontology families do not cover every OWL construct; only eight of 20 reasoning tags occur in v1.0.
+- Ontology-context depth and proof complexity are related but distinct and must not be conflated.
+- Natural-language and abstract verbalizations are generated and may contain stylistic or entity-rendering artifacts.
+- BQA and OEQA totals are not balanced across datasets or hops.
+- Full manuscript reproduction requires the separately retained saved predictions, while benchmark use does not.
+- The source materials have mixed provenance. Pizza declares CC BY 3.0 and OWL2Bench is Apache-2.0, but Family redistribution terms remain unresolved. Public release is blocked until that question is cleared; see `NOTICE.md`.
 
-- `Task ID`
-- `SPARQL Query`
-- `NL Question`
-- `ABS Question`
-- `ABS Answer`
-- `Answer`
-- `Minimum Explanation`
-- `Explanations`
-- `Explanation Count`
-- `Explanation Min`
-- `Explanation Max`
+## Citation, version, and license
 
-For binary tasks, `Answer` is `TRUE` or `FALSE`. For open-ended tasks, `Answer` is a semicolon-separated set of gold entities or classes.
-
-## Notes
-
-- Final benchmark JSON files, whether checked in directly or distributed through `final_benchmark/*.zip`, can be inspected and evaluated without regenerating datasets.
-- API keys are required only for LLM-based verbalization, SPARQL-to-NL conversion, and LLM evaluation.
-- Use `--limit-questions`, `--max-api-calls`, and `--max-workers 1` for small, credit-safe runs.
-- Large ontology regeneration can take substantial time and memory.
-- Do not include local `.env`, virtual environments, logs, IDE folders, or generated intermediate output directories in a submission package.
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+The benchmark version is `1.0.0`; see `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`. Complete the pending paper metadata and release date before publication. Repository code is MIT licensed, but that license does not automatically cover third-party ontology content or all source-derived benchmark fields. See `LICENSE` and `NOTICE.md` before redistribution.
