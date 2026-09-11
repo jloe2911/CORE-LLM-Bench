@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering
+\caption{Pellet reasoning-type coverage in the final sampled benchmark. Counts indicate unique question--hop instances whose reasoner-generated explanations contain the corresponding reasoning type. One question may contain multiple reasoning types, so counts are not mutually exclusive.}
+\label{tab:reasoning-type-coverage}
+\begin{tabular}{llrrrrr}
+\toprule
+Reasoning type & Tag & Family & Pizza 100 & Pizza 250 & OWL2Bench & Total \\
+\midrule
+Direct assertions & D & 3760 & 984 & 1232 & 3056 & 9032 \\
+Hierarchy & H & 816 & 628 & 798 & 1036 & 3278 \\
+Transitivity & T & 0 & 0 & 0 & 2 & 2 \\
+Symmetry & S & 0 & 0 & 0 & 55 & 55 \\
+Asymmetric properties & A & 0 & 0 & 0 & 0 & 0 \\
+Disjointness constraints & J & 0 & 0 & 0 & 0 & 0 \\
+Property chains & N & 0 & 0 & 0 & 168 & 168 \\
+Existential restrictions & E & 0 & 0 & 0 & 0 & 0 \\
+Intersection & $\cap$ & 0 & 0 & 0 & 0 & 0 \\
+Complement & $\neg$ & 0 & 0 & 0 & 0 & 0 \\
+Inverse properties & I & 1961 & 64 & 60 & 239 & 2324 \\
+Functional properties & F & 0 & 0 & 0 & 0 & 0 \\
+Reflexive properties & V & 0 & 0 & 0 & 0 & 0 \\
+Irreflexive properties & Y & 0 & 0 & 0 & 0 & 0 \\
+Equivalence & Q & 0 & 0 & 0 & 0 & 0 \\
+Domain/range restrictions & R & 730 & 121 & 140 & 669 & 1660 \\
+Cardinality restrictions & C & 0 & 0 & 0 & 0 & 0 \\
+Universal restrictions & L & 0 & 0 & 0 & 0 & 0 \\
+Union & U & 0 & 0 & 0 & 0 & 0 \\
+Multiple TBox axiom types & M & 494 & 104 & 121 & 301 & 1020 \\
+\bottomrule
+\end{tabular}
+\end{table}
