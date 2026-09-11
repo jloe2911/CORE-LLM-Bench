@@ -102,7 +102,7 @@ python scripts/llm_pipeline/run_final_benchmark.py \
   --silent-mode
 ```
 
-Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is resumable. Use `--limit-questions` and `--max-api-calls` for a deliberately bounded smoke test. Answer EM/F1 manuscript processing delegates to the hash-pinned SAGE-QA evaluator through `scripts/llm_pipeline/sageqa_answer_metrics.py`; it does not silently substitute Jaccard similarity.
+Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is resumable. Use `--limit-questions` and `--max-api-calls` for a deliberately bounded smoke test. Answer EM/F1 manuscript processing delegates through `scripts/llm_pipeline/sageqa_answer_metrics.py` to the exact manuscript-frozen SAGE-QA evaluator vendored under `scripts/llm_pipeline/vendor/`; it does not depend on a mutable sibling checkout or silently substitute Jaccard similarity. The frozen source commit, hashes, and MIT license are recorded in the vendor README.
 
 ### Tabular Hugging Face export
 

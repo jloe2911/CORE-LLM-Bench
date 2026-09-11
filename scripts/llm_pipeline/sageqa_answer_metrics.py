@@ -1,9 +1,10 @@
 """Thin Chapter 4 adapter for the authoritative SAGE-QA answer evaluator.
 
-This module deliberately contains no Answer EM or Answer F1 formula.  It loads
-SAGE-QA's ``answer_set_scores``/``evaluate`` implementation, verifies the
-audited source hash, validates Chapter 4 checkpoint rows against the frozen
-benchmark sampling CSV, and only adapts field names.
+This module deliberately contains no Answer EM or Answer F1 formula. It loads
+the vendored, manuscript-frozen SAGE-QA ``answer_set_scores``/``evaluate``
+implementation, verifies its canonical source hash, validates Chapter 4
+checkpoint rows against the frozen benchmark sampling CSV, and only adapts
+field names.
 """
 
 from __future__ import annotations
@@ -11,7 +12,6 @@ from __future__ import annotations
 import csv
 import hashlib
 import importlib.util
-import os
 import sys
 from collections import Counter, defaultdict
 from functools import lru_cache
@@ -20,9 +20,17 @@ from types import ModuleType
 from typing import Any
 
 
-SAGEQA_EVALUATOR_RELATIVE_PATH = Path("evaluation/evaluate_owl_qa_predictions.py")
+# The historical working-tree file used CRLF line endings. The canonical hash
+# below is over the same source normalized to LF, so validation is portable.
 SAGEQA_EVALUATOR_SHA256 = (
     "1610a67d64c48d46e0530dc71ffe073ca6ddae98d0a9b3c83116b0009a384713"
+)
+SAGEQA_EVALUATOR_CANONICAL_SHA256 = (
+    "86b9bedfb3784145f3d20e2b9b8b6082ee4252e57918807bf02529b3904eefd6"
+)
+SAGEQA_SOURCE_COMMIT = "dbdbb50708bdc6c686ef82518ec71c1d1bf55985"
+SAGEQA_EVALUATOR_RELATIVE_PATH = Path(
+    "vendor/sageqa_evaluate_owl_qa_predictions.py"
 )
 MODEL_ANSWER_SUFFIX = "_final_answer"
 
@@ -31,31 +39,26 @@ class BenchmarkMismatchError(ValueError):
     """A saved prediction CSV is not aligned to its declared benchmark."""
 
 
-def _default_sageqa_root() -> Path:
-    return Path(__file__).resolve().parents[2].parent / "SAGE-QA"
-
-
 def sageqa_evaluator_path() -> Path:
-    root = Path(os.environ.get("SAGE_QA_ROOT", _default_sageqa_root()))
-    return root / SAGEQA_EVALUATOR_RELATIVE_PATH
+    return Path(__file__).resolve().parent / SAGEQA_EVALUATOR_RELATIVE_PATH
 
 
 @lru_cache(maxsize=1)
 def load_sageqa_evaluator() -> ModuleType:
-    """Load the exact audited SAGE-QA evaluator, failing on source drift."""
+    """Load the exact vendored SAGE-QA evaluator, failing on source drift."""
 
     path = sageqa_evaluator_path()
     if not path.is_file():
         raise FileNotFoundError(
-            f"Authoritative SAGE-QA evaluator not found at {path}. "
-            "Set SAGE_QA_ROOT to the audited SAGE-QA checkout."
+            f"Vendored SAGE-QA evaluator not found at {path}."
         )
 
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    if digest != SAGEQA_EVALUATOR_SHA256:
+    canonical_source = path.read_bytes().replace(b"\r\n", b"\n")
+    digest = hashlib.sha256(canonical_source).hexdigest()
+    if digest != SAGEQA_EVALUATOR_CANONICAL_SHA256:
         raise RuntimeError(
-            "Authoritative SAGE-QA evaluator hash mismatch: "
-            f"expected {SAGEQA_EVALUATOR_SHA256}, got {digest} ({path})"
+            "Vendored SAGE-QA evaluator hash mismatch: "
+            f"expected {SAGEQA_EVALUATOR_CANONICAL_SHA256}, got {digest} ({path})"
         )
 
     spec = importlib.util.spec_from_file_location(

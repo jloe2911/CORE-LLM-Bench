@@ -13,10 +13,13 @@ from scripts.create_paper_results_table import (
 )
 from scripts.llm_pipeline.sageqa_answer_metrics import (
     BenchmarkMismatchError,
+    SAGEQA_EVALUATOR_CANONICAL_SHA256,
     SAGEQA_EVALUATOR_SHA256,
+    SAGEQA_SOURCE_COMMIT,
     evaluate,
     load_sageqa_evaluator,
     read_csv_rows,
+    sageqa_evaluator_path,
     score_checkpoint_rows,
     validate_checkpoint_rows,
 )
@@ -56,6 +59,15 @@ class SageQAAnswerMetricMigrationTests(unittest.TestCase):
             SAGEQA_EVALUATOR_SHA256,
             "1610a67d64c48d46e0530dc71ffe073ca6ddae98d0a9b3c83116b0009a384713",
         )
+        self.assertEqual(
+            SAGEQA_EVALUATOR_CANONICAL_SHA256,
+            "86b9bedfb3784145f3d20e2b9b8b6082ee4252e57918807bf02529b3904eefd6",
+        )
+        self.assertEqual(
+            SAGEQA_SOURCE_COMMIT,
+            "dbdbb50708bdc6c686ef82518ec71c1d1bf55985",
+        )
+        self.assertIn(PROJECT_ROOT, sageqa_evaluator_path().parents)
         self.assertTrue(callable(module.answer_set_scores))
         self.assertTrue(callable(module.evaluate))
 
