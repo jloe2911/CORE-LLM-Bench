@@ -196,7 +196,7 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 
 ## Version and license
 
-The benchmark version is `1.0.0`; the intended release tag is `v1.0.0`. See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`. The release date is intentionally omitted until it is fixed.
+The benchmark version is `1.0.0`; the intended release tag is `v1.0.0`, and the release date is 2026-09-13. See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`.
 
 Licensing has three distinct layers:
 

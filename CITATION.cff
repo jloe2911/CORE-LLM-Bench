@@ -3,7 +3,7 @@ message: "If you use CORE-LLM-Bench, please cite the published conference paper.
 title: "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models"
 type: dataset
 version: 1.0.0
-# Add date-released in YYYY-MM-DD form when the publication date is fixed.
+date-released: 2026-09-13
 authors:
   - family-names: "Loesch"
     given-names: "Julie"

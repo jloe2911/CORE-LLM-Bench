@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 - Unreleased
+## 1.0.0 - 2026-09-13
 
 - Define the public benchmark as 9,032 unique question-hop instances from Family, Pizza 100, Pizza 250, and OWL2Bench.
 - Package both 1-hop and 2-hop artifacts for each source dataset.
@@ -13,4 +13,4 @@
   profile excludes Family/FHKB source-bearing and derived payloads while
   preserving the canonical four-dataset full candidate privately.
 
-The release date remains unset. The published conference paper remains the primary citation; insert its complete confirmed bibliographic record before release. The extended journal manuscript is in preparation.
+Released on 2026-09-13. The published conference paper remains the primary citation; insert its complete confirmed bibliographic record before release. The extended journal manuscript is in preparation.

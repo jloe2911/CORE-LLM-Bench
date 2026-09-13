@@ -99,6 +99,7 @@ def _metadata(profile_name: str) -> dict[str, object]:
             "knowledge representation",
         ],
         "version": VERSION,
+        "publication_date": "2026-09-13",
         "related_identifiers": [
             {
                 "identifier": "https://github.com/jloe2911/CORE-LLM-Bench",
@@ -107,8 +108,8 @@ def _metadata(profile_name: str) -> dict[str, object]:
             }
         ],
         "notes": (
-            f"{note} TODO before publication: set release date; insert the complete "
-            "verified conference citation; add GitHub Release, Zenodo DOI, and "
+            f"{note} TODO before publication: insert the complete verified conference "
+            "citation; add GitHub Release, Zenodo DOI, and "
             "Hugging Face URLs; include ORCIDs only after mappings are confirmed. "
             "Licensing is component-specific: software MIT; separable original CORE "
             "material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; and "

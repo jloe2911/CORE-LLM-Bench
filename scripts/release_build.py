@@ -115,6 +115,7 @@ language (NL), formal-symbolic (FS), and abstract-representation (AR) inputs.
 - OEQA: {profile.task_totals['OEQA']:,}
 - Context depths: 1-hop and 2-hop
 - Benchmark version: {VERSION}
+- Release date: 2026-09-13
 
 Each Parquet row is one unique `(dataset, hop, task_id)` instance. NL, FS, and
 AR are columns in that row, not duplicated model-response records. Fields cover
@@ -138,8 +139,8 @@ No model responses are included.
 OWL2Bench is Apache-2.0, Family/FHKB-derived material is CC BY-SA 3.0,
 repository software is MIT, and separable original author-created benchmark
 material is CC BY 4.0. These do not form one blanket license. Consult
-`NOTICE.md` and `CITATION.cff`. Release date, GitHub Release URL, Zenodo DOI,
-Hugging Face URL, and unconfirmed ORCIDs remain deliberately unresolved.
+`NOTICE.md` and `CITATION.cff`. GitHub Release URL, Zenodo DOI, Hugging Face
+URL, and unconfirmed ORCIDs remain deliberately unresolved.
 """
 
 

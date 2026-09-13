@@ -1,6 +1,6 @@
 # CORE-LLM-Bench v1.0.0 release notes (draft)
 
-Release date: **TBD**
+Release date: **2026-09-13**
 GitHub Release URL: **TBD**
 Zenodo DOI: **TBD**
 Hugging Face URL: **TBD**
@@ -36,6 +36,6 @@ The published CORE-LLM-Bench conference paper is the primary citation. Use the
 verified bibliographic record when it is inserted into `CITATION.cff`; do not
 infer missing citation fields, DOI, date, URLs, or ORCIDs.
 
-This draft does not itself publish or authorize an upload. Release date,
-complete conference citation, immutable release URL, final security review,
+This draft does not itself publish or authorize an upload. Complete conference
+citation, immutable release URL, final security review,
 and exact staged-archive inspection remain publication gates.

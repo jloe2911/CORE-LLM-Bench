@@ -8,4 +8,4 @@ profile.
 
 This is a contingency package, not the intended canonical v1.0.0 release. See
 `docs/FAMILY_RECONSTRUCTION.md` for the qualified local reconstruction path.
-All publication metadata placeholders in the full release note remain pending.
+The remaining publication metadata placeholders in the full release note remain pending.
