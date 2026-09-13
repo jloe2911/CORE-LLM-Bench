@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+.idea/
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -36,13 +37,47 @@ build/
 
 ### Mac OS ###
 .DS_Store
+Thumbs.db
+
+### Python caches and bytecode ###
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+### Editor temporary files and local logs ###
+*.swp
+*.swo
+*~
+*.log
 
 .env
 .venv
 .ruff_cache
 .deepeval
+**/__pycache__/
 .github
 data/output
 data/resources
 final_benchmark/*.json
 !final_benchmark/toy_example_*.json
+!final_benchmark/manifest.json
+paper_material/
+tests/
+!tests/
+tests/*
+!tests/test_sageqa_answer_metric_migration.py
+!tests/test_release_tools.py
+
+# Locally prepared release payloads (reproducible via scripts; do not commit copies).
+release/huggingface/*.parquet
+release/huggingface/dataset_info.json
+release/zenodo/package/
+release/huggingface/full/
+release/huggingface/public-safe/
+release/zenodo/full/
+release/zenodo/public-safe/
+release/zenodo/CORE-LLM-Bench-v*.zip
+local_sources/
+/tmp*/

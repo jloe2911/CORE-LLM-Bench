@@ -1,0 +1,21 @@
+reasoning_tag,reasoning_type,Family_BQA,Family_OEQA,Family_Total,Pizza100_BQA,Pizza100_OEQA,Pizza100_Total,Pizza250_BQA,Pizza250_OEQA,Pizza250_Total,OWL2Bench_BQA,OWL2Bench_OEQA,OWL2Bench_Total,Overall_BQA,Overall_OEQA,Overall_Total
+D,Direct assertions,2544,1216,3760,656,328,984,798,434,1232,2001,1055,3056,5999,3033,9032
+H,Hierarchy,434,382,816,425,203,628,519,279,798,658,378,1036,2036,1242,3278
+T,Transitivity,0,0,0,0,0,0,0,0,0,1,1,2,1,1,2
+S,Symmetry,0,0,0,0,0,0,0,0,0,30,25,55,30,25,55
+A,Asymmetric properties,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+J,Disjointness constraints,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+N,Property chains,0,0,0,0,0,0,0,0,0,79,89,168,79,89,168
+E,Existential restrictions,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+∩,Intersection,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+¬,Complement,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+I,Inverse properties,1310,651,1961,42,22,64,37,23,60,155,84,239,1544,780,2324
+F,Functional properties,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+V,Reflexive properties,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Y,Irreflexive properties,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Q,Equivalence,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+R,Domain/range restrictions,506,224,730,0,121,121,0,140,140,439,230,669,945,715,1660
+C,Cardinality restrictions,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+L,Universal restrictions,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+U,Union,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+M,Multiple TBox axiom types,300,194,494,0,104,104,0,121,121,191,110,301,491,529,1020

@@ -1,0 +1,285 @@
+{
+  "unit_of_analysis": "unique (dataset, hop, Task ID)",
+  "task_mapping": "Answer Type == BIN -> BQA; all observed non-BIN rows (MC) -> OEQA",
+  "tag_aggregation": "Set union across all TAG strings in all valid explanations; repeated letters within an explanation count once",
+  "negative_bqa_handling": "Resolve the unique positive BIN entailment with the same Root Entity, ASK subject, and ASK predicate in SPARQL_questions.csv, then use that positive inferred triple's complete explanation set",
+  "columns_used": [
+    "Task ID",
+    "Root Entity",
+    "Task Type",
+    "Answer Type",
+    "SPARQL Query",
+    "Answer",
+    "Min Tag Length (validation only)",
+    "Max Tag Length (validation only)"
+  ],
+  "explanation_fields_used": [
+    "inferred.subject",
+    "inferred.predicate",
+    "inferred.object",
+    "explanations[*] TAG:<string>",
+    "explanationCount (validation only)"
+  ],
+  "source_files": [
+    {
+      "dataset": "Family",
+      "dataset_directory": "FamilyOWL",
+      "hop": "1hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\1hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\1hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\1hop\\Explanations.json",
+      "sampled_rows": 1880,
+      "full_rows": 7518,
+      "negative_bqa_links": 669,
+      "explanation_records": 4418,
+      "explanation_paths": 5779,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\1hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 1880
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\1hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 1880
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\FamilyOWL_1hop.json",
+        "task_ids": 1880
+      }
+    },
+    {
+      "dataset": "Family",
+      "dataset_directory": "FamilyOWL",
+      "hop": "2hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\2hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\2hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\2hop\\Explanations.json",
+      "sampled_rows": 1880,
+      "full_rows": 7518,
+      "negative_bqa_links": 670,
+      "explanation_records": 4418,
+      "explanation_paths": 5779,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\2hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 1880
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\FamilyOWL\\2hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 1880
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\FamilyOWL_2hop.json",
+        "task_ids": 1880
+      }
+    },
+    {
+      "dataset": "Pizza100",
+      "dataset_directory": "pizza_100",
+      "hop": "1hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\1hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\1hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\1hop\\Explanations.json",
+      "sampled_rows": 492,
+      "full_rows": 1977,
+      "negative_bqa_links": 160,
+      "explanation_records": 3508,
+      "explanation_paths": 4338,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\1hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 492
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\1hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 492
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\pizza_100_1hop.json",
+        "task_ids": 492
+      }
+    },
+    {
+      "dataset": "Pizza100",
+      "dataset_directory": "pizza_100",
+      "hop": "2hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\2hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\2hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\2hop\\Explanations.json",
+      "sampled_rows": 492,
+      "full_rows": 1977,
+      "negative_bqa_links": 167,
+      "explanation_records": 3508,
+      "explanation_paths": 4338,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\2hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 492
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_100\\2hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 492
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\pizza_100_2hop.json",
+        "task_ids": 492
+      }
+    },
+    {
+      "dataset": "Pizza250",
+      "dataset_directory": "pizza_250",
+      "hop": "1hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\1hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\1hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\1hop\\Explanations.json",
+      "sampled_rows": 616,
+      "full_rows": 2472,
+      "negative_bqa_links": 182,
+      "explanation_records": 4774,
+      "explanation_paths": 5782,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\1hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 616
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\1hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 616
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\pizza_250_1hop.json",
+        "task_ids": 616
+      }
+    },
+    {
+      "dataset": "Pizza250",
+      "dataset_directory": "pizza_250",
+      "hop": "2hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\2hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\2hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\2hop\\Explanations.json",
+      "sampled_rows": 616,
+      "full_rows": 2472,
+      "negative_bqa_links": 219,
+      "explanation_records": 4774,
+      "explanation_paths": 5782,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\2hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 616
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\pizza_250\\2hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 616
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\pizza_250_2hop.json",
+        "task_ids": 616
+      }
+    },
+    {
+      "dataset": "OWL2Bench",
+      "dataset_directory": "OWL2Bench",
+      "hop": "1hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\1hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\1hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\1hop\\Explanations.json",
+      "sampled_rows": 1466,
+      "full_rows": 5868,
+      "negative_bqa_links": 473,
+      "explanation_records": 3966,
+      "explanation_paths": 7241,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\1hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 1466
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\1hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 1466
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\OWL2Bench_1hop.json",
+        "task_ids": 1466
+      }
+    },
+    {
+      "dataset": "OWL2Bench",
+      "dataset_directory": "OWL2Bench",
+      "hop": "2hop",
+      "sampled_questions": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\2hop\\SPARQL_questions_sampling.csv",
+      "complete_questions_for_negative_links": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\2hop\\SPARQL_questions.csv",
+      "explanations": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\2hop\\Explanations.json",
+      "sampled_rows": 1590,
+      "full_rows": 6369,
+      "negative_bqa_links": 536,
+      "explanation_records": 4135,
+      "explanation_paths": 7577,
+      "validated_representation_copies": [
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\2hop\\SPARQL_questions_sampling_nl.csv",
+          "rows": 1590
+        },
+        {
+          "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\data\\output\\OWL2Bench\\2hop\\SPARQL_questions_sampling_abs.csv",
+          "rows": 1590
+        }
+      ],
+      "validated_final_json": {
+        "path": "C:\\Users\\julie\\github\\PhD\\CORE-LLM-Bench\\final_benchmark\\OWL2Bench_2hop.json",
+        "task_ids": 1590
+      }
+    }
+  ],
+  "negative_bqa_questions_linked": 3076,
+  "missing_explanation_metadata": 0,
+  "invalid_explanation_metadata": 0,
+  "bqa_tag_length_mismatches": [],
+  "denominators": {
+    "Family_BQA": 2544,
+    "Family_OEQA": 1216,
+    "Family_Total": 3760,
+    "Pizza100_BQA": 656,
+    "Pizza100_OEQA": 328,
+    "Pizza100_Total": 984,
+    "Pizza250_BQA": 798,
+    "Pizza250_OEQA": 434,
+    "Pizza250_Total": 1232,
+    "OWL2Bench_BQA": 2001,
+    "OWL2Bench_OEQA": 1055,
+    "OWL2Bench_Total": 3056,
+    "Overall_BQA": 5999,
+    "Overall_OEQA": 3033,
+    "Overall_Total": 9032
+  },
+  "expected_dataset_totals": {
+    "Family": 3760,
+    "Pizza100": 984,
+    "Pizza250": 1232,
+    "OWL2Bench": 3056
+  },
+  "expected_overall_total": 9032,
+  "expected_totals_match": true,
+  "reasoning_types_represented": 8,
+  "zero_coverage_tags": [
+    "A",
+    "J",
+    "E",
+    "∩",
+    "¬",
+    "F",
+    "V",
+    "Y",
+    "Q",
+    "C",
+    "L",
+    "U"
+  ]
+}
