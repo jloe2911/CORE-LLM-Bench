@@ -1,14 +1,18 @@
 {
-  "title": "CORE-LLM-Bench",
+  "title": "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models",
   "upload_type": "dataset",
-  "description": "CORE-LLM-Bench v1.0: a neurosymbolic benchmark of 9,032 unique question-hop instances across Family, Pizza 100, Pizza 250, and OWL2Bench, with BQA/OEQA tasks and NL/FS/AR representations.",
+  "description": "CORE-LLM-Bench v1.0.0 is a controlled neurosymbolic benchmark containing 9,032 question-hop instances across Family, Pizza 100, Pizza 250, and OWL2Bench: 5,999 binary question-answering (BQA) instances and 3,033 open-ended question-answering (OEQA) instances. Each instance aligns natural-language (NL), formal-symbolic (FS), and abstract-representation (AR) conditions and records 1-hop or 2-hop ontology-context depth, explanation-complexity metadata, reasoning-type coverage, and source-ontology provenance.",
   "creators": [
-    {"name": "Loesch, Julie"},
-    {"name": "CORE-LLM-Bench contributors"}
+    {"name": "Loesch, Julie", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Falahatkar, Sara", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Kilk, Nicole", "affiliation": "University College Maastricht, Maastricht University, Zwingelput 4, Maastricht, 6211 KH, Netherlands"},
+    {"name": "Jakhar, Rishabh", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Mutharaju, Raghava", "affiliation": "Mehta Family School of Data Science and AI, IIT Palakkad, Kerala, India"},
+    {"name": "Dumontier, Michel", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Celebi, Remzi", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"}
   ],
-  "keywords": ["ontology reasoning", "neurosymbolic AI", "question answering", "OWL", "benchmark", "large language models"],
+  "keywords": ["neurosymbolic AI", "large language models", "ontology reasoning", "benchmark", "symbolic reasoning", "description logic", "OWL", "question answering", "knowledge representation"],
   "version": "1.0.0",
-  "license": "other-open",
   "related_identifiers": [
     {
       "identifier": "https://github.com/jloe2911/CORE-LLM-Bench",
@@ -16,5 +20,5 @@
       "scheme": "url"
     }
   ],
-  "notes": "TODO before deposit: set publication_date, finalize creators and affiliations, resolve Family redistribution licensing, select the final mixed/dataset license wording, add the benchmark-paper citation, and replace the repository URL with the immutable v1.0 source snapshot URL. No DOI has been assigned or invented."
+  "notes": "The published CORE-LLM-Bench conference paper is the primary scholarly citation. TODO before deposit: copy its complete bibliographic citation and persistent identifier from the confirmed manuscript record, then add the corresponding Zenodo relation. An extended benchmark manuscript is in preparation for the Neurosymbolic AI journal special issue on Neurosymbolic Benchmark Papers. Also set publication_date and add the immutable v1.0.0 GitHub release URL once they exist. DOI, publication date, complete conference citation, and immutable release URL are deliberately unresolved and omitted. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; and modified/adapted Family/FHKB-derived material CC BY-SA 3.0."
 }

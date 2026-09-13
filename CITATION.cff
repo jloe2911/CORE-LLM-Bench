@@ -1,20 +1,43 @@
 cff-version: 1.2.0
-message: "If you use CORE-LLM-Bench, please cite the benchmark paper and this software artifact."
-title: "CORE-LLM-Bench"
+message: "If you use CORE-LLM-Bench, please cite the published conference paper."
+title: "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models"
 type: dataset
 version: 1.0.0
 # Add date-released in YYYY-MM-DD form when the publication date is fixed.
 authors:
   - family-names: "Loesch"
     given-names: "Julie"
-  - name: "CORE-LLM-Bench contributors"
+    affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
+  - family-names: "Falahatkar"
+    given-names: "Sara"
+    affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
+  - family-names: "Kilk"
+    given-names: "Nicole"
+    affiliation: "University College Maastricht, Maastricht University, Zwingelput 4, Maastricht, 6211 KH, Netherlands"
+  - family-names: "Jakhar"
+    given-names: "Rishabh"
+    affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
+  - family-names: "Mutharaju"
+    given-names: "Raghava"
+    affiliation: "Mehta Family School of Data Science and AI, IIT Palakkad, Kerala, India"
+  - family-names: "Dumontier"
+    given-names: "Michel"
+    affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
+  - family-names: "Celebi"
+    given-names: "Remzi"
+    affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
 repository-code: "https://github.com/jloe2911/CORE-LLM-Bench"
 url: "https://github.com/jloe2911/CORE-LLM-Bench"
-preferred-citation:
-  type: article
-  title: "CORE-LLM-Bench"
-  authors:
-    - family-names: "Loesch"
-      given-names: "Julie"
-    - name: "CORE-LLM-Bench contributors"
-  # Add journal, year, volume, pages, and DOI after paper acceptance.
+keywords:
+  - "neurosymbolic AI"
+  - "large language models"
+  - "ontology reasoning"
+  - "benchmark"
+  - "symbolic reasoning"
+  - "description logic"
+  - "OWL"
+  - "question answering"
+  - "knowledge representation"
+# Add preferred-citation from the complete, confirmed conference-paper record.
+# No complete conference BibTeX or bibliographic record is currently stored in
+# this repository, so incomplete or inferred fields are deliberately omitted.

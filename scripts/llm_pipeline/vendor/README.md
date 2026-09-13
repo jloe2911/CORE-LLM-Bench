@@ -12,6 +12,6 @@
 - Git blob ID: `9c17b48b67a37bffdf93357c74521ef04a9a2471`
 - License: MIT; see `SAGE-QA-LICENSE.txt` in this directory.
 
-The snapshot is intentionally frozen for CORE-LLM-Bench v1.0 manuscript
+The snapshot is intentionally frozen for CORE-LLM-Bench v1.0.0 manuscript
 Answer EM/F1 reproduction. Do not replace it with a newer SAGE-QA evaluator
 without a separate scientific parity audit and an intentional version change.

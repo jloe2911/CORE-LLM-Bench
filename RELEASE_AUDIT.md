@@ -1,6 +1,8 @@
-# CORE-LLM-Bench v1.0 release audit
+# CORE-LLM-Bench v1.0.0 release audit
 
 Audit date: 2026-09-11
+
+Licensing-documentation reconciliation: 2026-09-13
 
 Release-candidate branch: `release-v1.0`
 
@@ -77,40 +79,72 @@ Validation results:
 - Release validator: PASS.
 - Reasoning-coverage regeneration from existing artifacts: PASS; no benchmark regeneration or API use.
 - Maven tests: PASS after allowing Maven to access its existing user cache. The first sandboxed attempt failed before tests with access denied in `.m2`.
-- Python unittest discovery: 15 tests passed after vendoring and hash-verifying the exact manuscript-frozen SAGE-QA evaluator. The suite no longer depends on the mutable external checkout.
-- Python source compilation for modified scripts/tests: PASS; temporary bytecode caches from verification were removed.
-- Ruff: PASS after removing one unused import.
+- Python unittest discovery: 17 tests passed, including profile selection,
+  Family leak rejection, and exact parity over 81,288 saved manuscript observations.
+- Python source compilation for modified scripts/tests: PASS.
+- Ruff on the modified release scripts/tests: PASS. A broader repository scan
+  still reports 46 pre-existing findings in legacy analysis/generation code
+  outside this release-documentation reconciliation.
 - `git diff --check`: PASS.
+
+The 2026-09-13 reconciliation reran both source-profile validators, rebuilt and
+validated both Hugging Face exports, rebuilt and validated both Zenodo staging
+packages and deterministic archives, regenerated reasoning coverage, reran all
+17 Python tests and Maven tests, parsed the JSON/CFF metadata, and compiled the
+eight modified release Python files in memory. No network publication or
+release operation was performed.
 
 ## D. Hugging Face readiness
 
-`scripts/export_huggingface.py` produced locally:
+`scripts/export_huggingface.py` produced both local profiles:
 
-- `release/huggingface/core_llm_bench_v1_0.parquet`: 9,032 rows, 9,032 unique identities, 7,735,948 bytes.
-- `release/huggingface/dataset_info.json`: counts and 26-column schema.
-- `release/huggingface/README.md`: draft dataset card.
+- `release/huggingface/full/core_llm_bench_v1_0.parquet`: 9,032 rows,
+  9,032 unique identities, 7,714,438 bytes.
+- `release/huggingface/public-safe/core_llm_bench_v1_0.parquet`: 5,272
+  rows, 5,272 unique identities, 5,359,557 bytes.
+- Each directory contains the same 26-column schema, a profile-specific card,
+  dataset information, release manifest, and SHA-256 checksums.
 
 The Parquet keeps NL, FS, and AR in one row and includes identity, task/label fields, gold answers, contexts, proof metadata, complexity, reasoning tags, version, negative-proof links, and source-package provenance. The Parquet and generated info file are reproducible local payloads and are intentionally ignored by Git. No upload occurred.
 
 ## E. Zenodo readiness
 
-`scripts/prepare_zenodo.py` produced `release/zenodo/package/` locally with 17 copied/checksummed inputs plus `PACKAGE_MANIFEST.json` (approximately 84.0 MB total). It includes benchmark ZIPs, reasoning metadata/results, README, license/notice, citation, version, changelog, release audit/manifest, and draft Zenodo metadata.
+`scripts/prepare_zenodo.py` produced both local staging packages with 25 files
+each (including manifests and checksums):
 
-Remaining manual steps are to clear the blockers below, finalize creators/affiliations/date/paper citation, create an immutable source snapshot, rerun the package preparation after those edits, inspect the final archive, and upload manually. No DOI, GitHub Release, Zenodo deposit, or Hugging Face upload was created.
+- Full: 84,038,561 staged bytes; 78,761,177-byte deterministic ZIP; archive
+  SHA-256 `9167a9d6f13924138ddbec32833a50af8fa3f71c3ef1349198054ecb6145c38b`.
+- Public-safe: 26,301,503 staged bytes; 22,953,943-byte deterministic ZIP;
+  archive SHA-256
+  `91bde388624f1e403a7dc151a14edbe716e59057e09ee23373829145de6f9265`.
+
+The public-safe archive contains exactly the Pizza 100, Pizza 250, and
+OWL2Bench benchmark ZIPs. Its record/artifact assertion, checksums, CRC checks,
+and deep content scan pass with zero Family payload.
+
+The confirmed creators and affiliations are now present in the release metadata. Remaining manual steps are to set the release date, insert the complete conference-paper citation from the confirmed manuscript record, create an immutable source snapshot, run the final security and staged-file review, rerun the package preparation after those edits, inspect the final archive, and upload manually. No DOI, GitHub Release, Zenodo deposit, or Hugging Face upload was created.
 
 ## F. Remaining blockers and resolved decisions
 
-1. **Family licensing:** no explicit redistribution license was found in the checked-in Family ontology or located source material. Because Family-derived contexts are embedded in the benchmark ZIP, obtain permission or authoritative license evidence before public distribution.
-2. **Evaluator reproducibility — resolved:** the exact MIT-licensed manuscript evaluator is vendored and the 15-test suite, including 81,288-observation parity, passes. See the resolution section below.
-3. **Publication metadata:** confirm the complete author/creator list, affiliations, release date, journal citation, and final dataset-license wording. The current files deliberately contain placeholders rather than invented bibliographic data.
+1. **Family licensing - resolved:** the local Family ontology is a
+   modified/adapted FHKB resource. The tutorial distribution and its FHKB OWL
+   resources are licensed CC BY-SA 3.0, so Family/FHKB-derived material is
+   distributable under those terms with the obligations recorded below and in
+   `NOTICE.md`.
+2. **Evaluator reproducibility — resolved:** the exact MIT-licensed manuscript evaluator is vendored and the 17-test suite, including 81,288-observation parity, passes. See the resolution section below.
+3. **Publication metadata:** the complete author/creator list, affiliations, benchmark title/version, repository, keywords, intended licensing layers, and journal-manuscript status are confirmed and recorded. Release date and immutable release URL remain intentionally deferred. The repository contains no complete conference BibTeX record, so the primary conference citation remains explicitly marked for insertion from the confirmed manuscript record rather than inferred.
 4. **Response-level reproducibility — decision recorded:** publish the curated validated response set as a separate supplementary archive; do not copy the entire ignored output tree. Archive creation remains a later, explicitly authorized publication-preparation action.
 5. **Final security/publication review:** `.env` is ignored and not tracked at current or historical branch tips by that path, but run a dedicated full-history secret scanner and review the exact staged file allowlist before public release.
 
 ## Recommendation
 
-**Safe to release v1.0: NO**
+**Family redistribution: RESOLVED UNDER CC BY-SA 3.0**
 
-The release candidate is technically prepared and its benchmark artifacts validate, but Family redistribution clearance and the associated final dataset-license wording must be resolved first. Final owner-supplied metadata also remains outstanding.
+The full 9,032-instance release candidate is technically prepared, its benchmark
+artifacts validate, and a 5,272-instance optional public-safe profile excludes
+Family. Family licensing is no longer a substantive blocker. Release-date,
+immutable-URL, complete conference-citation, and final security/staged-file
+review remain release-finalization gates.
 
 ## Pre-publication blocker resolution
 
@@ -119,8 +153,7 @@ changed, and nothing was published, uploaded, merged, tagged, or released.
 
 ### 1. Family ontology provenance and licensing
 
-Conclusion: **C. `NO EXPLICIT REDISTRIBUTION LICENSE FOUND`** for the exact
-Family ontology file in this repository.
+Conclusion: **B. modified/adapted version of the licensed FHKB ontology.**
 
 Exact local artifact and internal evidence:
 
@@ -130,14 +163,14 @@ Exact local artifact and internal evidence:
   `http://www.co-ode.org/roberts/family-tree.owl`; the default namespace uses
   that IRI with `#`, while most Family entities use the `fhkb` namespace
   `http://www.example.com/genealogy.owl#`.
-- The sole ontology annotation is an `rdfs:comment` identifying a simple
+- The ontology annotation includes an `rdfs:comment` identifying a simple
   family-relationships ontology and associated instances describing Robert
   Stevens's family, designed to maximize inference through role chains,
   nominals, and property hierarchies. There is no creator, contributor,
   rights, copyright, or license annotation.
 - The file says it was generated by OWL API 4.5.26. Its mapped
   `example.com/genealogy.owl#` entity namespace and OWL API serialization show
-  that it is a transformed/reserialized FHKB artifact, not a byte-for-byte copy
+  that it is a transformed and adapted FHKB artifact, not a byte-for-byte copy
   of the currently downloadable author-hosted file.
 - Git first adds this exact file as `data/input/family.owl` in commit
   `a4b4ce533297e5cf21f4099bdb6d8bcf567c569c` on 2026-02-18. Earlier tracked
@@ -155,52 +188,80 @@ Upstream identification:
   `2caff4a8fa89547401c56cde66d4892c8580f684e7e83182e16edfb8a9fab715`;
   it shares the ontology IRI, description, people, and relationship model but
   is not byte-identical and predominantly uses the CO-ODE entity namespace.
+- RDF-level comparison establishes the lineage quantitatively. After mapping
+  the upstream entity namespace
+  `http://www.co-ode.org/roberts/family-tree.owl#` to CORE's
+  `http://www.example.com/genealogy.owl#` and normalizing only literal datatype
+  presentation, the two graphs contain the same 508 named-individual IRIs and
+  all 2,369 triples having those individuals as subjects are identical.
+- Across the complete FHKB entity signature, 555 of CORE's 558 source-namespace
+  IRIs occur in the author-hosted ontology. The three CORE-only names are
+  `hasRelation`, `hasSpouse`, and the case variant `isBloodrelationOf`. CORE
+  retains 9 named classes and 35 object properties, compared with 172 named
+  classes and 80 object properties upstream. It also represents six upstream
+  data-style fields as annotation properties and adds or reorganizes selected
+  schema axioms. These are substantive adaptation indicators, while the exact
+  ABox identity rules out an unrelated ontology.
+- The intermediate `genealogical-trees` TBox independently documents that its
+  `http://www.example.com/genealogy.owl#` vocabulary adopts FHKB. CORE's nine
+  named classes all occur in that TBox and 33 of its 35 declared object
+  properties occur there. This explains the otherwise distinctive mapped
+  namespace and corroborates a transformation chain rather than independent
+  creation.
 - The originating publication is Robert Stevens and Margaret Stevens,
   *A Family History Knowledge Base Using OWL 2*, OWLEd 2008, CEUR-WS Vol. 432:
   `https://ceur-ws.org/Vol-432/owled2008eu_submission_29.pdf`. A later account
   is Robert Stevens, Nicolas Matentzoglu, Uli Sattler, and Margaret Stevens,
   *A Family History Knowledge Base in OWL 2*, ORE 2014, CEUR-WS Vol. 1207.
 - Robert Stevens is the identifiable original creator/host and Margaret
-  Stevens is a co-author of the originating paper. The later Manchester Family
+  Stevens is a co-author of the originating paper. The Manchester Family
   History Advanced OWL tutorial credits Robert Stevens, Margaret Stevens,
   Nicolas Matentzoglu, and Simon Jupp (with later web-version contribution by
-  Shawn Tan). OBO Academy now maintains a permitted tutorial fork; it is not
-  evidence that OBO Academy maintains or relicenses this exact local OWL file.
+  Shawn Tan). OBO Academy states that its reproduction is made with Robert
+  Stevens's permission.
 
-License evidence and limits:
+License evidence and scope:
 
-- Robert Stevens's FHKB materials page says the material may be used and asks
-  for credit when it is used or re-purposed. This is useful evidence of intended
-  reuse, but it does not state a standard license or unambiguously grant
-  redistribution of this exact transformed OWL file.
-- The later Manchester/OBO Academy tutorial states CC BY-SA 3.0 for the
-  *tutorial*. Its download section supplies chapter snapshots, including a
-  final chapter-10 OWL file, but that snapshot has a different IRI/content and
-  is not this repository's file. The tutorial notice therefore cannot safely
-  be extended to this exact artifact without author/rightsholder confirmation.
-- Public hosting and publication are not treated as redistribution permission.
+- The Manchester/OBO Academy tutorial expressly states that the *Manchester
+  Family History Advanced OWL Tutorial* by Robert Stevens, Margaret Stevens,
+  Nicolas Matentzoglu, and Simon Jupp is licensed under CC BY-SA 3.0. The same
+  work identifies FHKB resources as tutorial resources and contains the
+  `FHKB OWL Files for Download` section with chapter snapshots. The license is
+  therefore tied to the tutorial distribution that supplies the ontology
+  resources, rather than inferred merely from public hosting.
+- Robert Stevens's official FHKB page additionally says users are welcome to
+  use the material and requests credit for material used or re-purposed. This
+  is consistent with, though not needed in place of, the explicit CC BY-SA 3.0
+  license.
+- CC BY-SA 3.0 grants reproduction, distribution, and adaptation rights in all
+  media and formats. It requires attribution, a license copy or URI,
+  identification of changes for adaptations, ShareAlike licensing of the
+  adaptation, and no additional legal or technical restrictions. A pending
+  permission email is not necessary to exercise those existing rights; any
+  reply may be retained as supplemental confirmation.
 
 Redistribution assessment:
 
-- **Original/local Family OWL:** unresolved. No explicit license tied to the
-  exact file was found.
-- **Generated Family benchmark instances:** also unresolved. CORE-LLM-Bench
-  authors own their original selection, metadata, and generated expression to
-  the extent applicable, but the packaged contexts reproduce or transform
-  Family ontology classes, properties, axioms, and instance facts. This audit
-  cannot establish that those source-content-bearing derivatives may be
-  redistributed independently of the source ontology.
+- **Transformed/local Family OWL:** redistribution permitted as an adaptation
+  under CC BY-SA 3.0, with attribution, source/license links, change notice,
+  ShareAlike, and no additional restrictions.
+- **Family-derived ontology fragments and benchmark contexts:** redistribution
+  permitted, but these reproduce or adapt FHKB classes, properties, axioms,
+  and instance content and must remain under the applicable CC BY-SA 3.0 terms.
+- **Family-derived questions and answers:** independently authored wording and
+  metadata can remain CC BY 4.0 only where genuinely separable from FHKB
+  expression. Questions, answers, identifiers, verbalizations, abstractions,
+  or records that reproduce, transform, or build on FHKB content are
+  conservatively distributed as part of the Family CC BY-SA 3.0 component.
+  This component treatment does not assert copyright in bare facts or override
+  statutory exceptions and limitations.
+- **Other components:** software remains MIT; separable original CORE material
+  remains CC BY 4.0; Pizza remains CC BY 3.0; OWL2Bench remains Apache-2.0.
 
-Safest strategy: obtain written permission from Robert Stevens and, if
-necessary, the University of Manchester explicitly covering redistribution of
-the transformed ontology and generated benchmark contexts/questions, with a
-named license and attribution text. If permission cannot be obtained, do not
-publish the Family ZIP, Family Parquet rows, the source OWL, or other
-source-content-bearing Family derivatives; instead publish a user-side
-download/reconstruction procedure after confirming that the upstream download
-may be used that way. Merely omitting `family.owl` while retaining embedded
-Family contexts does not resolve the issue. No files were removed or altered
-as part of this audit.
+Required strategy: distribute the full mixed-provenance benchmark with
+component-level licensing and the attribution/change notice in `NOTICE.md`.
+Do not relicense FHKB-derived content as CC BY 4.0 and do not apply a single
+blanket license to all CORE material.
 
 ### 2. Frozen Answer EM/F1 evaluator
 
@@ -229,7 +290,7 @@ Status: **RESOLVED**.
   pin was not silently updated.
 - Regression verification passed all four migration tests, including exact
   per-example parity across all 81,288 saved manuscript observations. Full
-  Python unittest discovery passed all 15 tests; the two former external-hash
+  Python unittest discovery passed all 17 tests; the two former external-hash
   errors are gone.
 
 ### 3. Response-level manuscript results
@@ -268,34 +329,38 @@ Recommendation: **B. publish them as a separate supplementary archive**.
 
 | Field | Status | Value or confirmation still required |
 | --- | --- | --- |
-| Benchmark title | Known | `CORE-LLM-Bench` |
-| Version | Known | `1.0.0` (release label `v1.0`) |
-| Authors | Known from the requested manuscript list | Julie Loesch; Sara Falahatkar; Nicole Makayla Kilk; Rishabh Jakhar; Raghava Mutharaju; Michel Dumontier; Remzi Celebi |
-| Affiliations | Needs confirmation | Affiliation(s) and author-to-affiliation mapping for all seven authors |
-| ORCID IDs | Needs confirmation | ORCID for each author, or explicit confirmation that an author has none/should omit it |
+| Benchmark title | Confirmed | `CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models` |
+| Version | Confirmed | `1.0.0` (intended tag `v1.0.0`) |
+| Authors | Confirmed | Julie Loesch; Sara Falahatkar; Nicole Kilk; Rishabh Jakhar; Raghava Mutharaju; Michel Dumontier; Remzi Celebi |
+| Affiliations | Confirmed | Recorded for all seven authors in `CITATION.cff`, the Zenodo draft, and the Hugging Face draft |
+| ORCID IDs | Deliberately omitted | Four IDs are known but author mappings are unconfirmed; none appears in public-facing metadata |
 | Release date | Needs confirmation | Final `YYYY-MM-DD` publication date |
-| Repository URL | Known, snapshot pending | `https://github.com/jloe2911/CORE-LLM-Bench`; immutable v1.0 tag/release URL does not yet exist and was not created |
-| Benchmark/data license | Needs confirmation and clearance | No final blanket dataset license; select wording only after Family rights are cleared or Family payloads are excluded |
-| Software license | Known | MIT (`LICENSE`) |
-| Source-ontology licenses | Partly known | Pizza: CC BY 3.0; OWL2Bench: Apache-2.0; Family: no explicit license established for the exact local file |
-| Preferred citation | Incomplete | Title and seven-author order are known; venue/journal, year, volume/pages, DOI, and final citation form need confirmation |
-| Paper status | Needs confirmation | Do not infer submitted/under review/accepted/published from current files |
-| Keywords | Known draft | ontology reasoning; neurosymbolic AI; question answering; OWL; benchmark; large language models |
+| Repository URL | Confirmed, snapshot pending | `https://github.com/jloe2911/CORE-LLM-Bench`; immutable `v1.0.0` tag/release URL does not yet exist and was not created |
+| Benchmark/data license | Mixed model confirmed | Original separable CORE questions/metadata: intended CC BY 4.0; source-derived components retain upstream terms; Family/FHKB-derived material is CC BY-SA 3.0; no blanket dataset license |
+| Software license | Confirmed | MIT (`LICENSE`) |
+| Source-ontology licenses | Confirmed for release treatment | Pizza: CC BY 3.0; OWL2Bench: Apache-2.0; modified/adapted Family/FHKB-derived material: CC BY-SA 3.0 |
+| Preferred citation | Conference paper primary; record pending | Complete conference BibTeX/bibliographic metadata is not present in the repository and was not inferred; insert it from the confirmed manuscript record |
+| Paper status | Confirmed | Conference paper published and primary; extended benchmark manuscript in preparation for the Neurosymbolic AI journal special issue on Neurosymbolic Benchmark Papers |
+| Keywords | Confirmed | neurosymbolic AI; large language models; ontology reasoning; benchmark; symbolic reasoning; description logic; OWL; question answering; knowledge representation |
 
-The current `CITATION.cff` and Zenodo draft still use a generic contributor
-placeholder; they were not changed because affiliations, ORCIDs, paper status,
-release date, preferred citation, and final data-license wording require owner
-confirmation.
+The generic contributor placeholders were replaced with the seven confirmed
+authors and affiliations. Unmapped ORCIDs remain absent. The release date, DOI,
+immutable release URL remain unresolved. A `preferred-citation` block was not created because no complete
+conference bibliographic record exists in the repository.
 
 ### 5. Final blocker status
 
-- Family licensing: **UNRESOLVED**
+- Family redistribution: **RESOLVED UNDER CC BY-SA 3.0**
 - Evaluation reproducibility: **RESOLVED**
 - Response-results decision: **B — publish the curated 36-file response set as a separate supplementary archive**
-- Metadata remaining: **affiliations and author mapping; ORCID decisions/IDs; release date; final benchmark/data-license wording; Family permission or exclusion decision; preferred-citation venue/journal, year, volume/pages, DOI and final form; paper status; immutable v1.0 snapshot URL once created**
-- Safe to proceed to GitHub v1.0 publication preparation: **NO**
+- Metadata remaining: **release date; complete conference-paper bibliographic record and persistent identifier; DOI if assigned; immutable `v1.0.0` snapshot URL once created**
+- Metadata otherwise ready for v1.0.0: **YES, subject to the deliberately deferred release-bound fields above**
+- Full 9,032-instance benchmark licensing treatment: **CONFIRMED as component-specific, including Family/FHKB-derived material under CC BY-SA 3.0**
+- Technical release preparation: **READY**
+- Operationally ready to publish now: **NO; final metadata, security/staged-file review, archive regeneration, and inspection remain**
 
-The blocking reason is Family redistribution clearance (and associated final
-dataset-license wording), not evaluator reproducibility. Publication,
-repository creation, tagging, release creation, and upload remain outside this
+Family redistribution is no longer the full-publication blocker. The remaining
+date, DOI/citation-identifier, and immutable-URL fields cannot be completed until their source records exist;
+the final security/staged-file review and regenerated archive inspection also
+remain. Publication, tagging, release creation, and upload remain outside this
 task and were not performed.

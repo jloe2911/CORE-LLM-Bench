@@ -429,7 +429,7 @@ def main():
             dry_run=args.dry_run,
         )
 
-    jar_path = PROJECT_ROOT / "target" / "llm-orbench-1.0-SNAPSHOT.jar"
+    jar_path = PROJECT_ROOT / "target" / "llm-orbench-1.0.0.jar"
     paired_subgraph_names = None
     paired_subgraph_limit = None
     paired_subgraph_seed = args.subgraph_sample_seed

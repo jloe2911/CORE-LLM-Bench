@@ -2,7 +2,7 @@
 
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
-Version 1.0 contains **9,032 unique question-hop instances** from four source datasets:
+Version 1.0.0 contains **9,032 unique question-hop instances** from four source datasets:
 
 | Dataset | 1-hop | 2-hop | Total |
 | --- | ---: | ---: | ---: |
@@ -110,10 +110,15 @@ Install the one optional release dependency, then export locally:
 
 ```bash
 python -m pip install -r requirements-release.txt
-python scripts/export_huggingface.py
+python scripts/export_huggingface.py --profile full
+python scripts/export_huggingface.py --profile public-safe
 ```
 
-This writes one Parquet row per unique question-hop instance to `release/huggingface/`, together with `dataset_info.json`. NL, FS, and AR remain columns in one row. The draft dataset card is `release/huggingface/README.md`. Nothing is uploaded.
+These commands write profile-specific Parquet exports, dataset cards, statistics,
+manifests, and checksums under `release/huggingface/full/` and
+`release/huggingface/public-safe/`. NL, FS, and AR remain columns in one row.
+The full profile has 9,032 rows. The public-safe fallback has 5,272 rows and
+excludes every Family/FHKB payload. Nothing is uploaded.
 
 ## Regenerating the benchmark from source ontologies
 
@@ -129,7 +134,13 @@ python scripts/run_final_benchmark_pipeline.py \
 
 For a production source, replace the input and dataset, for example `data/input/family.owl` with `FamilyOWL`, `data/input/pizza_100.owl` with `pizza_100`, `data/input/pizza_250.owl` with `pizza_250`, or `data/input/OWL2DL-1.owl` with `OWL2Bench`. See `python scripts/run_final_benchmark_pipeline.py --help` for deterministic sampling, paired-subgraph, skip, and OWL2Bench size-cap options.
 
-The pipeline performs subgraph extraction, Pellet reasoning/explanation generation, SPARQL task creation, stratified sampling, abstraction, verbalization, and final JSON assembly. Do not overwrite the v1.0 packages when experimenting; use a separate output checkout or preserve and revalidate the hashes in `final_benchmark/manifest.json`.
+The Family input is a modified/adapted FHKB resource. When redistributing it or
+Family-derived benchmark material, preserve the attribution, modification
+notice, and CC BY-SA 3.0 terms documented in `NOTICE.md`. The provenance
+comparison and a qualified local reconstruction path are recorded in
+`docs/FAMILY_RECONSTRUCTION.md`.
+
+The pipeline performs subgraph extraction, Pellet reasoning/explanation generation, SPARQL task creation, stratified sampling, abstraction, verbalization, and final JSON assembly. Do not overwrite the v1.0.0 packages when experimenting; use a separate output checkout or preserve and revalidate the hashes in `final_benchmark/manifest.json`.
 
 ## Reproducing manuscript analyses
 
@@ -137,10 +148,11 @@ The release-facing, API-free analyses are:
 
 ```bash
 python analysis/reasoning_coverage.py
-python scripts/validate_release.py
+python scripts/validate_release.py --profile full
+python scripts/validate_release.py --profile public-safe
 ```
 
-Reasoning coverage outputs are in `results/reasoning_coverage/`. Version 1.0 defines 20 taxonomy tags and instantiates eight: D 9,032; H 3,278; I 2,324; R 1,660; M 1,020; N 168; S 55; T 2. Counts are not mutually exclusive.
+Reasoning coverage outputs are in `results/reasoning_coverage/`. Version 1.0.0 defines 20 taxonomy tags and instantiates eight: D 9,032; H 3,278; I 2,324; R 1,660; M 1,020; N 168; S 55; T 2. Counts are not mutually exclusive.
 
 The manuscript result and explanation-complexity scripts consume saved model predictions under the local `data/output/final_benchmark_llm_results/` hierarchy:
 
@@ -154,17 +166,42 @@ Those scripts do not need new model calls when the saved predictions are present
 
 ## Preparing archival deposits
 
-`python scripts/prepare_zenodo.py` builds a local, checksum-indexed package under `release/zenodo/package/`. The draft metadata is `release/zenodo/zenodo_metadata.json`. It does not publish, reserve a DOI, or contact Zenodo.
+Prepare both local, checksum-indexed staging packages with:
+
+```bash
+python scripts/prepare_zenodo.py --profile full
+python scripts/prepare_zenodo.py --profile public-safe
+```
+
+The commands create `release/zenodo/full/` and
+`release/zenodo/public-safe/`, plus deterministic local ZIP archives. They do
+not publish, reserve a DOI, or contact Zenodo. The full profile is the intended
+canonical v1.0.0 release; public-safe is an optional reduced distribution that
+excludes all Family/FHKB payload.
 
 ## Known limitations
 
-- The four ontology families do not cover every OWL construct; only eight of 20 reasoning tags occur in v1.0.
+- The four ontology families do not cover every OWL construct; only eight of 20 reasoning tags occur in v1.0.0.
 - Ontology-context depth and proof complexity are related but distinct and must not be conflated.
 - Natural-language and abstract verbalizations are generated and may contain stylistic or entity-rendering artifacts.
 - BQA and OEQA totals are not balanced across datasets or hops.
 - Full manuscript reproduction requires the separately retained saved predictions, while benchmark use does not.
-- The source materials have mixed provenance. Pizza declares CC BY 3.0 and OWL2Bench is Apache-2.0, but Family redistribution terms remain unresolved. Public release is blocked until that question is cleared; see `NOTICE.md`.
+- The source materials have mixed provenance. Pizza is CC BY 3.0, OWL2Bench is Apache-2.0, and Family/FHKB-derived material is CC BY-SA 3.0; see `NOTICE.md` for the required component-level attribution and modification notices.
 
-## Citation, version, and license
+### Citation
 
-The benchmark version is `1.0.0`; see `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`. Complete the pending paper metadata and release date before publication. Repository code is MIT licensed, but that license does not automatically cover third-party ontology content or all source-derived benchmark fields. See `LICENSE` and `NOTICE.md` before redistribution.
+Users of CORE-LLM-Bench should currently cite the published CORE-LLM-Bench conference paper. A complete conference BibTeX record is not present in this repository, so no incomplete or inferred BibTeX is reproduced here; the conference publication remains the primary citation until the extended article is published.
+
+An extended version of CORE-LLM-Bench is currently being prepared for submission to the Neurosymbolic AI journal special issue on Neurosymbolic Benchmark Papers.
+
+## Version and license
+
+The benchmark version is `1.0.0`; the intended release tag is `v1.0.0`. See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`. The release date is intentionally omitted until it is fixed.
+
+Licensing has three distinct layers:
+
+- Software/code is licensed under the MIT License in `LICENSE`.
+- Original CORE-LLM-Bench benchmark questions and metadata created by the authors are CC BY 4.0 where separable from source-derived content.
+- Third-party ontology material and source-derived content retain source-specific terms: Pizza is CC BY 3.0, OWL2Bench is Apache-2.0, and Family/FHKB-derived material is CC BY-SA 3.0.
+
+Do not treat the repository as uniformly MIT- or CC-BY-licensed. See `NOTICE.md` before redistribution.

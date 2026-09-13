@@ -7,7 +7,10 @@
 - Document BQA/OEQA tasks and NL/FS/AR representations.
 - Add a machine-readable artifact manifest and per-instance reasoning metadata index.
 - Add offline release validation and local Hugging Face and Zenodo preparation tools.
-- Include the 20-tag reasoning taxonomy audit, with eight instantiated types in v1.0.
+- Include the 20-tag reasoning taxonomy audit, with eight instantiated types in v1.0.0.
 - Use Answer EM and Answer F1 through the hash-pinned SAGE-QA evaluator adapter for manuscript result processing.
+- Add explicit `full` and `public-safe` local release profiles. The fallback
+  profile excludes Family/FHKB source-bearing and derived payloads while
+  preserving the canonical four-dataset full candidate privately.
 
-The release date and preferred paper citation remain to be filled when publication metadata is final.
+The release date remains unset. The published conference paper remains the primary citation; insert its complete confirmed bibliographic record before release. The extended journal manuscript is in preparation.

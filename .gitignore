@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+.idea/
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -36,11 +37,26 @@ build/
 
 ### Mac OS ###
 .DS_Store
+Thumbs.db
+
+### Python caches and bytecode ###
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+### Editor temporary files and local logs ###
+*.swp
+*.swo
+*~
+*.log
 
 .env
 .venv
 .ruff_cache
 .deepeval
+**/__pycache__/
 .github
 data/output
 data/resources
@@ -58,3 +74,10 @@ tests/*
 release/huggingface/*.parquet
 release/huggingface/dataset_info.json
 release/zenodo/package/
+release/huggingface/full/
+release/huggingface/public-safe/
+release/zenodo/full/
+release/zenodo/public-safe/
+release/zenodo/CORE-LLM-Bench-v*.zip
+local_sources/
+/tmp*/

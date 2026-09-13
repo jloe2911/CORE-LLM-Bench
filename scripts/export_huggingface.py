@@ -8,14 +8,15 @@ import json
 from pathlib import Path
 from typing import Any
 
+from release_build import dataset_card, statistics, write_manifest_and_checksums
+from release_profiles import PROFILES, VERSION, artifacts_for, get_profile
 from validate_release import (
-    ARTIFACTS,
     BENCHMARK_DIR,
     ROOT,
-    VERSION,
     iter_flat_rows,
     load_member,
     load_reasoning_metadata,
+    validate_prepared_package,
     validate_release,
 )
 
@@ -23,7 +24,7 @@ from validate_release import (
 TAG_ORDER = "DHTSAJNE∩¬IFVYQRCLUM"
 
 
-def export(output_dir: Path) -> dict[str, Any]:
+def export(output_dir: Path, profile_name: str = "full") -> dict[str, Any]:
     try:
         import pyarrow as pa
         import pyarrow.parquet as pq
@@ -32,7 +33,8 @@ def export(output_dir: Path) -> dict[str, Any]:
             "Hugging Face export requires pyarrow; install requirements-release.txt"
         ) from exc
 
-    validate_release()
+    profile = get_profile(profile_name)
+    validation = validate_release(profile.name)
     metadata = load_reasoning_metadata(BENCHMARK_DIR / "reasoning_metadata.csv")
     output_dir.mkdir(parents=True, exist_ok=True)
     parquet_path = output_dir / "core_llm_bench_v1_0.parquet"
@@ -41,7 +43,11 @@ def export(output_dir: Path) -> dict[str, Any]:
     row_total = 0
 
     try:
-        for dataset, hop, zip_name, member, _ in ARTIFACTS:
+        for artifact in artifacts_for(profile):
+            dataset = artifact.dataset
+            hop = artifact.hop
+            zip_name = artifact.zip_name
+            member = artifact.member
             batch: list[dict[str, Any]] = []
             groups = load_member(BENCHMARK_DIR / zip_name, member)
             for item in iter_flat_rows(groups, dataset, hop):
@@ -94,6 +100,7 @@ def export(output_dir: Path) -> dict[str, Any]:
 
     report = {
         "benchmark_version": VERSION,
+        "profile": profile.name,
         "rows": row_total,
         "dataset_hop_counts": dataset_counts,
         "parquet": parquet_path.name,
@@ -103,6 +110,14 @@ def export(output_dir: Path) -> dict[str, Any]:
     (output_dir / "dataset_info.json").write_text(
         json.dumps(report, indent=2) + "\n", encoding="utf-8"
     )
+    (output_dir / "README.md").write_text(dataset_card(profile), encoding="utf-8")
+    stats = statistics(
+        profile,
+        validation["artifacts"],
+        validation["instantiated_reasoning_counts"],
+    )
+    write_manifest_and_checksums(output_dir, profile, stats)
+    validate_prepared_package(output_dir, profile.name, "huggingface")
     return report
 
 
@@ -111,16 +126,22 @@ def main() -> int:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=ROOT / "release" / "huggingface",
+        help="Default: release/huggingface/<profile>",
     )
+    parser.add_argument("--profile", choices=sorted(PROFILES), required=True)
     args = parser.parse_args()
+    output_dir = (
+        args.output_dir.resolve()
+        if args.output_dir
+        else ROOT / "release" / "huggingface" / args.profile
+    )
     try:
-        report = export(args.output_dir.resolve())
+        report = export(output_dir, args.profile)
     except (OSError, RuntimeError, ValueError) as exc:
         print(f"HUGGING FACE EXPORT FAILED: {exc}")
         return 1
     print(f"Hugging Face export ready: {report['rows']:,} rows")
-    print(f"Parquet: {args.output_dir.resolve() / report['parquet']}")
+    print(f"Parquet: {output_dir / report['parquet']}")
     return 0
 
 
