@@ -2,6 +2,8 @@
 
 CORE-LLM-Bench v1.0.0 is archived at
 https://zenodo.org/records/22742977 under DOI `10.5281/zenodo.22742977`.
+The canonical tabular 9,032-row dataset view is available at
+https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench.
 The published archive must not be rebuilt or replaced during post-release
 metadata maintenance.
 

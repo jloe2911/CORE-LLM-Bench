@@ -5,6 +5,10 @@ type: dataset
 version: 1.0.0
 date-released: 2026-09-13
 doi: "10.5281/zenodo.22742977"
+identifiers:
+  - type: other
+    value: "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench"
+    description: "Canonical tabular 9,032-row dataset view on Hugging Face"
 authors:
   - family-names: "Loesch"
     given-names: "Julie"

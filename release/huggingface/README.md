@@ -1,6 +1,12 @@
 # Local Hugging Face export preparation
 
-Generate both release profiles from the repository root:
+The public dataset is available at
+https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench. It provides the
+canonical tabular 9,032-row dataset view, with one row per unique question-hop
+instance and NL, FS, and AR stored as aligned columns.
+
+To reproduce the export locally without uploading, generate either release
+profile from the repository root:
 
 ```console
 python scripts/export_huggingface.py --profile full

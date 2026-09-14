@@ -15,6 +15,8 @@
 
 Released on 2026-09-13 and archived on Zenodo under DOI
 [`10.5281/zenodo.22742977`](https://doi.org/10.5281/zenodo.22742977). The
+canonical tabular 9,032-row dataset view is available on
+[Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench). The
 published conference paper remains the primary citation; its complete
 confirmed bibliographic record has not been inferred here. The extended
 journal manuscript is in preparation.

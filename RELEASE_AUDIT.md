@@ -10,15 +10,16 @@ Release-candidate branch: `release-v1.0`
 
 Benchmark version: `1.0.0`
 
-Published archive:
+Published resources:
 
 - Zenodo DOI: `10.5281/zenodo.22742977`
 - Zenodo record: https://zenodo.org/records/22742977
 - GitHub v1.0.0 release: https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0
+- Hugging Face dataset: https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench
 
-The post-release update records the identifiers above on `main`; it does not
-rebuild or replace the published GitHub or Zenodo archives and does not modify
-the existing `v1.0.0` tag.
+The post-release updates record the identifiers above on `main`; they do not
+rebuild or replace the published GitHub or Zenodo archives, modify benchmark or
+prediction data, or modify the existing `v1.0.0` tag.
 
 ## A. Branch decision
 
@@ -109,6 +110,11 @@ release operation was performed.
 
 ## D. Hugging Face readiness
 
+The public Hugging Face repository is live at
+https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench and provides the
+canonical tabular 9,032-row dataset view. Each row represents one unique
+question-hop instance, with NL, FS, and AR stored as aligned columns.
+
 `scripts/export_huggingface.py` produced both local profiles:
 
 - `release/huggingface/full/core_llm_bench_v1_0.parquet`: 9,032 rows,
@@ -118,7 +124,11 @@ release operation was performed.
 - Each directory contains the same 26-column schema, a profile-specific card,
   dataset information, release manifest, and SHA-256 checksums.
 
-The Parquet keeps NL, FS, and AR in one row and includes identity, task/label fields, gold answers, contexts, proof metadata, complexity, reasoning tags, version, negative-proof links, and source-package provenance. The Parquet and generated info file are reproducible local payloads and are intentionally ignored by Git. No upload occurred.
+The Parquet keeps NL, FS, and AR in one row and includes identity, task/label
+fields, gold answers, contexts, proof metadata, complexity, reasoning tags,
+version, negative-proof links, and source-package provenance. The local
+Parquet and generated info files are reproducible payloads and are
+intentionally ignored by Git; they were not rebuilt for this metadata update.
 
 ## E. Zenodo readiness
 
@@ -361,6 +371,7 @@ Recommendation: **B. publish them as a separate supplementary archive**.
 | Release date | Confirmed | `2026-09-13` |
 | Repository URL | Confirmed | `https://github.com/jloe2911/CORE-LLM-Bench`; immutable release: `https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0` |
 | Zenodo archive | Confirmed | DOI `10.5281/zenodo.22742977`; record `https://zenodo.org/records/22742977` |
+| Hugging Face dataset | Confirmed | Canonical tabular 9,032-row dataset view: `https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench` |
 | Benchmark/data license | Mixed model confirmed | Original separable CORE questions/metadata: intended CC BY 4.0; source-derived components retain upstream terms; Family/FHKB-derived material is CC BY-SA 3.0; no blanket dataset license |
 | Software license | Confirmed | MIT (`LICENSE`) |
 | Source-ontology licenses | Confirmed for release treatment | Pizza: CC BY 3.0; OWL2Bench: Apache-2.0; modified/adapted Family/FHKB-derived material: CC BY-SA 3.0 |
@@ -369,8 +380,9 @@ Recommendation: **B. publish them as a separate supplementary archive**.
 | Keywords | Confirmed | neurosymbolic AI; large language models; ontology reasoning; benchmark; symbolic reasoning; description logic; OWL; question answering; knowledge representation |
 
 The generic contributor placeholders were replaced with the seven confirmed
-authors and affiliations. Unmapped ORCIDs remain absent. The Zenodo DOI,
-Zenodo record URL, and immutable GitHub release URL are recorded. A
+authors and affiliations. Unmapped ORCIDs remain absent. The Hugging Face
+dataset URL, Zenodo DOI/record URL, and immutable GitHub release URL are
+recorded. A
 `preferred-citation` block was not created because no complete
 conference bibliographic record exists in the repository.
 
@@ -379,15 +391,16 @@ conference bibliographic record exists in the repository.
 - Family redistribution: **RESOLVED UNDER CC BY-SA 3.0**
 - Evaluation reproducibility: **RESOLVED**
 - Response-results decision: **B — publish the curated 36-file response set as a separate supplementary archive**
-- Metadata remaining: **complete conference-paper bibliographic record and persistent identifier; Hugging Face URL if published**
-- Zenodo DOI/URL and immutable GitHub v1.0.0 URL: **CONFIRMED AND RECORDED**
+- Metadata remaining: **complete conference-paper bibliographic record and persistent identifier**
+- Hugging Face URL, Zenodo DOI/URL, and immutable GitHub v1.0.0 URL: **CONFIRMED AND RECORDED**
 - Metadata otherwise ready for v1.0.0: **YES, subject to the deliberately deferred fields above**
 - Full 9,032-instance benchmark licensing treatment: **CONFIRMED as component-specific, including Family/FHKB-derived material under CC BY-SA 3.0**
 - Technical release preparation: **READY**
-- Operational publication status: **PUBLISHED on GitHub and Zenodo; this audit update is metadata-only**
+- Operational publication status: **PUBLISHED on Hugging Face, GitHub, and Zenodo; this audit update is metadata-only**
 
-Family redistribution is no longer the full-publication blocker. The Zenodo DOI
-and record URL and the immutable GitHub v1.0.0 release URL are now confirmed.
-The conference-paper citation identifier remains omitted until its confirmed
-source record is available. This post-release task performs no publication,
-tagging, release creation, archive regeneration, replacement, or upload.
+Family redistribution is no longer the full-publication blocker. The Hugging
+Face URL, Zenodo DOI/record URL, and immutable GitHub v1.0.0 release URL are
+confirmed. The conference-paper citation identifier remains omitted until its
+confirmed source record is available. This post-release task performs no
+publication, tagging, release creation, archive regeneration, replacement, or
+upload.

@@ -10,5 +10,7 @@ This is a contingency package, not the intended canonical v1.0.0 release. See
 `docs/FAMILY_RECONSTRUCTION.md` for the qualified local reconstruction path.
 The canonical full v1.0.0 benchmark is archived at
 https://zenodo.org/records/22742977 under DOI `10.5281/zenodo.22742977`; its
+canonical tabular 9,032-row dataset view is available at
+https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench, and its
 source release is available at
 https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0.

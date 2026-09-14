@@ -142,7 +142,9 @@ material is CC BY 4.0. These do not form one blanket license. Consult
 `NOTICE.md` and `CITATION.cff`. CORE-LLM-Bench v1.0.0 is archived at
 https://zenodo.org/records/22742977 under DOI 10.5281/zenodo.22742977; its source
 release is https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0.
-The Hugging Face URL and unconfirmed ORCIDs remain deliberately unresolved.
+The canonical tabular 9,032-row dataset view is available at
+https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench. Unconfirmed ORCIDs
+remain deliberately omitted.
 """
 
 

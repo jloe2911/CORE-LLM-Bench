@@ -111,7 +111,10 @@ def _metadata(profile_name: str) -> dict[str, object]:
         "notes": (
             f"{note} CORE-LLM-Bench v1.0.0 is archived at "
             "https://zenodo.org/records/22742977 under DOI "
-            "10.5281/zenodo.22742977. Insert the complete verified conference "
+            "10.5281/zenodo.22742977. The canonical tabular 9,032-row dataset "
+            "view is available at "
+            "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench. "
+            "Insert the complete verified conference "
             "citation only from a confirmed record; include ORCIDs only after "
             "mappings are confirmed. "
             "Licensing is component-specific: software MIT; separable original CORE "

@@ -2,10 +2,13 @@
 
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
-> **Archived release:** CORE-LLM-Bench v1.0.0 is permanently archived on
+> **Public dataset:** The canonical tabular 9,032-row dataset view is available
+> on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+> CORE-LLM-Bench v1.0.0 is permanently archived on
 > [Zenodo](https://zenodo.org/records/22742977) under DOI
-> [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977). The
-> corresponding source release remains available as the
+> [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977), with the
+> corresponding source at the
+> [GitHub repository](https://github.com/jloe2911/CORE-LLM-Bench) and
 > [GitHub v1.0.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0).
 
 Version 1.0.0 contains **9,032 unique question-hop instances** from four source datasets:
@@ -112,7 +115,13 @@ Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is re
 
 ### Tabular Hugging Face export
 
-Install the one optional release dependency, then export locally:
+The canonical tabular 9,032-row dataset view is published at
+[huggingface.co/datasets/jloe2911/CORE-LLM-Bench](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+Each row is one unique question-hop instance, with NL, FS, and AR retained as
+aligned columns.
+
+To prepare either release profile locally without uploading it, install the
+optional release dependency and run:
 
 ```bash
 python -m pip install -r requirements-release.txt
@@ -203,7 +212,9 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 ## Version and license
 
 The benchmark version is `1.0.0`; the release tag is `v1.0.0`, and the release
-date is 2026-09-13. The archived dataset is available on
+date is 2026-09-13. The canonical tabular 9,032-row dataset view is available
+on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+The archived dataset is available on
 [Zenodo](https://zenodo.org/records/22742977) under DOI
 [`10.5281/zenodo.22742977`](https://doi.org/10.5281/zenodo.22742977), and the
 source release is available from the
