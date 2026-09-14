@@ -13,4 +13,8 @@
   profile excludes Family/FHKB source-bearing and derived payloads while
   preserving the canonical four-dataset full candidate privately.
 
-Released on 2026-09-13. The published conference paper remains the primary citation; insert its complete confirmed bibliographic record before release. The extended journal manuscript is in preparation.
+Released on 2026-09-13 and archived on Zenodo under DOI
+[`10.5281/zenodo.22742977`](https://doi.org/10.5281/zenodo.22742977). The
+published conference paper remains the primary citation; its complete
+confirmed bibliographic record has not been inferred here. The extended
+journal manuscript is in preparation.

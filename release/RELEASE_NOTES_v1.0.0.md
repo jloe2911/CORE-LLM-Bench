@@ -1,8 +1,9 @@
-# CORE-LLM-Bench v1.0.0 release notes (draft)
+# CORE-LLM-Bench v1.0.0 release notes
 
 Release date: **2026-09-13**
-GitHub Release URL: **TBD**
-Zenodo DOI: **TBD**
+GitHub Release URL: **https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0**
+Zenodo DOI: **10.5281/zenodo.22742977**
+Zenodo record URL: **https://zenodo.org/records/22742977**
 Hugging Face URL: **TBD**
 
 CORE-LLM-Bench is a controlled neurosymbolic benchmark for evaluating
@@ -32,10 +33,9 @@ metadata are intended for CC BY 4.0 where separable from source-derived
 material. Consult `NOTICE.md` for attribution and modification details; do not
 apply a single blanket license or relicense FHKB-derived content as CC BY 4.0.
 
-The published CORE-LLM-Bench conference paper is the primary citation. Use the
-verified bibliographic record when it is inserted into `CITATION.cff`; do not
-infer missing citation fields, DOI, date, URLs, or ORCIDs.
+The published CORE-LLM-Bench conference paper is the primary citation. The
+v1.0.0 benchmark archive can be cited with DOI `10.5281/zenodo.22742977`. Do not
+infer missing conference citation fields or ORCIDs.
 
-This draft does not itself publish or authorize an upload. Complete conference
-citation, immutable release URL, final security review,
-and exact staged-archive inspection remain publication gates.
+The GitHub v1.0.0 and Zenodo archives are already published and must not be
+rebuilt or replaced as part of post-release metadata maintenance.

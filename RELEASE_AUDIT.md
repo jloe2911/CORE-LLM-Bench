@@ -4,9 +4,21 @@ Audit date: 2026-09-11
 
 Licensing-documentation reconciliation: 2026-09-13
 
+Post-release archive metadata update: 2026-09-14
+
 Release-candidate branch: `release-v1.0`
 
 Benchmark version: `1.0.0`
+
+Published archive:
+
+- Zenodo DOI: `10.5281/zenodo.22742977`
+- Zenodo record: https://zenodo.org/records/22742977
+- GitHub v1.0.0 release: https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0
+
+The post-release update records the identifiers above on `main`; it does not
+rebuild or replace the published GitHub or Zenodo archives and does not modify
+the existing `v1.0.0` tag.
 
 ## A. Branch decision
 
@@ -70,7 +82,8 @@ Prepared:
 
 - Rewritten README with separate benchmark-use and regeneration workflows.
 - Existing MIT code license retained; mixed-provenance `NOTICE.md` added.
-- `CITATION.cff`, `CHANGELOG.md`, and `VERSION` added without a fabricated DOI; the confirmed release date is now recorded.
+- `CITATION.cff`, `CHANGELOG.md`, and `VERSION` were added before DOI assignment;
+  `CITATION.cff` now records the assigned Zenodo DOI and archive URL.
 - Offline validator and release-tool regression test added.
 - Repository layout retained to avoid breaking hard-coded generation/evaluation paths; a purpose-to-path map now makes benchmark, generation, evaluation, and analysis entry points explicit.
 
@@ -122,7 +135,12 @@ The public-safe archive contains exactly the Pizza 100, Pizza 250, and
 OWL2Bench benchmark ZIPs. Its record/artifact assertion, checksums, CRC checks,
 and deep content scan pass with zero Family payload.
 
-The confirmed creators, affiliations, and 2026-09-13 release date are now present in the release metadata. Remaining manual steps are to insert the complete conference-paper citation from the confirmed manuscript record, create an immutable source snapshot, run the final security and staged-file review, rerun the package preparation after those edits, inspect the final archive, and upload manually. No DOI, GitHub Release, Zenodo deposit, or Hugging Face upload was created.
+The confirmed creators, affiliations, 2026-09-13 release date, Zenodo DOI
+`10.5281/zenodo.22742977`, Zenodo record URL, and immutable GitHub v1.0.0
+release URL are now present in the release metadata. The complete
+conference-paper citation remains omitted until it can be copied from a
+confirmed bibliographic record. The Zenodo and GitHub archives have been
+published; this post-release metadata update does not rebuild or replace them.
 
 ## F. Remaining blockers and resolved decisions
 
@@ -132,7 +150,13 @@ The confirmed creators, affiliations, and 2026-09-13 release date are now presen
    distributable under those terms with the obligations recorded below and in
    `NOTICE.md`.
 2. **Evaluator reproducibility — resolved:** the exact MIT-licensed manuscript evaluator is vendored and the 17-test suite, including 81,288-observation parity, passes. See the resolution section below.
-3. **Publication metadata:** the complete author/creator list, affiliations, benchmark title/version, release date, repository, keywords, intended licensing layers, and journal-manuscript status are confirmed and recorded. The immutable release URL remains intentionally deferred. The repository contains no complete conference BibTeX record, so the primary conference citation remains explicitly marked for insertion from the confirmed manuscript record rather than inferred.
+3. **Publication metadata:** the complete author/creator list, affiliations,
+   benchmark title/version, release date, repository, Zenodo DOI/record URL,
+   immutable GitHub release URL, keywords, intended licensing layers, and
+   journal-manuscript status are confirmed and recorded. The repository
+   contains no complete conference BibTeX record, so the primary conference
+   citation remains explicitly marked for insertion from the confirmed
+   manuscript record rather than inferred.
 4. **Response-level reproducibility — decision recorded:** publish the curated validated response set as a separate supplementary archive; do not copy the entire ignored output tree. Archive creation remains a later, explicitly authorized publication-preparation action.
 5. **Final security/publication review:** `.env` is ignored and not tracked at current or historical branch tips by that path, but run a dedicated full-history secret scanner and review the exact staged file allowlist before public release.
 
@@ -335,7 +359,8 @@ Recommendation: **B. publish them as a separate supplementary archive**.
 | Affiliations | Confirmed | Recorded for all seven authors in `CITATION.cff`, the Zenodo draft, and the Hugging Face draft |
 | ORCID IDs | Deliberately omitted | Four IDs are known but author mappings are unconfirmed; none appears in public-facing metadata |
 | Release date | Confirmed | `2026-09-13` |
-| Repository URL | Confirmed, snapshot pending | `https://github.com/jloe2911/CORE-LLM-Bench`; immutable `v1.0.0` tag/release URL does not yet exist and was not created |
+| Repository URL | Confirmed | `https://github.com/jloe2911/CORE-LLM-Bench`; immutable release: `https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0` |
+| Zenodo archive | Confirmed | DOI `10.5281/zenodo.22742977`; record `https://zenodo.org/records/22742977` |
 | Benchmark/data license | Mixed model confirmed | Original separable CORE questions/metadata: intended CC BY 4.0; source-derived components retain upstream terms; Family/FHKB-derived material is CC BY-SA 3.0; no blanket dataset license |
 | Software license | Confirmed | MIT (`LICENSE`) |
 | Source-ontology licenses | Confirmed for release treatment | Pizza: CC BY 3.0; OWL2Bench: Apache-2.0; modified/adapted Family/FHKB-derived material: CC BY-SA 3.0 |
@@ -344,8 +369,9 @@ Recommendation: **B. publish them as a separate supplementary archive**.
 | Keywords | Confirmed | neurosymbolic AI; large language models; ontology reasoning; benchmark; symbolic reasoning; description logic; OWL; question answering; knowledge representation |
 
 The generic contributor placeholders were replaced with the seven confirmed
-authors and affiliations. Unmapped ORCIDs remain absent. The DOI and immutable
-release URL remain unresolved. A `preferred-citation` block was not created because no complete
+authors and affiliations. Unmapped ORCIDs remain absent. The Zenodo DOI,
+Zenodo record URL, and immutable GitHub release URL are recorded. A
+`preferred-citation` block was not created because no complete
 conference bibliographic record exists in the repository.
 
 ### 5. Final blocker status
@@ -353,14 +379,15 @@ conference bibliographic record exists in the repository.
 - Family redistribution: **RESOLVED UNDER CC BY-SA 3.0**
 - Evaluation reproducibility: **RESOLVED**
 - Response-results decision: **B — publish the curated 36-file response set as a separate supplementary archive**
-- Metadata remaining: **complete conference-paper bibliographic record and persistent identifier; DOI if assigned; immutable `v1.0.0` snapshot URL once created**
-- Metadata otherwise ready for v1.0.0: **YES, subject to the deliberately deferred release-bound fields above**
+- Metadata remaining: **complete conference-paper bibliographic record and persistent identifier; Hugging Face URL if published**
+- Zenodo DOI/URL and immutable GitHub v1.0.0 URL: **CONFIRMED AND RECORDED**
+- Metadata otherwise ready for v1.0.0: **YES, subject to the deliberately deferred fields above**
 - Full 9,032-instance benchmark licensing treatment: **CONFIRMED as component-specific, including Family/FHKB-derived material under CC BY-SA 3.0**
 - Technical release preparation: **READY**
-- Operationally ready to publish now: **NO; final metadata, security/staged-file review, archive regeneration, and inspection remain**
+- Operational publication status: **PUBLISHED on GitHub and Zenodo; this audit update is metadata-only**
 
-Family redistribution is no longer the full-publication blocker. The remaining
-DOI/citation-identifier and immutable-URL fields cannot be completed until their source records exist;
-the final security/staged-file review and regenerated archive inspection also
-remain. Publication, tagging, release creation, and upload remain outside this
-task and were not performed.
+Family redistribution is no longer the full-publication blocker. The Zenodo DOI
+and record URL and the immutable GitHub v1.0.0 release URL are now confirmed.
+The conference-paper citation identifier remains omitted until its confirmed
+source record is available. This post-release task performs no publication,
+tagging, release creation, archive regeneration, replacement, or upload.

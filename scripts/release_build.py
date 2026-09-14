@@ -139,8 +139,10 @@ No model responses are included.
 OWL2Bench is Apache-2.0, Family/FHKB-derived material is CC BY-SA 3.0,
 repository software is MIT, and separable original author-created benchmark
 material is CC BY 4.0. These do not form one blanket license. Consult
-`NOTICE.md` and `CITATION.cff`. GitHub Release URL, Zenodo DOI, Hugging Face
-URL, and unconfirmed ORCIDs remain deliberately unresolved.
+`NOTICE.md` and `CITATION.cff`. CORE-LLM-Bench v1.0.0 is archived at
+https://zenodo.org/records/22742977 under DOI 10.5281/zenodo.22742977; its source
+release is https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0.
+The Hugging Face URL and unconfirmed ORCIDs remain deliberately unresolved.
 """
 
 

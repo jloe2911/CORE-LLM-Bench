@@ -8,4 +8,7 @@ profile.
 
 This is a contingency package, not the intended canonical v1.0.0 release. See
 `docs/FAMILY_RECONSTRUCTION.md` for the qualified local reconstruction path.
-The remaining publication metadata placeholders in the full release note remain pending.
+The canonical full v1.0.0 benchmark is archived at
+https://zenodo.org/records/22742977 under DOI `10.5281/zenodo.22742977`; its
+source release is available at
+https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0.

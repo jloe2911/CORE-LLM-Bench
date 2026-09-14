@@ -100,17 +100,20 @@ def _metadata(profile_name: str) -> dict[str, object]:
         ],
         "version": VERSION,
         "publication_date": "2026-09-13",
+        "doi": "10.5281/zenodo.22742977",
         "related_identifiers": [
             {
-                "identifier": "https://github.com/jloe2911/CORE-LLM-Bench",
+                "identifier": "https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0",
                 "relation": "isSupplementTo",
                 "scheme": "url",
             }
         ],
         "notes": (
-            f"{note} TODO before publication: insert the complete verified conference "
-            "citation; add GitHub Release, Zenodo DOI, and "
-            "Hugging Face URLs; include ORCIDs only after mappings are confirmed. "
+            f"{note} CORE-LLM-Bench v1.0.0 is archived at "
+            "https://zenodo.org/records/22742977 under DOI "
+            "10.5281/zenodo.22742977. Insert the complete verified conference "
+            "citation only from a confirmed record; include ORCIDs only after "
+            "mappings are confirmed. "
             "Licensing is component-specific: software MIT; separable original CORE "
             "material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; and "
             "Family/FHKB-derived material CC BY-SA 3.0."

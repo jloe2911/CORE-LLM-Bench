@@ -4,6 +4,7 @@ title: "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Ground
 type: dataset
 version: 1.0.0
 date-released: 2026-09-13
+doi: "10.5281/zenodo.22742977"
 authors:
   - family-names: "Loesch"
     given-names: "Julie"
@@ -27,7 +28,8 @@ authors:
     given-names: "Remzi"
     affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
 repository-code: "https://github.com/jloe2911/CORE-LLM-Bench"
-url: "https://github.com/jloe2911/CORE-LLM-Bench"
+repository-artifact: "https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0"
+url: "https://zenodo.org/records/22742977"
 keywords:
   - "neurosymbolic AI"
   - "large language models"

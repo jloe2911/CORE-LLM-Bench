@@ -14,12 +14,13 @@
   "keywords": ["neurosymbolic AI", "large language models", "ontology reasoning", "benchmark", "symbolic reasoning", "description logic", "OWL", "question answering", "knowledge representation"],
   "version": "1.0.0",
   "publication_date": "2026-09-13",
+  "doi": "10.5281/zenodo.22742977",
   "related_identifiers": [
     {
-      "identifier": "https://github.com/jloe2911/CORE-LLM-Bench",
+      "identifier": "https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0",
       "relation": "isSupplementTo",
       "scheme": "url"
     }
   ],
-  "notes": "The published CORE-LLM-Bench conference paper is the primary scholarly citation. TODO before deposit: copy its complete bibliographic citation and persistent identifier from the confirmed manuscript record, then add the corresponding Zenodo relation. An extended benchmark manuscript is in preparation for the Neurosymbolic AI journal special issue on Neurosymbolic Benchmark Papers. Add the immutable v1.0.0 GitHub release URL once it exists. DOI, complete conference citation, and immutable release URL are deliberately unresolved and omitted. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; and modified/adapted Family/FHKB-derived material CC BY-SA 3.0."
+  "notes": "CORE-LLM-Bench v1.0.0 is archived at https://zenodo.org/records/22742977 under DOI 10.5281/zenodo.22742977. The published CORE-LLM-Bench conference paper is the primary scholarly citation; its complete bibliographic citation and persistent identifier remain omitted until they can be copied from a confirmed record. An extended benchmark manuscript is in preparation for the Neurosymbolic AI journal special issue on Neurosymbolic Benchmark Papers. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; and modified/adapted Family/FHKB-derived material CC BY-SA 3.0."
 }

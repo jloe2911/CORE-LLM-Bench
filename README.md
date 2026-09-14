@@ -2,6 +2,12 @@
 
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
+> **Archived release:** CORE-LLM-Bench v1.0.0 is permanently archived on
+> [Zenodo](https://zenodo.org/records/22742977) under DOI
+> [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977). The
+> corresponding source release remains available as the
+> [GitHub v1.0.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0).
+
 Version 1.0.0 contains **9,032 unique question-hop instances** from four source datasets:
 
 | Dataset | 1-hop | 2-hop | Total |
@@ -196,7 +202,13 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 
 ## Version and license
 
-The benchmark version is `1.0.0`; the intended release tag is `v1.0.0`, and the release date is 2026-09-13. See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`.
+The benchmark version is `1.0.0`; the release tag is `v1.0.0`, and the release
+date is 2026-09-13. The archived dataset is available on
+[Zenodo](https://zenodo.org/records/22742977) under DOI
+[`10.5281/zenodo.22742977`](https://doi.org/10.5281/zenodo.22742977), and the
+source release is available from the
+[GitHub v1.0.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0).
+See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`.
 
 Licensing has three distinct layers:
 
