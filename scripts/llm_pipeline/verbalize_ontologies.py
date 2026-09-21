@@ -1,8 +1,6 @@
 # Import necessary libraries
-import rdflib
-from rdflib import Graph, URIRef, Literal, BNode
+from rdflib import Graph, URIRef, BNode
 from rdflib.namespace import RDF, RDFS, OWL
-from pathlib import Path
 import os
 import re
 import json
@@ -14,16 +12,15 @@ from pathlib import Path
 
 # SimpleNLG imports (optional)
 try:
-    from simplenlg.framework import NLGFactory, CoordinatedPhraseElement
+    from simplenlg.framework import NLGFactory
     from simplenlg.lexicon import Lexicon
     from simplenlg.realiser.english import Realiser
-    from simplenlg.phrasespec import SPhraseSpec
-    from simplenlg.features import Feature, Tense, NumberAgreement
+    from simplenlg.features import Feature, NumberAgreement
 
     SIMPLENLG_AVAILABLE = True
-    print("âœ… SimpleNLG available")
+    print("SimpleNLG available")
 except ImportError:
-    print("âš ï¸ SimpleNLG not available. Using basic text generation.")
+    print("SimpleNLG not available. Using basic text generation.")
     SIMPLENLG_AVAILABLE = False
 
 # Navigate to project root
@@ -44,7 +41,7 @@ if SIMPLENLG_AVAILABLE:
     lexicon = Lexicon.getDefaultLexicon()
     nlg_factory = NLGFactory(lexicon)
     realiser = Realiser(lexicon)
-    print("âœ… SimpleNLG initialized")
+    print("SimpleNLG initialized")
 
 p = inflect.engine()
 
@@ -87,6 +84,12 @@ class DomainIndependentVerbalizer:
 
     def _clean_property_name(self, prop_name):
         """Clean property name to basic linguistic components"""
+        abstract_match = re.search(
+            r"(?:^|[#/])(Property\d+|DataProperty\d+)$", str(prop_name)
+        )
+        if abstract_match:
+            return abstract_match.group(1)
+
         # Remove namespace prefixes
         if "#" in prop_name:
             prop_name = prop_name.split("#")[-1]
@@ -235,6 +238,17 @@ def clean_entity_name(name):
 
 def get_nice_label(g, entity):
     """Get a nice label for an entity from any domain"""
+    # Abstract entities are deliberately rendered from their URI identity.
+    # Source annotations must never reintroduce ontology-specific wording.
+    if isinstance(entity, URIRef):
+        abstract_match = re.fullmatch(
+            r"http://www\.example\.com/abstracted\.owl#"
+            r"(Class\d+|Property\d+|DataProperty\d+|Individual\d+)",
+            str(entity),
+        )
+        if abstract_match:
+            return abstract_match.group(1)
+
     # Priority order for labels
     label_properties = [
         RDFS.label,
@@ -285,7 +299,7 @@ def create_simple_sentence(subject, verb, object_val, is_plural_subject=False):
         output = realiser.realiseSentence(sentence)
         return output.strip()
 
-    except Exception as e:
+    except Exception:
         # Fallback to simple concatenation
         return f"{subject} {verb} {object_val}."
 
@@ -320,7 +334,7 @@ def create_list_sentence(subject, verb, object_list):
         output = realiser.realiseSentence(sentence)
         return output.strip()
 
-    except Exception as e:
+    except Exception:
         # Fallback
         if len(object_list) == 1:
             return f"{subject} {verb} {object_list[0]}."
@@ -639,14 +653,6 @@ def get_property_hierarchy(g, obj_properties):
 
 def detect_domain_type_structurally(g, individuals, classes, obj_properties):
     """Detect domain type based purely on structural patterns, not semantics"""
-    # Count structural patterns rather than domain-specific terms
-    pattern_counts = {
-        "hierarchical": 0,  # lots of subclass relationships
-        "relational": 0,  # lots of object properties
-        "instance_heavy": 0,  # lots of individuals
-        "simple": 0,  # basic structure
-    }
-
     # Count subclass relationships
     subclass_count = 0
     for s, p, o in g.triples((None, RDFS.subClassOf, None)):
@@ -756,10 +762,14 @@ def describe_individual_with_domain_independence(
     verbalizer = DomainIndependentVerbalizer()
 
     # Get types/classes
-    types = []
-    for s, p, o in g.triples((ind, RDF.type, None)):
-        if o != OWL.NamedIndividual and o in classes:
-            types.append(o)
+    types = sorted(
+        {
+            o
+            for _, _, o in g.triples((ind, RDF.type, None))
+            if o != OWL.NamedIndividual and o in classes
+        },
+        key=str,
+    )
 
     if types:
         type_names = [get_nice_label(g, t) for t in types if get_nice_label(g, t)]
@@ -775,12 +785,13 @@ def describe_individual_with_domain_independence(
             descriptions.append(desc)
 
     # Collect and organize relationships to avoid duplicates and improve readability
+    # URI keys preserve graph identity when different entities share a label.
     outgoing_relationships = {}
     incoming_relationships = {}
     property_characteristics = {}
 
     # Get ALL outgoing relationships (including to non-declared individuals)
-    for s, p, o in g.triples((ind, None, None)):
+    for s, p, o in sorted(g.triples((ind, None, None)), key=lambda row: tuple(map(str, row))):
         if p != RDF.type and p in obj_properties and isinstance(o, URIRef):
             prop_name = get_nice_label(g, p)
             obj_name = get_nice_label(g, o)
@@ -790,9 +801,7 @@ def describe_individual_with_domain_independence(
                 obj_name = clean_entity_name(str(o).split("#")[-1].split("/")[-1])
 
             if prop_name and obj_name:
-                if prop_name not in outgoing_relationships:
-                    outgoing_relationships[prop_name] = []
-                outgoing_relationships[prop_name].append(obj_name)
+                outgoing_relationships.setdefault(p, {})[o] = obj_name
 
                 # Collect property characteristics
                 if p not in property_characteristics:
@@ -806,7 +815,7 @@ def describe_individual_with_domain_independence(
                             property_characteristics[p].append("functional")
 
     # Get ALL incoming relationships
-    for s, p, o in g.triples((None, None, ind)):
+    for s, p, o in sorted(g.triples((None, None, ind)), key=lambda row: tuple(map(str, row))):
         if isinstance(s, URIRef) and s != ind and p in obj_properties:
             subj_name = get_nice_label(g, s)
 
@@ -816,28 +825,22 @@ def describe_individual_with_domain_independence(
 
             prop_name = get_nice_label(g, p)
             if subj_name and prop_name:
-                prop_key = f"incoming_{prop_name}"
-                if prop_key not in incoming_relationships:
-                    incoming_relationships[prop_key] = []
-                incoming_relationships[prop_key].append(subj_name)
+                incoming_relationships.setdefault(p, {})[s] = subj_name
 
     # Generate sentences for outgoing relationships
-    for prop_name, related_entities in outgoing_relationships.items():
-        # Find the property URI for this prop_name
-        prop_uri = None
-        for s, p, o in g.triples((ind, None, None)):
-            if get_nice_label(g, p) == prop_name:
-                prop_uri = p
-                break
-
-        if prop_uri:
+    for prop_uri, related_by_uri in sorted(outgoing_relationships.items(), key=lambda x: str(x[0])):
+        prop_name = get_nice_label(g, prop_uri)
+        related_entities = [
+            label for _, label in sorted(related_by_uri.items(), key=lambda x: str(x[0]))
+        ]
+        if prop_name:
             chars = property_characteristics.get(prop_uri, [])
-            pattern = verbalizer.detect_linguistic_pattern(str(prop_uri), chars)
+            pattern = verbalizer.detect_linguistic_pattern(prop_name, chars)
 
             # Group multiple objects for the same property
             if len(related_entities) == 1:
                 desc = verbalizer.structural_patterns[pattern](
-                    ind_name, str(prop_uri), related_entities[0]
+                    ind_name, prop_name, related_entities[0]
                 )
                 descriptions.append(desc + ".")
             else:
@@ -846,31 +849,26 @@ def describe_individual_with_domain_independence(
                     ", ".join(related_entities[:-1]) + f" and {related_entities[-1]}"
                 )
                 desc = verbalizer.structural_patterns[pattern](
-                    ind_name, str(prop_uri), objects_text
+                    ind_name, prop_name, objects_text
                 )
                 descriptions.append(desc + ".")
 
     # Generate sentences for incoming relationships (more selective)
-    for prop_key, related_entities in incoming_relationships.items():
-        prop_name = prop_key.replace("incoming_", "")
-
-        # Find the property URI
-        prop_uri = None
-        for s, p, o in g.triples((None, None, ind)):
-            if get_nice_label(g, p) == prop_name:
-                prop_uri = p
-                break
-
-        if prop_uri:
+    for prop_uri, related_by_uri in sorted(incoming_relationships.items(), key=lambda x: str(x[0])):
+        prop_name = get_nice_label(g, prop_uri)
+        related_entities = [
+            label for _, label in sorted(related_by_uri.items(), key=lambda x: str(x[0]))
+        ]
+        if prop_name:
             chars = property_characteristics.get(prop_uri, [])
 
             # Only include incoming relationships if they're not already covered by outgoing
             # and if they add meaningful information
-            if prop_name not in outgoing_relationships:
+            if prop_uri not in outgoing_relationships:
                 if len(related_entities) == 1:
-                    pattern = verbalizer.detect_linguistic_pattern(str(prop_uri), chars)
+                    pattern = verbalizer.detect_linguistic_pattern(prop_name, chars)
                     desc = verbalizer.structural_patterns[pattern](
-                        related_entities[0], str(prop_uri), ind_name
+                        related_entities[0], prop_name, ind_name
                     )
                     descriptions.append(desc + ".")
                 elif len(related_entities) <= 5:  # Show more incoming relationships
@@ -885,8 +883,8 @@ def describe_individual_with_domain_independence(
         desc = create_simple_sentence(ind_name, "is", "an individual in this ontology")
         descriptions.append(desc)
 
-    # Join descriptions with proper spacing
-    return " ".join(descriptions)
+    # Final exact-sentence safety layer: retain the first semantic rendering.
+    return " ".join(dict.fromkeys(descriptions))
 
 
 def verbalize_ontology(ontology_file_path, output_dir):
@@ -1039,7 +1037,7 @@ def verbalize_ontology(ontology_file_path, output_dir):
             json.dump(verbalization_data, json_file, indent=2, ensure_ascii=False)
 
         print(f"Saved verbalization to: {output_file}")
-        print(f"Generated descriptions for:")
+        print("Generated descriptions for:")
         print(f"  - {len(verbalization_data['classes'])} classes")
         print(f"  - {len(verbalization_data['objectProperties'])} object properties")
         print(f"  - {len(verbalization_data['dataProperties'])} data properties")
@@ -1142,7 +1140,7 @@ def process_in_batches(ontology_files, output_dir, batch_size=50, memory_thresho
                         realiser = Realiser(lexicon)
                         gc.collect()
                         print("ðŸ”„ SimpleNLG reinitialized")
-                    except:
+                    except Exception:
                         pass
                 time.sleep(5)
                 gc.collect()
@@ -1243,7 +1241,7 @@ def main():
     )
 
     print(f"\n{'=' * 60}")
-    print(f"Processing completed!")
+    print("Processing completed!")
     print(f"Successful: {successful}")
     print(f"Failed: {failed}")
     print(f"Output directory: {output_dir.absolute()}")

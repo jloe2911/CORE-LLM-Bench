@@ -1,0 +1,91 @@
+{
+  "api_provider": "OpenRouter",
+  "config_version": "core-llm-bench-v1.1-qwen-alibaba-phase7e-1",
+  "configuration_hash": "3f5ff8a2078f2836225a9efc8fe51e64e477ca2e477611cd9ab8c2a45083e5ff",
+  "credential_source": "OPENROUTER_API_KEY",
+  "endpoint_capability_snapshot": {
+    "context_length": 131072,
+    "max_completion_tokens": 32768,
+    "provider_name": "Alibaba",
+    "status": 0,
+    "supported_parameters": [
+      "frequency_penalty",
+      "logprobs",
+      "max_tokens",
+      "presence_penalty",
+      "response_format",
+      "seed",
+      "stop",
+      "temperature",
+      "tool_choice",
+      "tools",
+      "top_k",
+      "top_logprobs",
+      "top_p"
+    ],
+    "tag": "alibaba"
+  },
+  "fallback": false,
+  "frozen_file_sha256": {
+    "benchmark_parquet": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859",
+    "gemini_observations": "bcd674564a071dfed38279af4e0b487a850226758199242458fb110855454306",
+    "primary_manifest": "732c0a6306f970dcb7ec4aa36903fc5739f2b5f941f6ce14096fcca1049b0bbc",
+    "staging_config": "47a60d2536dbfc718658fe91c12599a89d5fda66a03828a6eb20cff24d7a8da7"
+  },
+  "model": "Qwen3-30B-A3B-Instruct",
+  "model_behavior": "non-thinking instruct model",
+  "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+  "openai_api_key_loaded": false,
+  "parser": "phase7a_preflight.parse_response",
+  "prepared_at": "2026-09-21T11:24:12.630241+00:00",
+  "prompt": {
+    "message_roles": [
+      "user"
+    ],
+    "source_sha256": "09a149f67c5b26d402587e4a90537b86b61161eba6186f351fa9ad4b6809d722",
+    "system_prompt": null,
+    "version": "api_calls.create_context_specific_prompt@24c4520"
+  },
+  "provider_metadata_name": "Alibaba",
+  "provider_requested_name": "Alibaba Cloud International",
+  "provider_tag": "alibaba",
+  "request_parameters": {
+    "extra_body": {
+      "provider": {
+        "allow_fallbacks": false,
+        "data_collection": "deny",
+        "order": [
+          "alibaba"
+        ],
+        "require_parameters": true
+      }
+    },
+    "frequency_penalty": 0.1,
+    "max_tokens": 1024,
+    "presence_penalty": 0.0,
+    "seed": 0,
+    "temperature": 0.0,
+    "top_p": 0.9
+  },
+  "require_parameters": true,
+  "retry_policy": {
+    "backoff_seconds": [
+      2,
+      4,
+      8
+    ],
+    "maximum_retries_after_initial_attempt": 3,
+    "retryable": [
+      "timeout",
+      "rate_limit",
+      "provider_transient_error",
+      "empty_response"
+    ],
+    "terminal_without_resampling": [
+      "nonempty_malformed_structured_output",
+      "valid_model_answer"
+    ]
+  },
+  "source_configuration_hash": "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3",
+  "timeout_seconds": 30
+}

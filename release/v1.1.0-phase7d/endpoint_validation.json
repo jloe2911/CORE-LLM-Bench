@@ -1,0 +1,192 @@
+{
+  "diagnostics": [
+    {
+      "candidate": "gpt-5-mini-2025-08-07",
+      "client_serialization_note": "verbosity passed via extra_body because the installed SDK does not expose it as a direct chat.completions keyword",
+      "error": "Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+      "error_type": "RateLimitError",
+      "inference_call_count": 1,
+      "neutral_prompt": "Reply with exactly: OK",
+      "provider_request_submitted": true,
+      "requested_at": "2026-09-21T08:12:20.509678+00:00",
+      "success": false,
+      "supersedes_local_pre_request_attempt": {
+        "candidate": "gpt-5-mini-2025-08-07",
+        "error": "Completions.create() got an unexpected keyword argument 'verbosity'",
+        "error_type": "TypeError",
+        "inference_call_count": 1,
+        "neutral_prompt": "Reply with exactly: OK",
+        "requested_at": "2026-09-21T08:09:28.393354+00:00",
+        "success": false
+      }
+    },
+    {
+      "candidate": "google/gemini-2.5-flash-lite",
+      "inference_call_count": 1,
+      "neutral_prompt": "Reply with exactly: OK",
+      "requested_at": "2026-09-21T08:09:28.393354+00:00",
+      "response_exactly_ok": true,
+      "response_id": "gen-1789978168-XmjJGuT7OZIJfq9kHv2m",
+      "response_text": "OK",
+      "returned_model_identifier": "google/gemini-2.5-flash-lite",
+      "returned_provider": "Google AI Studio",
+      "success": true,
+      "usage": {
+        "completion_tokens": 1,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        },
+        "cost": 1e-06,
+        "cost_details": {
+          "upstream_inference_completions_cost": 4e-07,
+          "upstream_inference_cost": 1e-06,
+          "upstream_inference_prompt_cost": 6e-07
+        },
+        "is_byok": false,
+        "prompt_tokens": 6,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "total_tokens": 7
+      }
+    },
+    {
+      "candidate": "qwen/qwen3-30b-a3b-instruct-2507",
+      "inference_call_count": 1,
+      "neutral_prompt": "Reply with exactly: OK",
+      "requested_at": "2026-09-21T08:09:29.010126+00:00",
+      "response_exactly_ok": true,
+      "response_id": "gen-1789978290-AwXoOaiqn06rIFvZMw3R",
+      "response_text": "OK",
+      "returned_model_identifier": "qwen/qwen3-30b-a3b-instruct-2507",
+      "returned_provider": "DekaLLM",
+      "success": true,
+      "usage": {
+        "completion_tokens": 2,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        },
+        "cost": 1.77e-06,
+        "cost_details": {
+          "upstream_inference_completions_cost": 6e-07,
+          "upstream_inference_cost": 1.77e-06,
+          "upstream_inference_prompt_cost": 1.17e-06
+        },
+        "is_byok": false,
+        "prompt_tokens": 13,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "total_tokens": 15
+      }
+    }
+  ],
+  "execution_date_utc": "2026-09-21T08:12:25.778490+00:00",
+  "openai_model_metadata": {
+    "gpt-5-mini": {
+      "created": 1754425928,
+      "owned_by": "system",
+      "retrievable": true,
+      "returned_id": "gpt-5-mini"
+    },
+    "gpt-5-mini-2025-08-07": {
+      "created": 1754425867,
+      "owned_by": "system",
+      "retrievable": true,
+      "returned_id": "gpt-5-mini-2025-08-07"
+    }
+  },
+  "openrouter_selected_endpoint_metadata": {
+    "google/gemini-2.5-flash-lite": {
+      "context_length": 1048576,
+      "max_completion_tokens": 65535,
+      "model_id": "google/gemini-2.5-flash-lite",
+      "name": "Google AI Studio | google/gemini-2.5-flash-lite",
+      "pricing": {
+        "audio": "0.0000003",
+        "completion": "0.0000004",
+        "discount": 0,
+        "image": "0.0000001",
+        "input_audio_cache": "0.00000003",
+        "input_cache_read": "0.00000001",
+        "input_cache_write": "0.0000000833333333333333",
+        "internal_reasoning": "0.0000004",
+        "prompt": "0.0000001",
+        "web_search": "0.014"
+      },
+      "provider_name": "Google AI Studio",
+      "status": 0,
+      "supported_parameters": [
+        "reasoning",
+        "include_reasoning",
+        "structured_outputs",
+        "response_format",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "seed",
+        "tools",
+        "tool_choice",
+        "stop"
+      ],
+      "tag": "google-ai-studio",
+      "uptime_last_1d": 99.67037140249934,
+      "uptime_last_30m": 99.76384302280931,
+      "uptime_last_5m": 99.86932375040837
+    },
+    "qwen/qwen3-30b-a3b-instruct-2507": {
+      "context_length": 262144,
+      "max_completion_tokens": 235929,
+      "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "name": "DekaLLM | qwen/qwen3-30b-a3b-instruct-2507",
+      "pricing": {
+        "completion": "0.0000003",
+        "discount": 0,
+        "prompt": "0.00000009"
+      },
+      "provider_name": "DekaLLM",
+      "status": 0,
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "presence_penalty",
+        "seed",
+        "stop",
+        "temperature",
+        "top_p",
+        "response_format",
+        "structured_outputs",
+        "tools",
+        "tool_choice"
+      ],
+      "tag": "dekallm",
+      "uptime_last_1d": 99.44330569272337,
+      "uptime_last_30m": 98.84393063583815,
+      "uptime_last_5m": 100
+    }
+  },
+  "phase": "7D endpoint validation",
+  "safety": {
+    "automatic_retries": 0,
+    "benchmark_question_used": false,
+    "diagnostics_are_experiment_observations": false,
+    "local_pre_request_failures": 1,
+    "total_diagnostic_inference_calls": 3,
+    "total_provider_requests_submitted": 3
+  }
+}

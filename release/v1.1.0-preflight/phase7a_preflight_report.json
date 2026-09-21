@@ -1,0 +1,125 @@
+{
+  "benchmark_membership_or_content_changed": false,
+  "completeness_validator": "scripts/validate_v1_1_experiment_completeness.py",
+  "configuration_status": "blocked_pending_scientific_resolution",
+  "configuration_uncertainties": [
+    {
+      "blocking": true,
+      "detail": "Historical run_config files record models and operational settings but not the per-request parameter dictionary; values above are reconstructed from the evaluation source used by the saved pipeline.",
+      "id": "request-parameter-provenance"
+    },
+    {
+      "blocking": true,
+      "detail": "OpenRouter model IDs are recorded, but the routed backend/provider revision and returned model identifier were not persisted in reusable checkpoint rows.",
+      "id": "openrouter-backend-revision"
+    },
+    {
+      "blocking": true,
+      "detail": "No Gemini or Qwen thinking/reasoning parameter was sent; the effective provider/model default was not recorded.",
+      "id": "thinking-defaults"
+    },
+    {
+      "blocking": true,
+      "detail": "Historical run_config files contain more than one concurrency, batch, and checkpoint setting. Exact values are recoverable per source run, but there is no single v1.0-wide value.",
+      "id": "run-specific-concurrency"
+    },
+    {
+      "blocking": true,
+      "detail": "Exact evaluated inputs with incompatible gold semantics exist; see duplicate_input_hash_audit.csv.",
+      "id": "incompatible-duplicate-inputs"
+    }
+  ],
+  "duplicate_input_hash_audit": {
+    "across_representations": {
+      "duplicate_hash_groups": 0,
+      "rows_involved": 0
+    },
+    "automatic_deduplication_performed": false,
+    "compatible_duplicate_hash_groups": 435,
+    "fatal_incompatible_gold_semantics": true,
+    "incompatible_duplicate_hash_groups": 9,
+    "note": "The prompt hash is model-independent, so each count applies identically to all three models.",
+    "same_representation": {
+      "AR": {
+        "duplicate_hash_groups": 7,
+        "rows_involved": 14
+      },
+      "FS": {
+        "duplicate_hash_groups": 5,
+        "rows_involved": 10
+      },
+      "NL": {
+        "duplicate_hash_groups": 432,
+        "rows_involved": 1624
+      }
+    },
+    "scientific_review_required": true,
+    "scope": "exact evaluated input hashes, audited independently within each model"
+  },
+  "expected_actual_calls": 68678,
+  "llm_or_api_calls_made": 0,
+  "manifest_integrity": {
+    "expected_matrix_rows": 81432,
+    "input_rows": 27144,
+    "missing_experiment_cells": 0,
+    "multiply_assigned_experiment_cells": 0,
+    "pending_hashes_match": true,
+    "pending_reuse_overlap": 0,
+    "pending_rows": 68678,
+    "reusable_rows": 12754,
+    "valid_models_and_representations": true,
+    "valid_task_ids": true
+  },
+  "phase": "7A",
+  "phase6_commit": "7d1cf3b",
+  "response_schema": {
+    "answer": "ANSWER field preferred; first-line fallback retained from v1.0 evaluator",
+    "confidence": "CONFIDENCE field preferred; absent or invalid values default to 0.5",
+    "extra_structured_metadata": false
+  },
+  "retry_policy": {
+    "backoff_seconds": [
+      2,
+      4,
+      8
+    ],
+    "maximum_retries_after_initial_attempt": 3,
+    "retryable": [
+      "timeout",
+      "rate_limit",
+      "provider_transient_error",
+      "empty_response"
+    ],
+    "terminal_without_resampling": [
+      "nonempty_malformed_structured_output",
+      "valid_model_answer"
+    ]
+  },
+  "reuse_validation": {
+    "api_or_error_placeholders": 0,
+    "by_model_representation": {
+      "GPT-5 mini/AR": 0,
+      "GPT-5 mini/FS": 2126,
+      "GPT-5 mini/NL": 2123,
+      "Gemini 2.5 Flash-Lite/AR": 0,
+      "Gemini 2.5 Flash-Lite/FS": 2130,
+      "Gemini 2.5 Flash-Lite/NL": 2130,
+      "Qwen3-30B-A3B-Instruct/AR": 0,
+      "Qwen3-30B-A3B-Instruct/FS": 2118,
+      "Qwen3-30B-A3B-Instruct/NL": 2127
+    },
+    "empty_responses": 0,
+    "input_hash_mismatches": 0,
+    "model_mismatches": 0,
+    "original_response_files_modified": false,
+    "parse_statuses": {
+      "accepted_by_current_parser_with_confidence_default": 25,
+      "requested_schema_conformant": 12729
+    },
+    "total": 12754
+  },
+  "runner": "scripts/run_v1_1_experiments.py",
+  "status": "failed_preflight",
+  "test_report": "release/v1.1.0-preflight/phase7a_test_report.json",
+  "v1_0_files_modified": false
+}

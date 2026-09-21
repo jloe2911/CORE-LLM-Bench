@@ -50,6 +50,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
     // For tracking MC queries across current ontology only
     private Set<String> currentOntologyMCQueries;
     private String taskIdHopPrefix = "1hop";
+    private boolean pizzaDataset = false;
 
     public SmallOntologiesProcessor(OntologyService ontologyService,
                                     ReasoningService reasoningService,
@@ -74,6 +75,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         try {
             LOGGER.info("Starting SEQUENTIAL processing of small ontologies from: {}", ontologiesDirectory);
             taskIdHopPrefix = inferHopPrefix(ontologiesDirectory);
+            pizzaDataset = isPizzaDatasetPath(ontologiesDirectory);
             LOGGER.info("Using '{}' task ID prefix", taskIdHopPrefix);
 
             // Step 1: Initialize output service
@@ -355,8 +357,19 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         }
 
         return paths.stream()
+                .sorted(Comparator
+                        .comparingInt(ExplanationPath::getComplexity)
+                        .thenComparing(ExplanationPath::getDescription)
+                        .thenComparing(SmallOntologiesProcessor::semanticPathIdentity))
                 .limit(maxExplanations)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private static String semanticPathIdentity(ExplanationPath path) {
+        return path.getAxioms().stream()
+                .map(axiom -> axiom.getAxiomWithoutAnnotations().toString())
+                .sorted()
+                .collect(Collectors.joining("\n"));
     }
 
     /**
@@ -509,8 +522,29 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         long binaryQueries = 0;
         long negativeBinaryQueries = 0;
         long multiChoiceQueries = 0;
+        long domainConceptPositivesReplaced = 0;
+        long domainConceptOnlyGroupsOmitted = 0;
+        long oeqaDomainConceptRowsRetained = 0;
         CandidateObjectPools candidateObjects = collectCandidateObjects(ontology, inferences);
         Map<String, Set<String>> usedNegativeObjects = new HashMap<>();
+
+        if (pizzaDataset) {
+            for (Map.Entry<String, Map<String, Set<String>>> subjectEntry : subjectPredicateObjects.entrySet()) {
+                Set<String> membershipObjects = subjectEntry.getValue().get("rdf:type");
+                if (membershipObjects == null || membershipObjects.stream().noneMatch(
+                        SmallOntologiesProcessor::isDomainConcept)) {
+                    continue;
+                }
+
+                Optional<String> unfiltered = selectRepresentativePositive("rdf:type", membershipObjects, false);
+                Optional<String> filtered = selectRepresentativePositive("rdf:type", membershipObjects, true);
+                if (filtered.isEmpty()) {
+                    domainConceptOnlyGroupsOmitted++;
+                } else if (unfiltered.filter(SmallOntologiesProcessor::isDomainConcept).isPresent()) {
+                    domainConceptPositivesReplaced++;
+                }
+            }
+        }
 
         int writtenInferences = 0;
         for (Map.Entry<String, Set<ExplanationPath>> entry : inferences.entrySet()) {
@@ -540,7 +574,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 // Calculate tag statistics instead of explanation statistics
                 int[] tagStats = calculateTagStats(paths);
 
-                if (shouldGenerateBinaryForGroup(subject, predicate, object, subjectPredicateObjects)) {
+                if (shouldGenerateBinaryForGroup(
+                        subject, predicate, object, subjectPredicateObjects, pizzaDataset)) {
                     // 2. Write one representative positive binary query per subject-predicate group.
                     String binaryTaskId = URIUtils.generateBinaryTaskId(
                             taskIdHopPrefix, rootEntity, subject, predicate, object);
@@ -559,7 +594,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                     // 2b. Write one paired negative binary query for the same subject-predicate group.
                     String negativeObject = chooseNegativeObject(
                             subject, predicate, object, subjectPredicateObjects, candidateObjects,
-                            inferences.keySet(), usedNegativeObjects);
+                            inferences.keySet(), usedNegativeObjects, pizzaDataset);
 
                     if (negativeObject != null) {
                         String negativeBaseQueryKey = "NEG|" + OntologyUtils.createTripleKey(subject, predicate, negativeObject);
@@ -615,6 +650,10 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                                 tagStats[0], tagStats[1]  // Updated to use tag stats
                         );
                         multiChoiceQueries++;
+                        if (pizzaDataset && "rdf:type".equals(predicate)
+                                && allAnswers.stream().anyMatch(SmallOntologiesProcessor::isDomainConcept)) {
+                            oeqaDomainConceptRowsRetained++;
+                        }
                     }
                 }
 
@@ -648,6 +687,13 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         LOGGER.debug("Wrote {} positive binary queries, {} negative binary queries, and {} MC queries for ontology {}",
                 binaryQueries, negativeBinaryQueries, multiChoiceQueries, ontologyName);
+        if (pizzaDataset) {
+            LOGGER.info(
+                    "Pizza DomainConcept BQA audit for {}: positives replaced={}, "
+                            + "DomainConcept-only groups omitted={}, OEQA rows containing DomainConcept retained={}",
+                    ontologyName, domainConceptPositivesReplaced,
+                    domainConceptOnlyGroupsOmitted, oeqaDomainConceptRowsRetained);
+        }
 
         outputService.flush();
     }
@@ -670,22 +716,40 @@ public class SmallOntologiesProcessor implements AutoCloseable {
     }
 
     private boolean shouldGenerateBinaryForGroup(String subject, String predicate, String object,
-                                                 Map<String, Map<String, Set<String>>> subjectPredicateObjects) {
+                                                 Map<String, Map<String, Set<String>>> subjectPredicateObjects,
+                                                 boolean excludeDomainConceptMembership) {
         Map<String, Set<String>> predicateObjects = subjectPredicateObjects.get(subject);
         if (predicateObjects == null) return false;
 
         Set<String> objects = predicateObjects.get(predicate);
         if (objects == null || objects.isEmpty()) return false;
 
+        return selectRepresentativePositive(
+                predicate, objects, excludeDomainConceptMembership)
+                .map(object::equals)
+                .orElse(false);
+    }
+
+    static Optional<String> selectRepresentativePositive(
+            String predicate,
+            Collection<String> objects,
+            boolean excludeDomainConceptMembership) {
         Comparator<String> representativeComparator = Comparator
                 .comparingInt((String candidate) -> negativeCandidatePriority(predicate, candidate))
                 .thenComparing(Comparator.naturalOrder());
 
         return objects.stream()
+                .filter(candidate -> isEligibleBinaryTarget(
+                        predicate, candidate, excludeDomainConceptMembership))
                 .sorted(representativeComparator)
-                .findFirst()
-                .map(object::equals)
-                .orElse(false);
+                .findFirst();
+    }
+
+    static boolean isEligibleBinaryTarget(
+            String predicate, String candidate, boolean excludeDomainConceptMembership) {
+        return !(excludeDomainConceptMembership
+                && "rdf:type".equals(predicate)
+                && isDomainConcept(candidate));
     }
 
     // Updated to check against subject-predicate combinations
@@ -747,7 +811,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                                         Map<String, Map<String, Set<String>>> subjectPredicateObjects,
                                         CandidateObjectPools candidateObjects,
                                         Set<String> positiveTripleKeys,
-                                        Map<String, Set<String>> usedNegativeObjects) {
+                                        Map<String, Set<String>> usedNegativeObjects,
+                                        boolean excludeDomainConceptMembership) {
         Set<String> trueObjectsForSubjectPredicate = subjectPredicateObjects
                 .getOrDefault(subject, Collections.emptyMap())
                 .getOrDefault(predicate, Collections.emptySet());
@@ -772,7 +837,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         String candidate = findNegativeObjectCandidate(
                 subject, predicate, trueObjectsForSubjectPredicate, samePredicateCandidates,
-                positiveTripleKeys, usedForSubjectPredicate);
+                positiveTripleKeys, usedForSubjectPredicate, excludeDomainConceptMembership);
         if (candidate != null) {
             usedForSubjectPredicate.add(candidate);
             return candidate;
@@ -780,7 +845,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         candidate = findNegativeObjectCandidate(
                 subject, predicate, trueObjectsForSubjectPredicate, sameKindCandidates,
-                positiveTripleKeys, usedForSubjectPredicate);
+                positiveTripleKeys, usedForSubjectPredicate, excludeDomainConceptMembership);
         if (candidate != null) {
             usedForSubjectPredicate.add(candidate);
             return candidate;
@@ -793,10 +858,13 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                                                Set<String> trueObjectsForSubjectPredicate,
                                                List<String> candidates,
                                                Set<String> positiveTripleKeys,
-                                               Set<String> usedForSubjectPredicate) {
+                                               Set<String> usedForSubjectPredicate,
+                                               boolean excludeDomainConceptMembership) {
         for (String candidate : candidates) {
             if (trueObjectsForSubjectPredicate.contains(candidate) ||
-                    usedForSubjectPredicate.contains(candidate)) {
+                    usedForSubjectPredicate.contains(candidate) ||
+                    !isEligibleBinaryTarget(
+                            predicate, candidate, excludeDomainConceptMembership)) {
                 continue;
             }
 
@@ -809,7 +877,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         return null;
     }
 
-    private int negativeCandidatePriority(String predicate, String candidate) {
+    private static int negativeCandidatePriority(String predicate, String candidate) {
         if (!"rdf:type".equals(predicate)) {
             return 0;
         }
@@ -820,6 +888,10 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         }
 
         return 0;
+    }
+
+    private static boolean isDomainConcept(String candidate) {
+        return "DomainConcept".equals(URIUtils.getLocalName(candidate));
     }
 
     private static class CandidateObjectPools {
@@ -851,6 +923,15 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         }
 
         return "1hop";
+    }
+
+    private boolean isPizzaDatasetPath(String ontologiesDirectory) {
+        if (ontologiesDirectory == null) {
+            return false;
+        }
+        String normalized = ontologiesDirectory.toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]", "");
+        return normalized.contains("pizza100") || normalized.contains("pizza250");
     }
 
     /**
@@ -922,8 +1003,9 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         int maxTagLength = 0;
 
         for (ExplanationPath path : paths) {
-            String tag = tagger.tagExplanation(path);
-            int tagLength = tag != null ? tag.length() : 0;
+            // M is categorical heterogeneity metadata, not a primitive
+            // inference operation, so it must not inflate complexity.
+            int tagLength = tagger.primitiveTagCount(path);
 
             minTagLength = Math.min(minTagLength, tagLength);
             maxTagLength = Math.max(maxTagLength, tagLength);

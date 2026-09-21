@@ -1,0 +1,978 @@
+{
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|hasFather|john_heath" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "hasFather",
+      "object" : "john_heath"
+    },
+    "explanations" : [ [ "john_heath isFatherOf ada_rachel_heath_1868", "hasFather owl:inverseOf isFatherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "john_heath isFatherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-hasFather-john_heath-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-hasFather-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#john_heath> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasFather> ?x }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|hasMother|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "hasMother",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "hasMother owl:inverseOf isMotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-hasMother-sarah_jacobs_1834-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-hasMother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#hasMother> ?x }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|rdf:type|Woman" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "rdf:type",
+      "object" : "Woman"
+    },
+    "explanations" : [ [ "m135 hasFemalePartner ada_rachel_heath_1868", "hasFemalePartner Range Woman", "TAG:DR" ], [ "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "isSisterOf Domain Woman", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Woman>)", "rendering" : "range(hasFemalePartner) = Woman", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#Woman>)", "rendering" : "domain(isSisterOf) = Woman", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 2,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-rdf:type-Woman-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Woman> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|isFemalePartnerIn|m135" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "isFemalePartnerIn",
+      "object" : "m135"
+    },
+    "explanations" : [ [ "m135 hasFemalePartner ada_rachel_heath_1868", "isFemalePartnerIn owl:inverseOf hasFemalePartner", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#isFemalePartnerIn>)", "rendering" : "hasFemalePartner owl:inverseOf isFemalePartnerIn", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isFemalePartnerIn-m135-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isFemalePartnerIn-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isFemalePartnerIn> <http://www.example.com/genealogy.owl#m135> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isFemalePartnerIn> ?x }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|isSiblingOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "isSiblingOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "isSisterOf rdfs:subPropertyOf isSiblingOf", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#isSiblingOf>)", "rendering" : "isSisterOf rdfs:subPropertyOf isSiblingOf", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isSiblingOf-gwendoline_heath_1878-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isSiblingOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isSiblingOf> ?x }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "john_heath isFatherOf ada_rachel_heath_1868", "hasFather owl:inverseOf isFatherOf", "hasFather Domain Person", "TAG:DIRM" ], [ "john_heath isFatherOf ada_rachel_heath_1868", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent Domain Person", "TAG:DHIRM" ], [ "john_heath isFatherOf ada_rachel_heath_1868", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent rdfs:subPropertyOf hasAncestor", "hasAncestor rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHIRM" ], [ "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "hasMother owl:inverseOf isMotherOf", "hasMother Domain Person", "TAG:DIRM" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "john_heath isFatherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasFather) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "john_heath isFatherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasParent) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 4, "primitiveTagCount" : 4, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "john_heath isFatherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasAncestor> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "hasAncestor rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#hasAncestor>)", "rendering" : "hasParent rdfs:subPropertyOf hasAncestor", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 6, "primitiveTagCount" : 6, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasMother) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true } ],
+    "size" : {
+      "min" : 3,
+      "max" : 6
+    },
+    "explanationCount" : 4,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }" ]
+  },
+  "Thing_ada_rachel_heath_1868||ada_rachel_heath_1868|isSisterOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "ada_rachel_heath_1868",
+      "predicate" : "isSisterOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isSisterOf-gwendoline_heath_1878-BIN", "1hop-Thing_ada_rachel_heath_1868_ada_rachel_heath_1868-ada_rachel_heath_1868-isSisterOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#isSisterOf> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "john_heath isFatherOf gwendoline_heath_1878", "hasFather owl:inverseOf isFatherOf", "hasFather Domain Person", "TAG:DIRM" ], [ "john_heath isFatherOf gwendoline_heath_1878", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent Domain Person", "TAG:DHIRM" ], [ "john_heath isFatherOf gwendoline_heath_1878", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent rdfs:subPropertyOf hasAncestor", "hasAncestor rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHIRM" ], [ "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "hasMother owl:inverseOf isMotherOf", "hasMother Domain Person", "TAG:DIRM" ], [ "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "isBrotherOf Range Person", "TAG:DR" ], [ "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "isSisterOf Range Person", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "john_heath isFatherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasFather) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "john_heath isFatherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasParent) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 4, "primitiveTagCount" : 4, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "john_heath isFatherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasAncestor> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "hasAncestor rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#hasAncestor>)", "rendering" : "hasParent rdfs:subPropertyOf hasAncestor", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 6, "primitiveTagCount" : 6, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasMother) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "range(isBrotherOf) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "range(isSisterOf) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 6
+    },
+    "explanationCount" : 6,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|hasFather|john_heath" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "hasFather",
+      "object" : "john_heath"
+    },
+    "explanations" : [ [ "john_heath isFatherOf gwendoline_heath_1878", "hasFather owl:inverseOf isFatherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "john_heath isFatherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasFather-john_heath-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasFather-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#john_heath> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasFather> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|isSisterOf|lemuel_frederick_heath_1871" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "isSisterOf",
+      "object" : "lemuel_frederick_heath_1871"
+    },
+    "explanations" : [ [ "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isSisterOf-lemuel_frederick_heath_1871-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isSisterOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isSisterOf> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|isFemalePartnerIn|m136" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "isFemalePartnerIn",
+      "object" : "m136"
+    },
+    "explanations" : [ [ "m136 hasFemalePartner gwendoline_heath_1878", "isFemalePartnerIn owl:inverseOf hasFemalePartner", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#isFemalePartnerIn>)", "rendering" : "hasFemalePartner owl:inverseOf isFemalePartnerIn", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isFemalePartnerIn-m136-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isFemalePartnerIn-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isFemalePartnerIn> <http://www.example.com/genealogy.owl#m136> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isFemalePartnerIn> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|rdf:type|Woman" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "rdf:type",
+      "object" : "Woman"
+    },
+    "explanations" : [ [ "m136 hasFemalePartner gwendoline_heath_1878", "hasFemalePartner Range Woman", "TAG:DR" ], [ "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "isSisterOf Domain Woman", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Woman>)", "rendering" : "range(hasFemalePartner) = Woman", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#Woman>)", "rendering" : "domain(isSisterOf) = Woman", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 2,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-rdf:type-Woman-BIN" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Woman> }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|hasBrother|lemuel_frederick_heath_1871" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "hasBrother",
+      "object" : "lemuel_frederick_heath_1871"
+    },
+    "explanations" : [ [ "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "hasBrother owl:inverseOf isBrotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasBrother> <http://www.example.com/genealogy.owl#isBrotherOf>)", "rendering" : "hasBrother owl:inverseOf isBrotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasBrother-lemuel_frederick_heath_1871-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasBrother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasBrother> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasBrother> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|hasMother|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "hasMother",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "hasMother owl:inverseOf isMotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasMother-sarah_jacobs_1834-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasMother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasMother> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|hasSister|ada_rachel_heath_1868" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "hasSister",
+      "object" : "ada_rachel_heath_1868"
+    },
+    "explanations" : [ [ "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "hasSister owl:inverseOf isSisterOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasSister> <http://www.example.com/genealogy.owl#isSisterOf>)", "rendering" : "hasSister owl:inverseOf isSisterOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "ada_rachel_heath_1868 isSisterOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasSister-ada_rachel_heath_1868-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-hasSister-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasSister> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#hasSister> ?x }" ]
+  },
+  "Thing_gwendoline_heath_1878||gwendoline_heath_1878|isSiblingOf|lemuel_frederick_heath_1871" : {
+    "inferred" : {
+      "subject" : "gwendoline_heath_1878",
+      "predicate" : "isSiblingOf",
+      "object" : "lemuel_frederick_heath_1871"
+    },
+    "explanations" : [ [ "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "isSisterOf rdfs:subPropertyOf isSiblingOf", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#isSiblingOf>)", "rendering" : "isSisterOf rdfs:subPropertyOf isSiblingOf", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isSiblingOf-lemuel_frederick_heath_1871-BIN", "1hop-Thing_gwendoline_heath_1878_gwendoline_heath_1878-gwendoline_heath_1878-isSiblingOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#isSiblingOf> ?x }" ]
+  },
+  "Thing_henry_jacobs_1849||henry_jacobs_1849|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "henry_jacobs_1849",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "isBrotherOf rdfs:subPropertyOf isSiblingOf", "isSiblingOf rdfs:subPropertyOf isBloodrelationOf", "isBloodrelationOf rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHRM" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isBloodrelationOf> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "isBloodrelationOf rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#isSiblingOf>)", "rendering" : "isBrotherOf rdfs:subPropertyOf isSiblingOf", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#isBloodrelationOf>)", "rendering" : "isSiblingOf rdfs:subPropertyOf isBloodrelationOf", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "R" ], "distinctPrimitiveTags" : [ "D", "H", "R" ], "axiomCount" : 5, "primitiveTagCount" : 5, "m" : true } ],
+    "size" : {
+      "min" : 5,
+      "max" : 5
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_henry_jacobs_1849||henry_jacobs_1849|rdf:type|Man" : {
+    "inferred" : {
+      "subject" : "henry_jacobs_1849",
+      "predicate" : "rdf:type",
+      "object" : "Man"
+    },
+    "explanations" : [ [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "isBrotherOf Domain Man", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#Man>)", "rendering" : "domain(isBrotherOf) = Man", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-rdf:type-Man-BIN" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Man> }" ]
+  },
+  "Thing_henry_jacobs_1849||henry_jacobs_1849|isBrotherOf|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "henry_jacobs_1849",
+      "predicate" : "isBrotherOf",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-isBrotherOf-sarah_jacobs_1834-BIN", "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-isBrotherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#isBrotherOf> ?x }" ]
+  },
+  "Thing_henry_jacobs_1849||henry_jacobs_1849|isSiblingOf|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "henry_jacobs_1849",
+      "predicate" : "isSiblingOf",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "isBrotherOf rdfs:subPropertyOf isSiblingOf", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#isSiblingOf>)", "rendering" : "isBrotherOf rdfs:subPropertyOf isSiblingOf", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-isSiblingOf-sarah_jacobs_1834-BIN", "1hop-Thing_henry_jacobs_1849_henry_jacobs_1849-henry_jacobs_1849-isSiblingOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#isSiblingOf> ?x }" ]
+  },
+  "Thing_james_jacobs_1806||james_jacobs_1806|isFatherOf|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "james_jacobs_1806",
+      "predicate" : "isFatherOf",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_james_jacobs_1806_james_jacobs_1806-james_jacobs_1806-isFatherOf-sarah_jacobs_1834-BIN", "1hop-Thing_james_jacobs_1806_james_jacobs_1806-james_jacobs_1806-isFatherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#isFatherOf> ?x }" ]
+  },
+  "Thing_john_heath||john_heath|isMalePartnerIn|m100" : {
+    "inferred" : {
+      "subject" : "john_heath",
+      "predicate" : "isMalePartnerIn",
+      "object" : "m100"
+    },
+    "explanations" : [ [ "m100 hasMalePartner john_heath", "isMalePartnerIn owl:inverseOf hasMalePartner", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#isMalePartnerIn>)", "rendering" : "hasMalePartner owl:inverseOf isMalePartnerIn", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#john_heath>)", "rendering" : "m100 hasMalePartner john_heath", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_heath_john_heath-john_heath-isMalePartnerIn-m100-BIN", "1hop-Thing_john_heath_john_heath-john_heath-isMalePartnerIn-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isMalePartnerIn> <http://www.example.com/genealogy.owl#m100> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isMalePartnerIn> ?x }" ]
+  },
+  "Thing_john_heath||john_heath|rdf:type|Man" : {
+    "inferred" : {
+      "subject" : "john_heath",
+      "predicate" : "rdf:type",
+      "object" : "Man"
+    },
+    "explanations" : [ [ "m100 hasMalePartner john_heath", "hasMalePartner Range Man", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#john_heath>)", "rendering" : "m100 hasMalePartner john_heath", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#Man>)", "rendering" : "range(hasMalePartner) = Man", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_heath_john_heath-john_heath-rdf:type-Man-BIN", "1hop-Thing_john_heath_john_heath-john_heath-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Man> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_john_heath||john_heath|isFatherOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "john_heath",
+      "predicate" : "isFatherOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "john_heath isFatherOf gwendoline_heath_1878", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "john_heath isFatherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_heath_john_heath-john_heath-isFatherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isFatherOf> ?x }" ]
+  },
+  "Thing_john_heath||john_heath|isFatherOf|lemuel_frederick_heath_1871" : {
+    "inferred" : {
+      "subject" : "john_heath",
+      "predicate" : "isFatherOf",
+      "object" : "lemuel_frederick_heath_1871"
+    },
+    "explanations" : [ [ "john_heath isFatherOf lemuel_frederick_heath_1871", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "john_heath isFatherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }" ]
+  },
+  "Thing_john_heath||john_heath|isFatherOf|ada_rachel_heath_1868" : {
+    "inferred" : {
+      "subject" : "john_heath",
+      "predicate" : "isFatherOf",
+      "object" : "ada_rachel_heath_1868"
+    },
+    "explanations" : [ [ "john_heath isFatherOf ada_rachel_heath_1868", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "john_heath isFatherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_heath_john_heath-john_heath-isFatherOf-ada_rachel_heath_1868-BIN" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }" ]
+  },
+  "Thing_john_william_folland||john_william_folland|isMalePartnerIn|m135" : {
+    "inferred" : {
+      "subject" : "john_william_folland",
+      "predicate" : "isMalePartnerIn",
+      "object" : "m135"
+    },
+    "explanations" : [ [ "m135 hasMalePartner john_william_folland", "isMalePartnerIn owl:inverseOf hasMalePartner", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#isMalePartnerIn>)", "rendering" : "hasMalePartner owl:inverseOf isMalePartnerIn", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#john_william_folland>)", "rendering" : "m135 hasMalePartner john_william_folland", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_william_folland_john_william_folland-john_william_folland-isMalePartnerIn-m135-BIN", "1hop-Thing_john_william_folland_john_william_folland-john_william_folland-isMalePartnerIn-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_william_folland> <http://www.example.com/genealogy.owl#isMalePartnerIn> <http://www.example.com/genealogy.owl#m135> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_william_folland> <http://www.example.com/genealogy.owl#isMalePartnerIn> ?x }" ]
+  },
+  "Thing_john_william_folland||john_william_folland|rdf:type|Man" : {
+    "inferred" : {
+      "subject" : "john_william_folland",
+      "predicate" : "rdf:type",
+      "object" : "Man"
+    },
+    "explanations" : [ [ "m135 hasMalePartner john_william_folland", "hasMalePartner Range Man", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#john_william_folland>)", "rendering" : "m135 hasMalePartner john_william_folland", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#Man>)", "rendering" : "range(hasMalePartner) = Man", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_john_william_folland_john_william_folland-john_william_folland-rdf:type-Man-BIN", "1hop-Thing_john_william_folland_john_william_folland-john_william_folland-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#john_william_folland> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Man> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#john_william_folland> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|rdf:type|Man" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "rdf:type",
+      "object" : "Man"
+    },
+    "explanations" : [ [ "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "isBrotherOf Domain Man", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#Man>)", "rendering" : "domain(isBrotherOf) = Man", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-rdf:type-Man-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Man> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|isBrotherOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "isBrotherOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-isBrotherOf-gwendoline_heath_1878-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-isBrotherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#isBrotherOf> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|hasFather|john_heath" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "hasFather",
+      "object" : "john_heath"
+    },
+    "explanations" : [ [ "john_heath isFatherOf lemuel_frederick_heath_1871", "hasFather owl:inverseOf isFatherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "john_heath isFatherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasFather-john_heath-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasFather-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#john_heath> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasFather> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|hasMother|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "hasMother",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "hasMother owl:inverseOf isMotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasMother-sarah_jacobs_1834-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasMother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasMother> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|hasSister|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "hasSister",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "hasSister owl:inverseOf isSisterOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasSister> <http://www.example.com/genealogy.owl#isSisterOf>)", "rendering" : "hasSister owl:inverseOf isSisterOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasSister-gwendoline_heath_1878-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-hasSister-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasSister> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#hasSister> ?x }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "john_heath isFatherOf lemuel_frederick_heath_1871", "hasFather owl:inverseOf isFatherOf", "hasFather Domain Person", "TAG:DIRM" ], [ "john_heath isFatherOf lemuel_frederick_heath_1871", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent Domain Person", "TAG:DHIRM" ], [ "john_heath isFatherOf lemuel_frederick_heath_1871", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent rdfs:subPropertyOf hasAncestor", "hasAncestor rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHIRM" ], [ "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "hasMother owl:inverseOf isMotherOf", "hasMother Domain Person", "TAG:DIRM" ], [ "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "isSisterOf Range Person", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "john_heath isFatherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasFather) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "john_heath isFatherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasParent) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 4, "primitiveTagCount" : 4, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#john_heath> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "john_heath isFatherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasAncestor> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "hasAncestor rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#hasAncestor>)", "rendering" : "hasParent rdfs:subPropertyOf hasAncestor", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 6, "primitiveTagCount" : 6, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasMother) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "gwendoline_heath_1878 isSisterOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#isSisterOf> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "range(isSisterOf) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 6
+    },
+    "explanationCount" : 5,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }" ]
+  },
+  "Thing_lemuel_frederick_heath_1871||lemuel_frederick_heath_1871|isSiblingOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "lemuel_frederick_heath_1871",
+      "predicate" : "isSiblingOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "isBrotherOf rdfs:subPropertyOf isSiblingOf", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "lemuel_frederick_heath_1871 isBrotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#isSiblingOf>)", "rendering" : "isBrotherOf rdfs:subPropertyOf isSiblingOf", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-isSiblingOf-gwendoline_heath_1878-BIN", "1hop-Thing_lemuel_frederick_heath_1871_lemuel_frederick_heath_1871-lemuel_frederick_heath_1871-isSiblingOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#isSiblingOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> <http://www.example.com/genealogy.owl#isSiblingOf> ?x }" ]
+  },
+  "Thing_m100||m100|hasFemalePartner|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "m100",
+      "predicate" : "hasFemalePartner",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "m100 hasFemalePartner sarah_jacobs_1834", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m100_m100-m100-hasFemalePartner-sarah_jacobs_1834-BIN", "1hop-Thing_m100_m100-m100-hasFemalePartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasFemalePartner> ?x }" ]
+  },
+  "Thing_m100||m100|hasPartner|john_heath" : {
+    "inferred" : {
+      "subject" : "m100",
+      "predicate" : "hasPartner",
+      "object" : "john_heath"
+    },
+    "explanations" : [ [ "m100 hasMalePartner john_heath", "hasMalePartner rdfs:subPropertyOf hasPartner", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#john_heath>)", "rendering" : "m100 hasMalePartner john_heath", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasMalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m100_m100-m100-hasPartner-john_heath-BIN", "1hop-Thing_m100_m100-m100-hasPartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#john_heath> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasPartner> ?x }" ]
+  },
+  "Thing_m100||m100|hasMalePartner|john_heath" : {
+    "inferred" : {
+      "subject" : "m100",
+      "predicate" : "hasMalePartner",
+      "object" : "john_heath"
+    },
+    "explanations" : [ [ "m100 hasMalePartner john_heath", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#john_heath>)", "rendering" : "m100 hasMalePartner john_heath", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m100_m100-m100-hasMalePartner-john_heath-BIN", "1hop-Thing_m100_m100-m100-hasMalePartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#john_heath> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasMalePartner> ?x }" ]
+  },
+  "Thing_m100||m100|hasPartner|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "m100",
+      "predicate" : "hasPartner",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "m100 hasFemalePartner sarah_jacobs_1834", "hasFemalePartner rdfs:subPropertyOf hasPartner", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }" ]
+  },
+  "Thing_m100||m100|rdf:type|Marriage" : {
+    "inferred" : {
+      "subject" : "m100",
+      "predicate" : "rdf:type",
+      "object" : "Marriage"
+    },
+    "explanations" : [ [ "m100 hasFemalePartner sarah_jacobs_1834", "hasFemalePartner Domain Marriage", "TAG:DR" ], [ "m100 hasFemalePartner sarah_jacobs_1834", "hasFemalePartner rdfs:subPropertyOf hasPartner", "hasPartner Domain Marriage", "TAG:DHRM" ], [ "m100 hasMalePartner john_heath", "hasMalePartner Domain Marriage", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasFemalePartner) = Marriage", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasPartner) = Marriage", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "R" ], "distinctPrimitiveTags" : [ "D", "H", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#john_heath>)", "rendering" : "m100 hasMalePartner john_heath", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasMalePartner) = Marriage", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 3
+    },
+    "explanationCount" : 3,
+    "taskIds" : [ "1hop-Thing_m100_m100-m100-rdf:type-Marriage-BIN", "1hop-Thing_m100_m100-m100-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Marriage> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m100> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_m135||m135|hasPartner|ada_rachel_heath_1868" : {
+    "inferred" : {
+      "subject" : "m135",
+      "predicate" : "hasPartner",
+      "object" : "ada_rachel_heath_1868"
+    },
+    "explanations" : [ [ "m135 hasFemalePartner ada_rachel_heath_1868", "hasFemalePartner rdfs:subPropertyOf hasPartner", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m135_m135-m135-hasPartner-ada_rachel_heath_1868-BIN", "1hop-Thing_m135_m135-m135-hasPartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasPartner> ?x }" ]
+  },
+  "Thing_m135||m135|hasFemalePartner|ada_rachel_heath_1868" : {
+    "inferred" : {
+      "subject" : "m135",
+      "predicate" : "hasFemalePartner",
+      "object" : "ada_rachel_heath_1868"
+    },
+    "explanations" : [ [ "m135 hasFemalePartner ada_rachel_heath_1868", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m135_m135-m135-hasFemalePartner-ada_rachel_heath_1868-BIN", "1hop-Thing_m135_m135-m135-hasFemalePartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasFemalePartner> ?x }" ]
+  },
+  "Thing_m135||m135|rdf:type|Marriage" : {
+    "inferred" : {
+      "subject" : "m135",
+      "predicate" : "rdf:type",
+      "object" : "Marriage"
+    },
+    "explanations" : [ [ "m135 hasFemalePartner ada_rachel_heath_1868", "hasFemalePartner Domain Marriage", "TAG:DR" ], [ "m135 hasFemalePartner ada_rachel_heath_1868", "hasFemalePartner rdfs:subPropertyOf hasPartner", "hasPartner Domain Marriage", "TAG:DHRM" ], [ "m135 hasMalePartner john_william_folland", "hasMalePartner Domain Marriage", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasFemalePartner) = Marriage", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "m135 hasFemalePartner ada_rachel_heath_1868", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasPartner) = Marriage", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "R" ], "distinctPrimitiveTags" : [ "D", "H", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#john_william_folland>)", "rendering" : "m135 hasMalePartner john_william_folland", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasMalePartner) = Marriage", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 3
+    },
+    "explanationCount" : 3,
+    "taskIds" : [ "1hop-Thing_m135_m135-m135-rdf:type-Marriage-BIN", "1hop-Thing_m135_m135-m135-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Marriage> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_m135||m135|hasPartner|john_william_folland" : {
+    "inferred" : {
+      "subject" : "m135",
+      "predicate" : "hasPartner",
+      "object" : "john_william_folland"
+    },
+    "explanations" : [ [ "m135 hasMalePartner john_william_folland", "hasMalePartner rdfs:subPropertyOf hasPartner", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#john_william_folland>)", "rendering" : "m135 hasMalePartner john_william_folland", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasMalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#john_william_folland> }" ]
+  },
+  "Thing_m135||m135|hasMalePartner|john_william_folland" : {
+    "inferred" : {
+      "subject" : "m135",
+      "predicate" : "hasMalePartner",
+      "object" : "john_william_folland"
+    },
+    "explanations" : [ [ "m135 hasMalePartner john_william_folland", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#john_william_folland>)", "rendering" : "m135 hasMalePartner john_william_folland", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m135_m135-m135-hasMalePartner-john_william_folland-BIN", "1hop-Thing_m135_m135-m135-hasMalePartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasMalePartner> <http://www.example.com/genealogy.owl#john_william_folland> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m135> <http://www.example.com/genealogy.owl#hasMalePartner> ?x }" ]
+  },
+  "Thing_m136||m136|hasPartner|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "m136",
+      "predicate" : "hasPartner",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "m136 hasFemalePartner gwendoline_heath_1878", "hasFemalePartner rdfs:subPropertyOf hasPartner", "TAG:DH" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H" ], "distinctPrimitiveTags" : [ "D", "H" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m136_m136-m136-hasPartner-gwendoline_heath_1878-BIN", "1hop-Thing_m136_m136-m136-hasPartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#hasPartner> ?x }" ]
+  },
+  "Thing_m136||m136|rdf:type|Marriage" : {
+    "inferred" : {
+      "subject" : "m136",
+      "predicate" : "rdf:type",
+      "object" : "Marriage"
+    },
+    "explanations" : [ [ "m136 hasFemalePartner gwendoline_heath_1878", "hasFemalePartner Domain Marriage", "TAG:DR" ], [ "m136 hasFemalePartner gwendoline_heath_1878", "hasFemalePartner rdfs:subPropertyOf hasPartner", "hasPartner Domain Marriage", "TAG:DHRM" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasFemalePartner) = Marriage", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasPartner> <http://www.example.com/genealogy.owl#Marriage>)", "rendering" : "domain(hasPartner) = Marriage", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#hasPartner>)", "rendering" : "hasFemalePartner rdfs:subPropertyOf hasPartner", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "R" ], "distinctPrimitiveTags" : [ "D", "H", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true } ],
+    "size" : {
+      "min" : 2,
+      "max" : 3
+    },
+    "explanationCount" : 2,
+    "taskIds" : [ "1hop-Thing_m136_m136-m136-rdf:type-Marriage-BIN", "1hop-Thing_m136_m136-m136-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Marriage> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_m136||m136|hasFemalePartner|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "m136",
+      "predicate" : "hasFemalePartner",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "m136 hasFemalePartner gwendoline_heath_1878", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "m136 hasFemalePartner gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_m136_m136-m136-hasFemalePartner-gwendoline_heath_1878-BIN", "1hop-Thing_m136_m136-m136-hasFemalePartner-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#m136> <http://www.example.com/genealogy.owl#hasFemalePartner> ?x }" ]
+  },
+  "Thing_priscilla_saunders_1810||priscilla_saunders_1810|isMotherOf|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "priscilla_saunders_1810",
+      "predicate" : "isMotherOf",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_priscilla_saunders_1810_priscilla_saunders_1810-priscilla_saunders_1810-isMotherOf-sarah_jacobs_1834-BIN", "1hop-Thing_priscilla_saunders_1810_priscilla_saunders_1810-priscilla_saunders_1810-isMotherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#isMotherOf> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "hasFather owl:inverseOf isFatherOf", "hasFather Domain Person", "TAG:DIRM" ], [ "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent Domain Person", "TAG:DHIRM" ], [ "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "hasFather owl:inverseOf isFatherOf", "hasFather rdfs:subPropertyOf hasParent", "hasParent rdfs:subPropertyOf hasAncestor", "hasAncestor rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHIRM" ], [ "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "hasMother owl:inverseOf isMotherOf", "hasMother Domain Person", "TAG:DIRM" ], [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "isBrotherOf Range Person", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasFather) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasParent) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 4, "primitiveTagCount" : 4, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasAncestor> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "hasAncestor rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasFather rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#hasAncestor>)", "rendering" : "hasParent rdfs:subPropertyOf hasAncestor", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 6, "primitiveTagCount" : 6, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasMother) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "range(isBrotherOf) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 6
+    },
+    "explanationCount" : 5,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|isFemalePartnerIn|m100" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "isFemalePartnerIn",
+      "object" : "m100"
+    },
+    "explanations" : [ [ "m100 hasFemalePartner sarah_jacobs_1834", "isFemalePartnerIn owl:inverseOf hasFemalePartner", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#isFemalePartnerIn>)", "rendering" : "hasFemalePartner owl:inverseOf isFemalePartnerIn", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-isFemalePartnerIn-m100-BIN", "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-isFemalePartnerIn-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isFemalePartnerIn> <http://www.example.com/genealogy.owl#m100> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isFemalePartnerIn> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|isMotherOf|ada_rachel_heath_1868" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "isMotherOf",
+      "object" : "ada_rachel_heath_1868"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868>)", "rendering" : "sarah_jacobs_1834 isMotherOf ada_rachel_heath_1868", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-isMotherOf-ada_rachel_heath_1868-BIN", "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-isMotherOf-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#ada_rachel_heath_1868> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isMotherOf> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|isMotherOf|william_lock_jacobs_1861" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "isMotherOf",
+      "object" : "william_lock_jacobs_1861"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861>)", "rendering" : "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|rdf:type|Woman" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "rdf:type",
+      "object" : "Woman"
+    },
+    "explanations" : [ [ "m100 hasFemalePartner sarah_jacobs_1834", "hasFemalePartner Range Woman", "TAG:DR" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#m100> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "m100 hasFemalePartner sarah_jacobs_1834", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyRange(<http://www.example.com/genealogy.owl#hasFemalePartner> <http://www.example.com/genealogy.owl#Woman>)", "rendering" : "range(hasFemalePartner) = Woman", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "R" ], "distinctPrimitiveTags" : [ "D", "R" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-rdf:type-Woman-BIN" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Woman> }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|isMotherOf|gwendoline_heath_1878" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "isMotherOf",
+      "object" : "gwendoline_heath_1878"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#gwendoline_heath_1878>)", "rendering" : "sarah_jacobs_1834 isMotherOf gwendoline_heath_1878", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#gwendoline_heath_1878> }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|hasBrother|henry_jacobs_1849" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "hasBrother",
+      "object" : "henry_jacobs_1849"
+    },
+    "explanations" : [ [ "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "hasBrother owl:inverseOf isBrotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasBrother> <http://www.example.com/genealogy.owl#isBrotherOf>)", "rendering" : "hasBrother owl:inverseOf isBrotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isBrotherOf> <http://www.example.com/genealogy.owl#henry_jacobs_1849> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "henry_jacobs_1849 isBrotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasBrother-henry_jacobs_1849-BIN", "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasBrother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasBrother> <http://www.example.com/genealogy.owl#henry_jacobs_1849> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasBrother> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|isMotherOf|lemuel_frederick_heath_1871" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "isMotherOf",
+      "object" : "lemuel_frederick_heath_1871"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "TAG:D" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871>)", "rendering" : "sarah_jacobs_1834 isMotherOf lemuel_frederick_heath_1871", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D" ], "distinctPrimitiveTags" : [ "D" ], "axiomCount" : 1, "primitiveTagCount" : 1, "m" : false } ],
+    "size" : {
+      "min" : 1,
+      "max" : 1
+    },
+    "explanationCount" : 1,
+    "taskIds" : [  ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#lemuel_frederick_heath_1871> }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|hasFather|james_jacobs_1806" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "hasFather",
+      "object" : "james_jacobs_1806"
+    },
+    "explanations" : [ [ "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "hasFather owl:inverseOf isFatherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#isFatherOf>)", "rendering" : "hasFather owl:inverseOf isFatherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isFatherOf> <http://www.example.com/genealogy.owl#james_jacobs_1806> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "james_jacobs_1806 isFatherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasFather-james_jacobs_1806-BIN", "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasFather-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasFather> <http://www.example.com/genealogy.owl#james_jacobs_1806> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasFather> ?x }" ]
+  },
+  "Thing_sarah_jacobs_1834||sarah_jacobs_1834|hasMother|priscilla_saunders_1810" : {
+    "inferred" : {
+      "subject" : "sarah_jacobs_1834",
+      "predicate" : "hasMother",
+      "object" : "priscilla_saunders_1810"
+    },
+    "explanations" : [ [ "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "hasMother owl:inverseOf isMotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> <http://www.example.com/genealogy.owl#sarah_jacobs_1834>)", "rendering" : "priscilla_saunders_1810 isMotherOf sarah_jacobs_1834", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasMother-priscilla_saunders_1810-BIN", "1hop-Thing_sarah_jacobs_1834_sarah_jacobs_1834-sarah_jacobs_1834-hasMother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#priscilla_saunders_1810> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#hasMother> ?x }" ]
+  },
+  "Thing_william_lock_jacobs_1861||william_lock_jacobs_1861|hasMother|sarah_jacobs_1834" : {
+    "inferred" : {
+      "subject" : "william_lock_jacobs_1861",
+      "predicate" : "hasMother",
+      "object" : "sarah_jacobs_1834"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "hasMother owl:inverseOf isMotherOf", "TAG:DI" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861>)", "rendering" : "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "primitiveTags" : [ "D" ] } ], "primitiveTags" : [ "D", "I" ], "distinctPrimitiveTags" : [ "D", "I" ], "axiomCount" : 2, "primitiveTagCount" : 2, "m" : false } ],
+    "size" : {
+      "min" : 2,
+      "max" : 2
+    },
+    "explanationCount" : 1,
+    "taskIds" : [ "1hop-Thing_william_lock_jacobs_1861_william_lock_jacobs_1861-william_lock_jacobs_1861-hasMother-sarah_jacobs_1834-BIN", "1hop-Thing_william_lock_jacobs_1861_william_lock_jacobs_1861-william_lock_jacobs_1861-hasMother-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.example.com/genealogy.owl#hasMother> ?x }" ]
+  },
+  "Thing_william_lock_jacobs_1861||william_lock_jacobs_1861|rdf:type|Person" : {
+    "inferred" : {
+      "subject" : "william_lock_jacobs_1861",
+      "predicate" : "rdf:type",
+      "object" : "Person"
+    },
+    "explanations" : [ [ "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "hasMother owl:inverseOf isMotherOf", "hasMother Domain Person", "TAG:DIRM" ], [ "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "hasMother owl:inverseOf isMotherOf", "hasMother rdfs:subPropertyOf hasParent", "hasParent Domain Person", "TAG:DHIRM" ], [ "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "hasMother owl:inverseOf isMotherOf", "hasMother rdfs:subPropertyOf hasParent", "hasParent rdfs:subPropertyOf hasAncestor", "hasAncestor rdfs:subPropertyOf hasRelation", "hasRelation Domain Person", "TAG:DHHHIRM" ] ],
+    "structuredExplanations" : [ { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861>)", "rendering" : "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasMother) = Person", "primitiveTags" : [ "R" ] } ], "primitiveTags" : [ "D", "I", "R" ], "distinctPrimitiveTags" : [ "D", "I", "R" ], "axiomCount" : 3, "primitiveTagCount" : 3, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861>)", "rendering" : "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasParent) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasMother rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 4, "primitiveTagCount" : 4, "m" : true }, { "semanticAxioms" : [ { "identity" : "InverseObjectProperties(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#isMotherOf>)", "rendering" : "hasMother owl:inverseOf isMotherOf", "primitiveTags" : [ "I" ] }, { "identity" : "ObjectPropertyAssertion(<http://www.example.com/genealogy.owl#isMotherOf> <http://www.example.com/genealogy.owl#sarah_jacobs_1834> <http://www.example.com/genealogy.owl#william_lock_jacobs_1861>)", "rendering" : "sarah_jacobs_1834 isMotherOf william_lock_jacobs_1861", "primitiveTags" : [ "D" ] }, { "identity" : "ObjectPropertyDomain(<http://www.example.com/genealogy.owl#hasRelation> <http://www.example.com/genealogy.owl#Person>)", "rendering" : "domain(hasRelation) = Person", "primitiveTags" : [ "R" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasAncestor> <http://www.example.com/genealogy.owl#hasRelation>)", "rendering" : "hasAncestor rdfs:subPropertyOf hasRelation", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasMother> <http://www.example.com/genealogy.owl#hasParent>)", "rendering" : "hasMother rdfs:subPropertyOf hasParent", "primitiveTags" : [ "H" ] }, { "identity" : "SubObjectPropertyOf(<http://www.example.com/genealogy.owl#hasParent> <http://www.example.com/genealogy.owl#hasAncestor>)", "rendering" : "hasParent rdfs:subPropertyOf hasAncestor", "primitiveTags" : [ "H" ] } ], "primitiveTags" : [ "D", "H", "H", "H", "I", "R" ], "distinctPrimitiveTags" : [ "D", "H", "I", "R" ], "axiomCount" : 6, "primitiveTagCount" : 6, "m" : true } ],
+    "size" : {
+      "min" : 3,
+      "max" : 6
+    },
+    "explanationCount" : 3,
+    "taskIds" : [ "1hop-Thing_william_lock_jacobs_1861_william_lock_jacobs_1861-william_lock_jacobs_1861-rdf:type-Person-BIN", "1hop-Thing_william_lock_jacobs_1861_william_lock_jacobs_1861-william_lock_jacobs_1861-rdf:type-MC" ],
+    "sparqlQueries" : [ "ASK WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.example.com/genealogy.owl#Person> }", "SELECT ?x WHERE { <http://www.example.com/genealogy.owl#william_lock_jacobs_1861> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?x }" ]
+  }
+}

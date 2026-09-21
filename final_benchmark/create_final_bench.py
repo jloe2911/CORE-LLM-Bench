@@ -12,16 +12,17 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from scripts.llm_pipeline.verbalize_abstract import (
     abstract_question,
     build_replacement_pattern,
+    deduplicate_sentences,
     parse_mapping_file,
 )
+from scripts.oeqa_explanations import build_answer_explanations
 
 
 def verbalize_abox(json_data):
-    output = []
     individuals = json_data.get("individuals", [])
-    for ind in individuals:
-        desc = ind.get("description", "")
-        output.append(f"{desc}")
+    output = deduplicate_sentences(
+        ind.get("description", "") for ind in individuals
+    )
     output.append("")
     return "\n".join(output)
 
@@ -86,6 +87,16 @@ def df_to_json(df):
         "Explanation Count",
         "Explanation Min",
         "Explanation Max",
+        "Answer Explanations",
+        "Complete Explanation Combination Count",
+        "Complete Explanation Min Axiom Count",
+        "Complete Explanation Max Axiom Count",
+        "Complete Explanation Min Primitive Tag Count",
+        "Complete Explanation Max Primitive Tag Count",
+        "Complete Explanation Min Distinct Non-Direct Tag Type Count",
+        "Complete Explanation Max Distinct Non-Direct Tag Type Count",
+        "Complete Explanation M Status",
+        "Legacy Explanation Fields",
     ]
 
     grouped = df.groupby(group_cols)
@@ -158,7 +169,7 @@ def load_explanations(df, dataset, hop):
         subject, predicate, _ = match.groups()
         return normalize_sparql(f"SELECT ?x WHERE {{ <{subject}> <{predicate}> ?x }}")
 
-    def aggregate_explanations(records):
+    def aggregate_explanations(records, gold_answers):
         records = [record for record in records if record]
         if not records:
             return None
@@ -184,12 +195,22 @@ def load_explanations(df, dataset, hop):
             if record.get("Explanation Max") is not None
         ]
 
+        answer_explanations, complete_metrics = build_answer_explanations(
+            gold_answers, records
+        )
         return {
             "Minimum Explanation": min_explanation,
             "Explanations": all_explanations,
             "Explanation Count": len(all_explanations),
             "Explanation Min": min(min_sizes) if min_sizes else None,
             "Explanation Max": max(max_sizes) if max_sizes else None,
+            "Answer Explanations": answer_explanations,
+            **complete_metrics,
+            "Legacy Explanation Fields": (
+                "Minimum Explanation, Explanations, Explanation Count, "
+                "Explanation Min, and Explanation Max are flattened legacy "
+                "fields and are not valid complete-OEQA complexity measures."
+            ),
         }
 
     for _, value in explanations.items():
@@ -202,6 +223,7 @@ def load_explanations(df, dataset, hop):
             "Explanation Count": value["explanationCount"],
             "Explanation Min": value["size"]["min"],
             "Explanation Max": value["size"]["max"],
+            "Source Answer": value.get("inferred", {}).get("object"),
         }
 
         for sparql_query in value.get("sparqlQueries", []):
@@ -233,6 +255,16 @@ def load_explanations(df, dataset, hop):
         "Explanation Count",
         "Explanation Min",
         "Explanation Max",
+        "Answer Explanations",
+        "Complete Explanation Combination Count",
+        "Complete Explanation Min Axiom Count",
+        "Complete Explanation Max Axiom Count",
+        "Complete Explanation Min Primitive Tag Count",
+        "Complete Explanation Max Primitive Tag Count",
+        "Complete Explanation Min Distinct Non-Direct Tag Type Count",
+        "Complete Explanation Max Distinct Non-Direct Tag Type Count",
+        "Complete Explanation M Status",
+        "Legacy Explanation Fields",
     ]
 
     def find_explanation(row):
@@ -242,11 +274,12 @@ def load_explanations(df, dataset, hop):
             return exact_match
         select_matches = select_query_lookup.get(normalized_query)
         if select_matches:
-            return aggregate_explanations(select_matches)
+            return aggregate_explanations(select_matches, row["Answer"])
         return task_lookup.get(row["Task ID"])
 
     explanation_df = df.apply(find_explanation, axis=1).apply(pd.Series)
     df = df.join(explanation_df)
+    df = df.drop(columns=["Source Answer"], errors="ignore")
     for col in explanation_cols:
         if col not in df.columns:
             df[col] = None

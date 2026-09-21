@@ -555,6 +555,10 @@ def main():
                 sparql_questions,
                 "--output_file",
                 sampled_questions,
+                "--dataset",
+                args.dataset,
+                "--hop",
+                hop,
                 "--test-size",
                 args.sampling_test_size,
             )

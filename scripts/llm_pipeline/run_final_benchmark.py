@@ -242,6 +242,34 @@ def flatten_final_benchmark(records):
                     "Explanation Count": qa.get("Explanation Count"),
                     "Explanation Min": qa.get("Explanation Min"),
                     "Explanation Max": qa.get("Explanation Max"),
+                    "Answer Explanations": qa.get("Answer Explanations"),
+                    "Complete Explanation Combination Count": qa.get(
+                        "Complete Explanation Combination Count"
+                    ),
+                    "Complete Explanation Min Axiom Count": qa.get(
+                        "Complete Explanation Min Axiom Count"
+                    ),
+                    "Complete Explanation Max Axiom Count": qa.get(
+                        "Complete Explanation Max Axiom Count"
+                    ),
+                    "Complete Explanation Min Primitive Tag Count": qa.get(
+                        "Complete Explanation Min Primitive Tag Count"
+                    ),
+                    "Complete Explanation Max Primitive Tag Count": qa.get(
+                        "Complete Explanation Max Primitive Tag Count"
+                    ),
+                    "Complete Explanation Min Distinct Non-Direct Tag Type Count": qa.get(
+                        "Complete Explanation Min Distinct Non-Direct Tag Type Count"
+                    ),
+                    "Complete Explanation Max Distinct Non-Direct Tag Type Count": qa.get(
+                        "Complete Explanation Max Distinct Non-Direct Tag Type Count"
+                    ),
+                    "Complete Explanation M Status": qa.get(
+                        "Complete Explanation M Status"
+                    ),
+                    "Legacy Explanation Fields": qa.get(
+                        "Legacy Explanation Fields"
+                    ),
                 }
             )
 

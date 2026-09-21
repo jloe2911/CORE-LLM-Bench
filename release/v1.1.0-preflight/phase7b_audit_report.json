@@ -1,0 +1,73 @@
+{
+  "benchmark_membership_or_content_changed": false,
+  "compatible": {
+    "groups": 435,
+    "groups_by_representation_and_class": {
+      "AR/B": 7,
+      "FS/D": 5,
+      "NL/C": 411,
+      "NL/D": 12
+    },
+    "overweights_aggregate_evaluation": true,
+    "rows": 1629,
+    "rows_by_representation_and_class": {
+      "AR/B": 14,
+      "FS/D": 10,
+      "NL/C": 1581,
+      "NL/D": 24
+    }
+  },
+  "default_confidence": {
+    "all_oeqa": true,
+    "answer_parsed_correctly": 25,
+    "checkpoint_truncated_answer_payloads": 18,
+    "complete_answer_payloads": 7,
+    "note": "saved v1.0 confidence was computed from the original full response before checkpoint serialization truncated long responses",
+    "reasons": {
+      "CONFIDENCE field absent in retained complete response": 5,
+      "response terminated after literal CONF; numeric confidence absent": 2,
+      "retained checkpoint response truncated to 500 characters before CONFIDENCE field": 18
+    },
+    "rows": 25,
+    "v1_0_fallback_rule_present": true
+  },
+  "impacted_strata_if_removed": {
+    "FamilyOWL|2hop|OEQA|Low": 5,
+    "FamilyOWL|2hop|OEQA|Medium": 2,
+    "OWL2Bench|1hop|BQA|Low": 4,
+    "OWL2Bench|1hop|BQA|Medium": 2,
+    "OWL2Bench|2hop|BQA|Low": 2,
+    "Pizza100|1hop|OEQA|High": 1,
+    "Pizza100|2hop|OEQA|High": 1,
+    "Pizza250|1hop|OEQA|High": 1,
+    "Pizza250|2hop|OEQA|High": 1
+  },
+  "incompatible": {
+    "groups": 9,
+    "groups_by_task_type": {
+      "BQA": 4,
+      "OEQA": 5
+    },
+    "requested_breakdown_mismatch": "artifacts contain 4 BQA groups and 5 OEQA groups, not 3 and 6",
+    "rows": 19,
+    "rows_by_task_type": {
+      "BQA": 8,
+      "OEQA": 11
+    }
+  },
+  "llm_or_api_calls_made": 0,
+  "local_or_systematic": "The 9 incompatible groups are local observed failures, but their causes are systematic generation-policy defects: collision-losing NL labels, no post-render uniqueness gate, and cross-dataset scope omission. The 411 compatible NL representational-collapse groups show the mechanism is not confined to the fatal rows.",
+  "membership_impact_if_all_19_fatal_rows_removed": {
+    "BQA_pairs": 3012,
+    "BQA_rows": 6024,
+    "OEQA_rows": 3005,
+    "ids_require_deterministic_rematerialization": true,
+    "replacement_recommendation": "do not auto-replace; allow the natural total to decrease unless a separately approved same-stratum resampling policy is adopted",
+    "total": 9029
+  },
+  "mixed_reuse_recommendation": "Option 3: rerun the complete v1.1 matrix under one newly frozen request and routing configuration; retain historical exact-input outputs as provenance/sensitivity data, not primary mixed-condition observations",
+  "phase": "7B",
+  "recommended_scope": "Option 2: remove/deduplicate affected semantic questions; no broad resampling",
+  "status": "audit_complete_stop_for_scientific_review",
+  "v1_0_files_modified": false
+}

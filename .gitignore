@@ -69,6 +69,17 @@ tests/
 tests/*
 !tests/test_sageqa_answer_metric_migration.py
 !tests/test_release_tools.py
+!tests/test_benchmark_corrections.py
+!tests/test_oeqa_explanations.py
+!tests/test_ar_abstraction.py
+!tests/test_phase4_symbolic_audit.py
+!tests/test_phase5_membership.py
+!tests/test_phase6_materialization.py
+!tests/test_phase7a_preflight.py
+!tests/test_phase7b_duplicate_audit.py
+!tests/test_phase7c_collision_audit.py
+!tests/test_phase7d_final_freeze.py
+!tests/test_phase7e_qwen_alibaba.py
 
 # Locally prepared release payloads (reproducible via scripts; do not commit copies).
 release/huggingface/*.parquet
@@ -81,3 +92,13 @@ release/zenodo/public-safe/
 release/zenodo/CORE-LLM-Bench-v*.zip
 local_sources/
 /tmp*/
+/.tmp/
+
+# v1.1 professor-review branch: keep oversized generated artifacts local.
+/release/v1.1.0-staging/benchmark/FamilyOWL_2hop.json
+/release/v1.1.0-phase7c-audit/core_llm_bench_v1_1_phase7c.parquet
+
+# Provisional provider responses are local experiment records, not Git artifacts.
+/release/v1.1.0-phase7d/responses/
+/release/v1.1.0-phase7e/responses/
+/release/v1.1.0-phase7e/qwen_alibaba_canary.json

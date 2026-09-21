@@ -1,0 +1,294 @@
+{
+  "config_version": "core-llm-bench-v1.1-phase7c-proposed-config-1",
+  "configuration_evidence": {
+    "checked_utc_date": "2026-09-21",
+    "gemini_model": "https://openrouter.ai/google/gemini-2.5-flash-lite",
+    "openai_chat_parameters": "https://platform.openai.com/docs/api-reference/chat/create",
+    "openai_model": "https://developers.openai.com/api/docs/models/gpt-5-mini",
+    "openrouter_routing": "https://openrouter.ai/docs/guides/routing/provider-selection",
+    "qwen_model": "https://openrouter.ai/qwen/qwen3-30b-a3b-instruct-2507"
+  },
+  "configuration_uncertainties": [
+    {
+      "blocking": false,
+      "detail": "temperature and top_p remain omitted: retained history did not send them and model-specific support with reasoning_effort=low was not established. Presence/frequency penalties are explicitly frozen at their API defaults of 0.0.",
+      "id": "gpt5-sampling-controls"
+    },
+    {
+      "blocking": true,
+      "detail": "Immediately before execution, verify without inference that the proposed OpenRouter endpoint tags still serve the exact model IDs and support every requested parameter; provider availability can change.",
+      "id": "provider-endpoint-availability-preflight"
+    },
+    {
+      "blocking": true,
+      "detail": "The exact historically verified gpt-5-mini-2025-08-07 snapshot is now marked deprecated in the official model catalog. Scientific review must choose between historical identity and a newly frozen replacement before execution.",
+      "id": "historical-gpt5-mini-snapshot-deprecated"
+    }
+  ],
+  "execution_authorized": false,
+  "execution_design": {
+    "batching": "one manifest row per submitted request",
+    "checkpoint_frequency": "after every completed provider response",
+    "recommended_max_workers": 1,
+    "request_fingerprint": "sha256(canonical JSON of input_hash, config_version, model configuration)",
+    "sole_work_source": "release/v1.1.0-staging/pending_model_runs.csv",
+    "technical_retry_policy": {
+      "backoff_seconds": [
+        2,
+        4,
+        8
+      ],
+      "maximum_retries_after_initial_attempt": 3,
+      "retryable": [
+        "timeout",
+        "rate_limit",
+        "provider_transient_error",
+        "empty_response"
+      ],
+      "terminal_without_resampling": [
+        "nonempty_malformed_structured_output",
+        "valid_model_answer"
+      ]
+    }
+  },
+  "historical_evidence": {
+    "recorded_field_values": {
+      "batch_size": {
+        "24": 12,
+        "5": 36
+      },
+      "checkpoint_frequency": {
+        "10": 6,
+        "20": 6,
+        "25": 12,
+        "5": 12,
+        "50": 12
+      },
+      "limit_questions": {
+        "null": 48
+      },
+      "max_api_calls": {
+        "0": 12,
+        "null": 36
+      },
+      "max_workers": {
+        "1": 36,
+        "6": 12
+      }
+    },
+    "recorded_provider_model_identifiers": [
+      {
+        "model_id": "gpt-5-mini-2025-08-07",
+        "provider": "openai"
+      },
+      {
+        "model_id": "google/gemini-2.5-flash-lite",
+        "provider": "openrouter"
+      },
+      {
+        "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "openrouter"
+      }
+    ],
+    "run_config_files_examined": 48,
+    "source_root": "data/output/final_benchmark_llm_results"
+  },
+  "models": {
+    "GPT-5 mini": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "frequency_penalty": 0.0,
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_completion_tokens",
+      "model_id": "gpt-5-mini-2025-08-07",
+      "parameter_note": "temperature and top_p were omitted, not explicitly set",
+      "presence_penalty": 0.0,
+      "provider": "OpenAI",
+      "provider_routing": {
+        "endpoint": "https://api.openai.com/v1",
+        "fallback": false
+      },
+      "provider_specific_parameters": {},
+      "reasoning_effort": "low",
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "retry_policy": {
+        "backoff_seconds": [
+          2,
+          4,
+          8
+        ],
+        "maximum_retries_after_initial_attempt": 3,
+        "retryable": [
+          "timeout",
+          "rate_limit",
+          "provider_transient_error",
+          "empty_response"
+        ],
+        "terminal_without_resampling": [
+          "nonempty_malformed_structured_output",
+          "valid_model_answer"
+        ]
+      },
+      "runtime": "OpenAI Python client, Chat Completions API",
+      "seed": 0,
+      "seed_control": "best-effort deterministic sampling; API does not guarantee exact determinism",
+      "system_prompt": null,
+      "temperature": null,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": null,
+      "user_prompt_template_version": "api_calls.create_context_specific_prompt@24c4520",
+      "verbosity": "low"
+    },
+    "Gemini 2.5 Flash-Lite": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "frequency_penalty": null,
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_tokens",
+      "model_id": "google/gemini-2.5-flash-lite",
+      "presence_penalty": null,
+      "provider": "OpenRouter",
+      "provider_routing": {
+        "allow_fallbacks": false,
+        "data_collection": "deny",
+        "order": [
+          "google-ai-studio"
+        ],
+        "require_parameters": true
+      },
+      "provider_specific_parameters": {},
+      "reasoning_or_thinking": {
+        "enabled": false
+      },
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "retry_policy": {
+        "backoff_seconds": [
+          2,
+          4,
+          8
+        ],
+        "maximum_retries_after_initial_attempt": 3,
+        "retryable": [
+          "timeout",
+          "rate_limit",
+          "provider_transient_error",
+          "empty_response"
+        ],
+        "terminal_without_resampling": [
+          "nonempty_malformed_structured_output",
+          "valid_model_answer"
+        ]
+      },
+      "runtime": "OpenAI Python client against https://openrouter.ai/api/v1",
+      "seed": 0,
+      "seed_control": "supported by the model route; deterministic sampling is best-effort",
+      "system_prompt": null,
+      "temperature": 0.0,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": 0.9,
+      "unsupported_setting_note": "The model route does not advertise presence/frequency penalties; they are not sent.",
+      "user_prompt_template_version": "api_calls.create_context_specific_prompt@24c4520"
+    },
+    "Qwen3-30B-A3B-Instruct": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "frequency_penalty": 0.1,
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_tokens",
+      "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "presence_penalty": 0.0,
+      "provider": "OpenRouter",
+      "provider_routing": {
+        "allow_fallbacks": false,
+        "data_collection": "deny",
+        "order": [
+          "dekallm"
+        ],
+        "require_parameters": true
+      },
+      "provider_specific_parameters": {
+        "frequency_penalty": 0.1,
+        "presence_penalty": 0.0
+      },
+      "reasoning_or_thinking": "not applicable; exact Instruct-2507 model operates in non-thinking mode",
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "retry_policy": {
+        "backoff_seconds": [
+          2,
+          4,
+          8
+        ],
+        "maximum_retries_after_initial_attempt": 3,
+        "retryable": [
+          "timeout",
+          "rate_limit",
+          "provider_transient_error",
+          "empty_response"
+        ],
+        "terminal_without_resampling": [
+          "nonempty_malformed_structured_output",
+          "valid_model_answer"
+        ]
+      },
+      "runtime": "OpenAI Python client against https://openrouter.ai/api/v1",
+      "seed": 0,
+      "seed_control": "supported by the proposed DekaLLM endpoint; deterministic sampling is best-effort",
+      "system_prompt": null,
+      "temperature": 0.0,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": 0.9,
+      "user_prompt_template_version": "api_calls.create_context_specific_prompt@24c4520"
+    }
+  },
+  "phase6_commit": "7d1cf3b",
+  "primary_experiment_policy": {
+    "expected_requests": 81432,
+    "historical_v1_0_predictions": "provenance and sensitivity only; never mixed into primary v1.1 results",
+    "models": 3,
+    "policy": "complete fresh rerun only",
+    "representations_per_row": 3,
+    "semantic_rows": 9048
+  },
+  "prompt_and_response_contract": {
+    "current_parser_contract": {
+      "answer": "ANSWER field preferred; first-line fallback retained from v1.0 evaluator",
+      "confidence": "CONFIDENCE field preferred; absent or invalid values default to 0.5",
+      "extra_structured_metadata": false
+    },
+    "message_roles": [
+      "user"
+    ],
+    "requested_text_schema": {
+      "BQA": [
+        "ANSWER: TRUE|FALSE",
+        "CONFIDENCE: float in [0,1]"
+      ],
+      "OEQA": [
+        "ANSWER: local names, semicolon-separated",
+        "CONFIDENCE: float in [0,1]"
+      ],
+      "explanation_requested": false
+    },
+    "structured_output": null,
+    "system_prompt": null,
+    "system_prompt_policy": "explicitly no system message",
+    "user_prompt_template_version": "api_calls.create_context_specific_prompt@24c4520"
+  },
+  "provider_routing_policy": {
+    "OpenAI": {
+      "endpoint": "https://api.openai.com/v1",
+      "fallback": false
+    },
+    "OpenRouter": {
+      "allow_fallbacks": false,
+      "data_collection": "deny",
+      "model_fallbacks": [],
+      "require_parameters": true
+    }
+  },
+  "ready_for_execution": false,
+  "status": "proposed_pending_scientific_and_provider-routing_review"
+}

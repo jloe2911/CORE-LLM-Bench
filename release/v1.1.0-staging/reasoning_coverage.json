@@ -1,0 +1,17 @@
+{
+  "m_is_metadata_not_primitive": true,
+  "m_status_question_counts": {
+    "always": 339,
+    "never": 7518,
+    "selection-dependent": 1191
+  },
+  "primitive_reasoning_type_question_counts": {
+    "D": 9048,
+    "H": 3281,
+    "I": 2410,
+    "N": 173,
+    "R": 2098,
+    "S": 56,
+    "T": 1
+  }
+}

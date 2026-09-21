@@ -1,0 +1,18 @@
+parameter,scope,status,value,evidence
+model identifier,model output,VERIFIED,gpt-5-mini-2025-08-07; google/gemini-2.5-flash-lite; qwen/qwen3-30b-a3b-instruct-2507,48 run_config.json files and source-run directory names
+maximum output tokens,model output,VERIFIED,1024 (max_completion_tokens for GPT-5 mini; max_tokens for OpenRouter),co-retained scripts/llm_pipeline/api_calls.py get_model_params
+temperature,model output,VERIFIED,OpenRouter 0.0; GPT-5 mini omitted,co-retained request-construction source
+GPT-5 mini effective temperature,model output,IMPLIED BY CLIENT DEFAULT AT THE TIME,no explicit numeric value,parameter omitted from request dictionary
+top_p,model output,VERIFIED,OpenRouter 0.9; GPT-5 mini omitted,co-retained request-construction source
+GPT-5 mini effective top_p,model output,IMPLIED BY CLIENT DEFAULT AT THE TIME,no explicit numeric value,parameter omitted from request dictionary
+seed,model output,VERIFIED,not sent for any model,co-retained request-construction source
+effective random seed,model output,UNKNOWN,provider-side behavior not persisted,no saved request/response metadata field
+GPT-5 reasoning_effort,model output,VERIFIED,low,co-retained request-construction source
+GPT-5 verbosity,model output,VERIFIED,low,co-retained request-construction source
+Gemini/Qwen thinking setting sent,model output,VERIFIED,none,co-retained request-construction source
+Gemini/Qwen effective thinking default,model output,UNKNOWN,provider/model default not persisted,no saved request/response metadata field
+OpenRouter penalties,model output,VERIFIED,presence_penalty=0.0; frequency_penalty=0.1,co-retained request-construction source
+OpenRouter routed backend/provider revision,model output,UNKNOWN,not persisted,checkpoint rows contain neither routed provider nor returned model identifier
+request timeout,operational,VERIFIED,30 seconds,co-retained process_single_model_request source
+automatic retry,operational,VERIFIED,none in v1.0 process_single_model_request,one chat.completions.create call inside one try/except
+concurrency/batch/checkpoint,operational,VERIFIED,run-specific; see phase7b_historical_run_configs.csv,48 retained run_config.json files

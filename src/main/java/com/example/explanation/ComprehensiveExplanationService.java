@@ -119,7 +119,8 @@ public class ComprehensiveExplanationService {
     private void addDomainTraceBackPaths(OWLNamedIndividual individual, OWLClass clazz, Set<ExplanationPath> allPaths) {
         try {
             // Find domain axioms for the target class
-            for (OWLObjectPropertyDomainAxiom domainAxiom : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN)) {
+            for (OWLObjectPropertyDomainAxiom domainAxiom : sortedByString(
+                    ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN))) {
                 if (domainAxiom.getDomain().equals(clazz)) {
                     OWLObjectProperty domainProperty = domainAxiom.getProperty().asOWLObjectProperty();
 
@@ -166,7 +167,7 @@ public class ComprehensiveExplanationService {
         try {
             // Strategy 1: Check if individual directly has this property asserted
             Set<OWLNamedIndividual> directValues = reasoner.getObjectPropertyValues(individual, targetProperty).getFlattened();
-            for (OWLNamedIndividual value : directValues) {
+            for (OWLNamedIndividual value : sortedByString(directValues)) {
                 OWLObjectPropertyAssertionAxiom directAssertion = dataFactory.getOWLObjectPropertyAssertionAxiom(targetProperty, individual, value);
                 if (ontology.containsAxiom(directAssertion)) {
                     traceChain.add(directAssertion);
@@ -175,7 +176,8 @@ public class ComprehensiveExplanationService {
             }
 
             // Strategy 2: Check for sub-property reasoning
-            for (OWLSubObjectPropertyOfAxiom subPropAxiom : ontology.getObjectSubPropertyAxiomsForSuperProperty(targetProperty)) {
+            for (OWLSubObjectPropertyOfAxiom subPropAxiom : sortedByString(
+                    ontology.getObjectSubPropertyAxiomsForSuperProperty(targetProperty))) {
                 OWLObjectProperty subProperty = subPropAxiom.getSubProperty().asOWLObjectProperty();
 
                 // Recursively trace the sub-property
@@ -188,13 +190,14 @@ public class ComprehensiveExplanationService {
             }
 
             // Strategy 3: Check for inverse property reasoning
-            for (OWLInverseObjectPropertiesAxiom invAxiom : ontology.getInverseObjectPropertyAxioms(targetProperty)) {
-                for (OWLObjectPropertyExpression invPropExpr : invAxiom.getProperties()) {
+            for (OWLInverseObjectPropertiesAxiom invAxiom : sortedByString(
+                    ontology.getInverseObjectPropertyAxioms(targetProperty))) {
+                for (OWLObjectPropertyExpression invPropExpr : sortedByString(invAxiom.getProperties())) {
                     if (!invPropExpr.equals(targetProperty) && !invPropExpr.isAnonymous()) {
                         OWLObjectProperty inverseProperty = invPropExpr.asOWLObjectProperty();
 
                         // Check if someone has the inverse property pointing to our individual (asserted)
-                        for (OWLNamedIndividual other : ontology.getIndividualsInSignature()) {
+                        for (OWLNamedIndividual other : sortedByString(ontology.getIndividualsInSignature())) {
                             OWLObjectPropertyAssertionAxiom invAssertion = dataFactory.getOWLObjectPropertyAssertionAxiom(inverseProperty, other, individual);
                             if (ontology.containsAxiom(invAssertion)) {
                                 traceChain.add(invAssertion);
@@ -215,7 +218,8 @@ public class ComprehensiveExplanationService {
             }
 
             // Strategy 4: Check for property chain reasoning
-            for (OWLSubPropertyChainOfAxiom chainAxiom : ontology.getAxioms(AxiomType.SUB_PROPERTY_CHAIN_OF)) {
+            for (OWLSubPropertyChainOfAxiom chainAxiom : sortedByString(
+                    ontology.getAxioms(AxiomType.SUB_PROPERTY_CHAIN_OF))) {
                 if (chainAxiom.getSuperProperty().equals(targetProperty)) {
                     List<OWLObjectPropertyExpression> chain = chainAxiom.getPropertyChain();
 
@@ -225,12 +229,12 @@ public class ComprehensiveExplanationService {
 
                         // Find asserted facts for the property chain
                         Set<OWLNamedIndividual> intermediates = reasoner.getObjectPropertyValues(individual, prop1).getFlattened();
-                        for (OWLNamedIndividual intermediate : intermediates) {
+                        for (OWLNamedIndividual intermediate : sortedByString(intermediates)) {
                             // Check if first step is asserted
                             OWLObjectPropertyAssertionAxiom step1Assertion = dataFactory.getOWLObjectPropertyAssertionAxiom(prop1, individual, intermediate);
                             Set<OWLNamedIndividual> targets = reasoner.getObjectPropertyValues(intermediate, prop2).getFlattened();
 
-                            for (OWLNamedIndividual target : targets) {
+                            for (OWLNamedIndividual target : sortedByString(targets)) {
                                 // Check if second step is asserted
                                 OWLObjectPropertyAssertionAxiom step2Assertion = dataFactory.getOWLObjectPropertyAssertionAxiom(prop2, intermediate, target);
 
@@ -261,7 +265,7 @@ public class ComprehensiveExplanationService {
 
         try {
             // Find who has this property pointing to our individual
-            for (OWLNamedIndividual other : ontology.getIndividualsInSignature()) {
+            for (OWLNamedIndividual other : sortedByString(ontology.getIndividualsInSignature())) {
                 if (reasoner.getObjectPropertyValues(other, property).getFlattened().contains(individual)) {
                     OWLObjectPropertyAssertionAxiom assertion = dataFactory.getOWLObjectPropertyAssertionAxiom(property, other, individual);
                     if (ontology.containsAxiom(assertion)) {
@@ -283,12 +287,13 @@ public class ComprehensiveExplanationService {
     private void addRangeTraceBackPaths(OWLNamedIndividual individual, OWLClass clazz, Set<ExplanationPath> allPaths) {
         try {
             // Find range axioms for the target class
-            for (OWLObjectPropertyRangeAxiom rangeAxiom : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_RANGE)) {
+            for (OWLObjectPropertyRangeAxiom rangeAxiom : sortedByString(
+                    ontology.getAxioms(AxiomType.OBJECT_PROPERTY_RANGE))) {
                 if (rangeAxiom.getRange().equals(clazz)) {
                     OWLObjectProperty rangeProperty = rangeAxiom.getProperty().asOWLObjectProperty();
 
                     // Find who has this property pointing to our individual (asserted)
-                    for (OWLNamedIndividual subject : ontology.getIndividualsInSignature()) {
+                    for (OWLNamedIndividual subject : sortedByString(ontology.getIndividualsInSignature())) {
                         OWLObjectPropertyAssertionAxiom assertion = dataFactory.getOWLObjectPropertyAssertionAxiom(rangeProperty, subject, individual);
                         if (ontology.containsAxiom(assertion)) {
                             List<OWLAxiom> completeChain = Arrays.asList(assertion, rangeAxiom);
@@ -330,7 +335,7 @@ public class ComprehensiveExplanationService {
                     .map(expr -> expr.asOWLClass())
                     .collect(Collectors.toSet());
 
-            for (OWLClass assertedType : assertedTypes) {
+            for (OWLClass assertedType : sortedByString(assertedTypes)) {
                 if (!assertedType.equals(clazz) && !assertedType.isOWLThing()) {
                     // Find the complete subclass chain from asserted type to target
                     List<OWLClass> subclassChain = findCompleteSubclassChain(assertedType, clazz);
@@ -405,7 +410,7 @@ public class ComprehensiveExplanationService {
 
             // Continue searching through superclasses
             Set<OWLSubClassOfAxiom> superAxioms = ontology.getSubClassAxiomsForSubClass(currentClass);
-            for (OWLSubClassOfAxiom superAxiom : superAxioms) {
+            for (OWLSubClassOfAxiom superAxiom : sortedByString(superAxioms)) {
                 OWLClassExpression superExpr = superAxiom.getSuperClass();
                 if (!superExpr.isAnonymous()) {
                     OWLClass superClass = superExpr.asOWLClass();
@@ -421,11 +426,17 @@ public class ComprehensiveExplanationService {
         return new ArrayList<>(); // No path found
     }
 
+    private static <T> List<T> sortedByString(Collection<T> values) {
+        return values.stream()
+                .sorted(Comparator.comparing(Object::toString))
+                .collect(Collectors.toList());
+    }
+
     /**
      * Remove duplicate explanation paths based on their logical content
      */
     private Set<ExplanationPath> deduplicatePaths(Set<ExplanationPath> allPaths) {
-        Map<String, ExplanationPath> uniquePaths = new HashMap<>();
+        Map<String, ExplanationPath> uniquePaths = new TreeMap<>();
 
         for (ExplanationPath path : allPaths) {
             String signature = createPathSignature(path);
@@ -435,9 +446,7 @@ public class ComprehensiveExplanationService {
                 ExplanationPath existing = uniquePaths.get(signature);
 
                 // Prefer paths with more detailed descriptions or more axioms
-                if (path.getDescription().length() > existing.getDescription().length() ||
-                        (path.getDescription().length() == existing.getDescription().length() &&
-                                path.getAxioms().size() > existing.getAxioms().size())) {
+                if (compareDuplicateRepresentatives(path, existing) < 0) {
                     uniquePaths.put(signature, path);
                 }
             } else {
@@ -448,7 +457,21 @@ public class ComprehensiveExplanationService {
         LOGGER.debug("Deduplicated {} paths down to {} unique paths",
                 allPaths.size(), uniquePaths.size());
 
-        return new HashSet<>(uniquePaths.values());
+        return new LinkedHashSet<>(uniquePaths.values());
+    }
+
+    private int compareDuplicateRepresentatives(ExplanationPath left, ExplanationPath right) {
+        Comparator<ExplanationPath> preference = Comparator
+                .comparingInt((ExplanationPath path) -> -path.getDescription().length())
+                .thenComparingInt(path -> -path.getAxioms().size())
+                .thenComparing(this::pathPresentationIdentity);
+        return preference.compare(left, right);
+    }
+
+    private String pathPresentationIdentity(ExplanationPath path) {
+        return path.getDescription() + "|" + path.getJustifications().stream()
+                .sorted()
+                .collect(Collectors.joining("|"));
     }
 
     /**
@@ -619,7 +642,9 @@ public class ComprehensiveExplanationService {
         return paths.stream()
                 .sorted(Comparator
                         .comparingInt(ExplanationPath::getComplexity)
-                        .thenComparing(ExplanationPath::getDescription))
+                        .thenComparing(ExplanationPath::getDescription)
+                        .thenComparing(this::createPathSignature)
+                        .thenComparing(this::pathPresentationIdentity))
                 .limit(maxPaths)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }

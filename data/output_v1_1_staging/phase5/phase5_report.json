@@ -1,0 +1,527 @@
+{
+  "bqa_pair_audit": {
+    "paired_groups": 3016,
+    "pizza_domainconcept_target_count": 0,
+    "source_unpaired_negatives": 0,
+    "source_unpaired_positives": 0,
+    "unpaired_negatives": 0,
+    "unpaired_positives": 0
+  },
+  "estimated_remaining_model_calls": 68686,
+  "final_complexity_bins": {
+    "BQA": {
+      "High": "3+",
+      "Low": "1",
+      "Medium": "2"
+    },
+    "OEQA": {
+      "High": "6+",
+      "Low": "1-3",
+      "Medium": "4-5"
+    }
+  },
+  "membership": {
+    "complexity_by_dataset_hop_task": {
+      "Family/1hop/BQA": {
+        "High": {
+          "count": 90,
+          "percentage": 7.177033
+        },
+        "Low": {
+          "count": 300,
+          "percentage": 23.923445
+        },
+        "Medium": {
+          "count": 864,
+          "percentage": 68.899522
+        }
+      },
+      "Family/1hop/OEQA": {
+        "High": {
+          "count": 70,
+          "percentage": 11.164274
+        },
+        "Low": {
+          "count": 454,
+          "percentage": 72.408293
+        },
+        "Medium": {
+          "count": 103,
+          "percentage": 16.427432
+        }
+      },
+      "Family/2hop/BQA": {
+        "High": {
+          "count": 90,
+          "percentage": 7.177033
+        },
+        "Low": {
+          "count": 300,
+          "percentage": 23.923445
+        },
+        "Medium": {
+          "count": 864,
+          "percentage": 68.899522
+        }
+      },
+      "Family/2hop/OEQA": {
+        "High": {
+          "count": 70,
+          "percentage": 11.164274
+        },
+        "Low": {
+          "count": 454,
+          "percentage": 72.408293
+        },
+        "Medium": {
+          "count": 103,
+          "percentage": 16.427432
+        }
+      },
+      "OWL2Bench/1hop/BQA": {
+        "High": {
+          "count": 4,
+          "percentage": 0.408998
+        },
+        "Low": {
+          "count": 532,
+          "percentage": 54.396728
+        },
+        "Medium": {
+          "count": 442,
+          "percentage": 45.194274
+        }
+      },
+      "OWL2Bench/1hop/OEQA": {
+        "High": {
+          "count": 48,
+          "percentage": 9.815951
+        },
+        "Low": {
+          "count": 351,
+          "percentage": 71.779141
+        },
+        "Medium": {
+          "count": 90,
+          "percentage": 18.404908
+        }
+      },
+      "OWL2Bench/2hop/BQA": {
+        "High": {
+          "count": 82,
+          "percentage": 7.721281
+        },
+        "Low": {
+          "count": 534,
+          "percentage": 50.282486
+        },
+        "Medium": {
+          "count": 446,
+          "percentage": 41.996234
+        }
+      },
+      "OWL2Bench/2hop/OEQA": {
+        "High": {
+          "count": 50,
+          "percentage": 9.416196
+        },
+        "Low": {
+          "count": 391,
+          "percentage": 73.634652
+        },
+        "Medium": {
+          "count": 90,
+          "percentage": 16.949153
+        }
+      },
+      "Pizza100/1hop/BQA": {
+        "High": {
+          "count": 112,
+          "percentage": 33.939394
+        },
+        "Low": {
+          "count": 98,
+          "percentage": 29.69697
+        },
+        "Medium": {
+          "count": 120,
+          "percentage": 36.363636
+        }
+      },
+      "Pizza100/1hop/OEQA": {
+        "High": {
+          "count": 59,
+          "percentage": 35.757576
+        },
+        "Low": {
+          "count": 23,
+          "percentage": 13.939394
+        },
+        "Medium": {
+          "count": 83,
+          "percentage": 50.30303
+        }
+      },
+      "Pizza100/2hop/BQA": {
+        "High": {
+          "count": 112,
+          "percentage": 33.939394
+        },
+        "Low": {
+          "count": 98,
+          "percentage": 29.69697
+        },
+        "Medium": {
+          "count": 120,
+          "percentage": 36.363636
+        }
+      },
+      "Pizza100/2hop/OEQA": {
+        "High": {
+          "count": 58,
+          "percentage": 35.151515
+        },
+        "Low": {
+          "count": 23,
+          "percentage": 13.939394
+        },
+        "Medium": {
+          "count": 84,
+          "percentage": 50.909091
+        }
+      },
+      "Pizza250/1hop/BQA": {
+        "High": {
+          "count": 140,
+          "percentage": 33.980583
+        },
+        "Low": {
+          "count": 126,
+          "percentage": 30.582524
+        },
+        "Medium": {
+          "count": 146,
+          "percentage": 35.436893
+        }
+      },
+      "Pizza250/1hop/OEQA": {
+        "High": {
+          "count": 86,
+          "percentage": 41.747573
+        },
+        "Low": {
+          "count": 21,
+          "percentage": 10.194175
+        },
+        "Medium": {
+          "count": 99,
+          "percentage": 48.058252
+        }
+      },
+      "Pizza250/2hop/BQA": {
+        "High": {
+          "count": 140,
+          "percentage": 33.980583
+        },
+        "Low": {
+          "count": 128,
+          "percentage": 31.067961
+        },
+        "Medium": {
+          "count": 144,
+          "percentage": 34.951456
+        }
+      },
+      "Pizza250/2hop/OEQA": {
+        "High": {
+          "count": 86,
+          "percentage": 41.747573
+        },
+        "Low": {
+          "count": 21,
+          "percentage": 10.194175
+        },
+        "Medium": {
+          "count": 99,
+          "percentage": 48.058252
+        }
+      }
+    },
+    "complexity_by_task": {
+      "BQA": {
+        "High": {
+          "count": 770,
+          "percentage": 12.765252
+        },
+        "Low": {
+          "count": 2116,
+          "percentage": 35.079576
+        },
+        "Medium": {
+          "count": 3146,
+          "percentage": 52.155172
+        }
+      },
+      "OEQA": {
+        "High": {
+          "count": 527,
+          "percentage": 17.473475
+        },
+        "Low": {
+          "count": 1738,
+          "percentage": 57.625995
+        },
+        "Medium": {
+          "count": 751,
+          "percentage": 24.900531
+        }
+      }
+    },
+    "per_dataset_hop": {
+      "Family/1hop": {
+        "BQA_FALSE": 627,
+        "BQA_TRUE": 627,
+        "BQA_groups": 627,
+        "BQA_rows": 1254,
+        "OEQA_rows": 627,
+        "total_rows": 1881
+      },
+      "Family/2hop": {
+        "BQA_FALSE": 627,
+        "BQA_TRUE": 627,
+        "BQA_groups": 627,
+        "BQA_rows": 1254,
+        "OEQA_rows": 627,
+        "total_rows": 1881
+      },
+      "OWL2Bench/1hop": {
+        "BQA_FALSE": 489,
+        "BQA_TRUE": 489,
+        "BQA_groups": 489,
+        "BQA_rows": 978,
+        "OEQA_rows": 489,
+        "total_rows": 1467
+      },
+      "OWL2Bench/2hop": {
+        "BQA_FALSE": 531,
+        "BQA_TRUE": 531,
+        "BQA_groups": 531,
+        "BQA_rows": 1062,
+        "OEQA_rows": 531,
+        "total_rows": 1593
+      },
+      "Pizza100/1hop": {
+        "BQA_FALSE": 165,
+        "BQA_TRUE": 165,
+        "BQA_groups": 165,
+        "BQA_rows": 330,
+        "OEQA_rows": 165,
+        "total_rows": 495
+      },
+      "Pizza100/2hop": {
+        "BQA_FALSE": 165,
+        "BQA_TRUE": 165,
+        "BQA_groups": 165,
+        "BQA_rows": 330,
+        "OEQA_rows": 165,
+        "total_rows": 495
+      },
+      "Pizza250/1hop": {
+        "BQA_FALSE": 206,
+        "BQA_TRUE": 206,
+        "BQA_groups": 206,
+        "BQA_rows": 412,
+        "OEQA_rows": 206,
+        "total_rows": 618
+      },
+      "Pizza250/2hop": {
+        "BQA_FALSE": 206,
+        "BQA_TRUE": 206,
+        "BQA_groups": 206,
+        "BQA_rows": 412,
+        "OEQA_rows": 206,
+        "total_rows": 618
+      }
+    },
+    "total_rows": 9048
+  },
+  "phase": 5,
+  "prediction_reuse": {
+    "GPT-5 mini": {
+      "AR": {
+        "rerun required": 9048
+      },
+      "FS": {
+        "rerun required": 6922,
+        "reusable prediction available": 2126
+      },
+      "NL": {
+        "rerun required": 6925,
+        "reusable prediction available": 2123
+      }
+    },
+    "Gemini 2.5 Flash-Lite": {
+      "AR": {
+        "rerun required": 9048
+      },
+      "FS": {
+        "rerun required": 6918,
+        "reusable prediction available": 2130
+      },
+      "NL": {
+        "rerun required": 6918,
+        "reusable prediction available": 2130
+      }
+    },
+    "Qwen3-30B-A3B-Instruct": {
+      "AR": {
+        "rerun required": 9048
+      },
+      "FS": {
+        "rerun required": 6930,
+        "reusable prediction available": 2118
+      },
+      "NL": {
+        "rerun required": 6929,
+        "reusable prediction available": 2119
+      }
+    }
+  },
+  "primary_complexity": "minimum complete primitive-tag count",
+  "prohibitions_confirmed": {
+    "final_release_created": false,
+    "llm_or_api_calls": false,
+    "phase5_committed": false,
+    "sequential_public_ids_assigned": false,
+    "v1_0_artifacts_written": false
+  },
+  "retained_byte_identity": {
+    "fs_context_byte_identical": {
+      "identical": 2130
+    },
+    "fs_query_byte_identical": {
+      "identical": 2130
+    },
+    "gold_answer_byte_identical": {
+      "identical": 2130
+    },
+    "nl_context_byte_identical": {
+      "identical": 2130
+    },
+    "nl_question_byte_identical": {
+      "identical": 2130
+    }
+  },
+  "sampling": {
+    "accepted_audit_sparse_abox_complexity_pairs": {
+      "by_dataset_hop": {
+        "Family/1hop": 0,
+        "Family/2hop": 0,
+        "OWL2Bench/1hop": 6,
+        "OWL2Bench/2hop": 3,
+        "Pizza100/1hop": 7,
+        "Pizza100/2hop": 7,
+        "Pizza250/1hop": 9,
+        "Pizza250/2hop": 8
+      },
+      "count": 40,
+      "note": "This reproduces the accepted task-collapsed ABox-bin x complexity-bin audit. Required fallback status is assigned after adding task to the full stratum, so its eligible-group count is larger."
+    },
+    "benchmark_fraction": 0.25,
+    "eligible_group_mode_counts": {
+      "complexity-fallback": 140,
+      "deterministic-singleton-fallback": 2,
+      "normal-stratified": 23972
+    },
+    "fallback_algorithm": "Within each dataset/hop/task partition, ABox-bin x complexity-bin strata of size >=2 are stratified normally. Groups in singleton combined strata are pooled only by the same task and complexity bin. Fallback pools of size >=2 are stratified; remaining singleton pools are ranked by SHA-256('42|' + canonical group key) and assigned to the benchmark only as needed to minimize absolute deviation from round-half-up(0.25 * partition groups). Exact half-count ties round toward the benchmark. Complexity bins never change.",
+    "random_state": 42,
+    "selected_group_mode_counts": {
+      "complexity-fallback": 33,
+      "normal-stratified": 5999
+    }
+  },
+  "scientific_ambiguities": [],
+  "status": "staged-for-scientific-review",
+  "v1_comparison": {
+    "Family/1hop/BQA": {
+      "new": 954,
+      "removed": 972,
+      "retained": 300
+    },
+    "Family/1hop/OEQA": {
+      "new": 470,
+      "removed": 451,
+      "retained": 157
+    },
+    "Family/2hop/BQA": {
+      "new": 954,
+      "removed": 972,
+      "retained": 300
+    },
+    "Family/2hop/OEQA": {
+      "new": 461,
+      "removed": 442,
+      "retained": 166
+    },
+    "OWL2Bench/1hop/BQA": {
+      "new": 754,
+      "removed": 733,
+      "retained": 224
+    },
+    "OWL2Bench/1hop/OEQA": {
+      "new": 365,
+      "removed": 385,
+      "retained": 124
+    },
+    "OWL2Bench/2hop/BQA": {
+      "new": 813,
+      "removed": 795,
+      "retained": 249
+    },
+    "OWL2Bench/2hop/OEQA": {
+      "new": 399,
+      "removed": 414,
+      "retained": 132
+    },
+    "Pizza100/1hop/BQA": {
+      "new": 263,
+      "removed": 260,
+      "retained": 67
+    },
+    "Pizza100/1hop/OEQA": {
+      "new": 125,
+      "removed": 125,
+      "retained": 40
+    },
+    "Pizza100/2hop/BQA": {
+      "new": 269,
+      "removed": 268,
+      "retained": 61
+    },
+    "Pizza100/2hop/OEQA": {
+      "new": 126,
+      "removed": 124,
+      "retained": 39
+    },
+    "Pizza250/1hop/BQA": {
+      "new": 335,
+      "removed": 315,
+      "retained": 77
+    },
+    "Pizza250/1hop/OEQA": {
+      "new": 149,
+      "removed": 167,
+      "retained": 57
+    },
+    "Pizza250/2hop/BQA": {
+      "new": 324,
+      "removed": 318,
+      "retained": 88
+    },
+    "Pizza250/2hop/OEQA": {
+      "new": 157,
+      "removed": 161,
+      "retained": 49
+    }
+  }
+}

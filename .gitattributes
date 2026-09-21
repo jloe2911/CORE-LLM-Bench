@@ -1,0 +1,9 @@
+# Generated scientific artifacts have manifest-level byte hashes. Preserve their
+# committed bytes on every platform instead of applying text EOL conversion.
+/data/output_v1_1_staging/phase5/** -text -diff
+/data/output_v1_1_symbolic/** -text -diff
+/release/v1.1.0-staging/** -text -diff
+/release/v1.1.0-preflight/** -text -diff
+/release/v1.1.0-phase7c-audit/** -text -diff
+/release/v1.1.0-phase7d/** -text -diff
+/release/v1.1.0-phase7e/** -text -diff

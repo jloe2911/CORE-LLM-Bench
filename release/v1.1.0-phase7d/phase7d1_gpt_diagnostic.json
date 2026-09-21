@@ -1,0 +1,41 @@
+{
+  "api_endpoint": "https://api.openai.com/v1/chat/completions",
+  "api_provider": "OpenAI",
+  "automatic_retries": 0,
+  "benchmark_experiment_calls": 0,
+  "credential_source": "OPENAI_API_KEY",
+  "diagnostic_model_calls": 1,
+  "error": "Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+  "error_type": "RateLimitError",
+  "neutral_prompt": "Reply with exactly: OK",
+  "parameter_acceptance": {
+    "max_completion_tokens": "not_established",
+    "reasoning_effort": "not_established",
+    "temperature": "omitted_not_tested",
+    "top_p": "omitted_not_tested",
+    "verbosity": "not_established"
+  },
+  "phase": "7D.1",
+  "provider_backend_metadata": {
+    "x-request-id": "req_b5489c7088834d728e3b4137345062fa"
+  },
+  "provider_error_body": {
+    "code": "credit_balance_exhausted",
+    "message": "You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
+    "param": null,
+    "type": "insufficient_quota"
+  },
+  "provider_requests_submitted": 1,
+  "request_parameters": {
+    "max_completion_tokens": 1024,
+    "reasoning_effort": "low",
+    "temperature": "omitted",
+    "top_p": "omitted",
+    "verbosity": "low"
+  },
+  "requested_at": "2026-09-21T08:58:50.210502+00:00",
+  "requested_model_identifier": "gpt-5-mini-2025-08-07",
+  "response_status": 429,
+  "returned_model_identifier": null,
+  "success": false
+}

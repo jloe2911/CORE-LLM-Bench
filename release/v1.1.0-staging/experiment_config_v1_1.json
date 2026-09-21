@@ -1,0 +1,411 @@
+{
+  "config_version": "core-llm-bench-v1.1-experiment-config-phase7d-1",
+  "configuration_blockers": [
+    {
+      "detail": "The exact snapshot's single Phase 7D.1 direct-OpenAI diagnostic was rejected with credit_balance_exhausted before inference. This is an operational billing failure, not model unavailability.",
+      "id": "gpt-snapshot-executability-unverified"
+    }
+  ],
+  "configuration_hash": "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3",
+  "diagnostic_call_count": 4,
+  "execution_authorized": false,
+  "execution_date": "2026-09-21",
+  "models": {
+    "GPT-5 mini": {
+      "alias_metadata_only": "gpt-5-mini",
+      "api_provider": "OpenAI",
+      "availability": "blocked_by_insufficient_quota; executability_not_established",
+      "backend": "OpenAI",
+      "catalog_source": "https://developers.openai.com/api/docs/models/gpt-5-mini",
+      "catalog_status": "dated snapshot listed as deprecated",
+      "credential_source": "OPENAI_API_KEY",
+      "diagnostic": {
+        "api_endpoint": "https://api.openai.com/v1/chat/completions",
+        "api_provider": "OpenAI",
+        "automatic_retries": 0,
+        "benchmark_experiment_calls": 0,
+        "credential_source": "OPENAI_API_KEY",
+        "diagnostic_model_calls": 1,
+        "error": "Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+        "error_type": "RateLimitError",
+        "neutral_prompt": "Reply with exactly: OK",
+        "parameter_acceptance": {
+          "max_completion_tokens": "not_established",
+          "reasoning_effort": "not_established",
+          "temperature": "omitted_not_tested",
+          "top_p": "omitted_not_tested",
+          "verbosity": "not_established"
+        },
+        "phase": "7D.1",
+        "provider_backend_metadata": {
+          "x-request-id": "req_b5489c7088834d728e3b4137345062fa"
+        },
+        "provider_error_body": {
+          "code": "credit_balance_exhausted",
+          "message": "You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
+          "param": null,
+          "type": "insufficient_quota"
+        },
+        "provider_requests_submitted": 1,
+        "request_parameters": {
+          "max_completion_tokens": 1024,
+          "reasoning_effort": "low",
+          "temperature": "omitted",
+          "top_p": "omitted",
+          "verbosity": "low"
+        },
+        "requested_at": "2026-09-21T08:58:50.210502+00:00",
+        "requested_model_identifier": "gpt-5-mini-2025-08-07",
+        "response_status": 429,
+        "returned_model_identifier": null,
+        "success": false
+      },
+      "endpoint": "https://api.openai.com/v1/chat/completions",
+      "fallback": false,
+      "model_id": "gpt-5-mini-2025-08-07",
+      "parameters": {
+        "frequency_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "intentionally omitted; not historical",
+          "requested": null
+        },
+        "max_completion_tokens": {
+          "effective_value_returned": null,
+          "guaranteed": false,
+          "provider_status": "not established",
+          "requested": 1024
+        },
+        "presence_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "intentionally omitted; not historical",
+          "requested": null
+        },
+        "reasoning_effort": {
+          "effective_value_returned": null,
+          "guaranteed": false,
+          "provider_status": "not established",
+          "requested": "low"
+        },
+        "seed": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "intentionally omitted; not historically verified",
+          "requested": null
+        },
+        "temperature": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "intentionally omitted; not historical",
+          "requested": null
+        },
+        "top_p": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "intentionally omitted; not historical",
+          "requested": null
+        },
+        "verbosity": {
+          "effective_value_returned": null,
+          "guaranteed": false,
+          "provider_status": "not established",
+          "requested": "low"
+        }
+      },
+      "pricing_usd_per_million_tokens": {
+        "input": 0.25,
+        "output": 2.0
+      },
+      "provider": "OpenAI",
+      "request_parameters": {
+        "extra_body": {
+          "verbosity": "low"
+        },
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "low"
+      }
+    },
+    "Gemini 2.5 Flash-Lite": {
+      "api_provider": "OpenRouter",
+      "availability": "available_and_diagnostic_succeeded",
+      "backend": "Google AI Studio",
+      "credential_source": "OPENROUTER_API_KEY",
+      "diagnostic": {
+        "candidate": "google/gemini-2.5-flash-lite",
+        "inference_call_count": 1,
+        "neutral_prompt": "Reply with exactly: OK",
+        "requested_at": "2026-09-21T08:09:28.393354+00:00",
+        "response_exactly_ok": true,
+        "response_id": "gen-1789978168-XmjJGuT7OZIJfq9kHv2m",
+        "response_text": "OK",
+        "returned_model_identifier": "google/gemini-2.5-flash-lite",
+        "returned_provider": "Google AI Studio",
+        "success": true,
+        "usage": {
+          "completion_tokens": 1,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null
+          },
+          "cost": 1e-06,
+          "cost_details": {
+            "upstream_inference_completions_cost": 4e-07,
+            "upstream_inference_cost": 1e-06,
+            "upstream_inference_prompt_cost": 6e-07
+          },
+          "is_byok": false,
+          "prompt_tokens": 6,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0
+          },
+          "total_tokens": 7
+        }
+      },
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "fallback": false,
+      "model_id": "google/gemini-2.5-flash-lite",
+      "parameters": {
+        "frequency_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "rejected by capability metadata; omitted",
+          "requested": null
+        },
+        "max_tokens": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 1024
+        },
+        "presence_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "rejected by capability metadata; omitted",
+          "requested": null
+        },
+        "reasoning": {
+          "effective_value_returned": {
+            "reasoning_tokens": 0
+          },
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": {
+            "enabled": false
+          }
+        },
+        "seed": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0
+        },
+        "temperature": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.0
+        },
+        "top_p": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.9
+        }
+      },
+      "pricing_usd_per_million_tokens": {
+        "input": 0.1,
+        "output": 0.4
+      },
+      "provider": "OpenRouter",
+      "provider_tag": "google-ai-studio",
+      "request_parameters": {
+        "extra_body": {
+          "provider": {
+            "allow_fallbacks": false,
+            "data_collection": "deny",
+            "order": [
+              "google-ai-studio"
+            ],
+            "require_parameters": true
+          },
+          "reasoning": {
+            "enabled": false
+          }
+        },
+        "max_tokens": 1024,
+        "seed": 0,
+        "temperature": 0.0,
+        "top_p": 0.9
+      },
+      "require_parameters": true
+    },
+    "Qwen3-30B-A3B-Instruct": {
+      "api_provider": "OpenRouter",
+      "availability": "available_and_diagnostic_succeeded",
+      "backend": "DekaLLM",
+      "credential_source": "OPENROUTER_API_KEY",
+      "diagnostic": {
+        "candidate": "qwen/qwen3-30b-a3b-instruct-2507",
+        "inference_call_count": 1,
+        "neutral_prompt": "Reply with exactly: OK",
+        "requested_at": "2026-09-21T08:09:29.010126+00:00",
+        "response_exactly_ok": true,
+        "response_id": "gen-1789978290-AwXoOaiqn06rIFvZMw3R",
+        "response_text": "OK",
+        "returned_model_identifier": "qwen/qwen3-30b-a3b-instruct-2507",
+        "returned_provider": "DekaLLM",
+        "success": true,
+        "usage": {
+          "completion_tokens": 2,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null
+          },
+          "cost": 1.77e-06,
+          "cost_details": {
+            "upstream_inference_completions_cost": 6e-07,
+            "upstream_inference_cost": 1.77e-06,
+            "upstream_inference_prompt_cost": 1.17e-06
+          },
+          "is_byok": false,
+          "prompt_tokens": 13,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0
+          },
+          "total_tokens": 15
+        }
+      },
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "fallback": false,
+      "model_behavior": "non-thinking instruct model",
+      "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "parameters": {
+        "frequency_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.1
+        },
+        "max_tokens": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 1024
+        },
+        "presence_penalty": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.0
+        },
+        "seed": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0
+        },
+        "temperature": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.0
+        },
+        "top_p": {
+          "effective_value_returned": null,
+          "guaranteed": true,
+          "provider_status": "accepted by successful pinned diagnostic and advertised by endpoint",
+          "requested": 0.9
+        }
+      },
+      "pricing_usd_per_million_tokens": {
+        "input": 0.09,
+        "output": 0.3
+      },
+      "provider": "OpenRouter",
+      "provider_tag": "dekallm",
+      "request_parameters": {
+        "extra_body": {
+          "provider": {
+            "allow_fallbacks": false,
+            "data_collection": "deny",
+            "order": [
+              "dekallm"
+            ],
+            "require_parameters": true
+          }
+        },
+        "frequency_penalty": 0.1,
+        "max_tokens": 1024,
+        "presence_penalty": 0.0,
+        "seed": 0,
+        "temperature": 0.0,
+        "top_p": 0.9
+      },
+      "require_parameters": true
+    }
+  },
+  "phase7d1_diagnostic_call_count": 1,
+  "primary_experiment": {
+    "historical_v1_0_responses_reusable": 0,
+    "models": 3,
+    "observations": 81432,
+    "policy": "complete fresh rerun",
+    "representations": 3,
+    "semantic_questions": 9048
+  },
+  "prompt": {
+    "message_roles": [
+      "user"
+    ],
+    "source_sha256": "09a149f67c5b26d402587e4a90537b86b61161eba6186f351fa9ad4b6809d722",
+    "system_prompt": null,
+    "version": "api_calls.create_context_specific_prompt@24c4520"
+  },
+  "ready_for_execution": false,
+  "retry_policy": {
+    "backoff_seconds": [
+      2,
+      4,
+      8
+    ],
+    "maximum_retries_after_initial_attempt": 3,
+    "retryable": [
+      "timeout",
+      "rate_limit",
+      "provider_transient_error",
+      "empty_response"
+    ],
+    "terminal_without_resampling": [
+      "nonempty_malformed_structured_output",
+      "valid_model_answer"
+    ]
+  },
+  "routing_contract": {
+    "google/gemini-2.5-flash-lite": {
+      "api_provider": "OpenRouter",
+      "credential_source": "OPENROUTER_API_KEY"
+    },
+    "gpt-5-mini-2025-08-07": {
+      "api_provider": "OpenAI",
+      "credential_source": "OPENAI_API_KEY"
+    },
+    "qwen/qwen3-30b-a3b-instruct-2507": {
+      "api_provider": "OpenRouter",
+      "credential_source": "OPENROUTER_API_KEY"
+    }
+  },
+  "timeout_seconds": 30
+}

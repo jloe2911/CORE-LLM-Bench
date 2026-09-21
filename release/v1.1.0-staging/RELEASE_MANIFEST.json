@@ -1,0 +1,140 @@
+{
+  "benchmark": "CORE-LLM-Bench",
+  "configuration_hash": "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3",
+  "files": [
+    {
+      "bytes": 88227410,
+      "path": "benchmark/FamilyOWL_1hop.json",
+      "sha256": "be9d5c897856e26aaac2be015649907d942a5de51ca1854d70e38e7853cb469e"
+    },
+    {
+      "bytes": 203849891,
+      "path": "benchmark/FamilyOWL_2hop.json",
+      "sha256": "b112510a8b784bd70b9b6105e3ab85bfb45fa5c26e0d58e1129f90f3ddb4b927"
+    },
+    {
+      "bytes": 26514512,
+      "path": "benchmark/OWL2Bench_1hop.json",
+      "sha256": "b2652709b9f6a9d6b2b8cdfc4434e4481d45a24f458fad07b5326086929ec400"
+    },
+    {
+      "bytes": 61422084,
+      "path": "benchmark/OWL2Bench_2hop.json",
+      "sha256": "ccef7c06ea3aa7b140b3b48f86a36955fdb510be11b8c78f91c7b446588c1935"
+    },
+    {
+      "bytes": 17252572,
+      "path": "benchmark/Pizza100_1hop.json",
+      "sha256": "ed607ed5f811872f0926f88816031f23759bc0b671195ef7dc14df3b57fbad85"
+    },
+    {
+      "bytes": 37849900,
+      "path": "benchmark/Pizza100_2hop.json",
+      "sha256": "c9ad6600d828481a3cb783cfbb1170d1f51bf0c8d9dfb5fa6d6427dd7e8e4136"
+    },
+    {
+      "bytes": 21793891,
+      "path": "benchmark/Pizza250_1hop.json",
+      "sha256": "a8ff39cca7c3b99059b580aceea37a287817a6fdc99f1c3edd04ca1a774d6817"
+    },
+    {
+      "bytes": 54947166,
+      "path": "benchmark/Pizza250_2hop.json",
+      "sha256": "dca092b3fc641c0f04b075f994a7c108ec803d19bc8e5255c1010d240d30fda6"
+    },
+    {
+      "bytes": 1189854,
+      "path": "bqa_pair_mapping.csv",
+      "sha256": "d320affd19d25347506708e9bd620bb31ec67f0c4d864007aecbd94db1b73199"
+    },
+    {
+      "bytes": 141,
+      "path": "complexity_distribution.json",
+      "sha256": "5788b42d5779ff35fb86438f6283e64d699e4cb5caea7377ccd86d3a8270c298"
+    },
+    {
+      "bytes": 9870709,
+      "path": "core_llm_bench_v1_1.parquet",
+      "sha256": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859"
+    },
+    {
+      "bytes": 1780,
+      "path": "cost_estimate.json",
+      "sha256": "0f57ca67e25c199e4fd43a510c415f0d742c1d0c77296c6f43240da4979e93ed"
+    },
+    {
+      "bytes": 215,
+      "path": "dataset_statistics.json",
+      "sha256": "27be7fb323649290717370bbea1fe9dfcb46ff3d737190f4489f19ece312d2a6"
+    },
+    {
+      "bytes": 1181760,
+      "path": "entity_label_mapping.csv",
+      "sha256": "dcaa160d7fa207daa6028f728a08d3aba33ec00ba9363fd8e4f47f87b9e12658"
+    },
+    {
+      "bytes": 14133,
+      "path": "experiment_config_v1_1.json",
+      "sha256": "47a60d2536dbfc718658fe91c12599a89d5fda66a03828a6eb20cff24d7a8da7"
+    },
+    {
+      "bytes": 8628,
+      "path": "input_equivalence_groups.csv",
+      "sha256": "214eba9564141d4e3519c9fcca7c8e75668346d468bef00662484e16be228873"
+    },
+    {
+      "bytes": 842,
+      "path": "membership_manifest.json",
+      "sha256": "2f0cd3efc65adcf88179489abc5b0aaed6c81a2faba347b1786df24f2fa5ee4c"
+    },
+    {
+      "bytes": 5835097,
+      "path": "model_input_manifest.csv",
+      "sha256": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18"
+    },
+    {
+      "bytes": 25485499,
+      "path": "pending_model_runs.csv",
+      "sha256": "732c0a6306f970dcb7ec4aa36903fc5739f2b5f941f6ce14096fcca1049b0bbc"
+    },
+    {
+      "bytes": 25485499,
+      "path": "primary_experiment_manifest.csv",
+      "sha256": "732c0a6306f970dcb7ec4aa36903fc5739f2b5f941f6ce14096fcca1049b0bbc"
+    },
+    {
+      "bytes": 300,
+      "path": "reasoning_coverage.json",
+      "sha256": "dc876c432e62085eb65f3d6e6d4da611a3bbbb89ef4b42991d054dee2d24e3aa"
+    },
+    {
+      "bytes": 1131898,
+      "path": "reasoning_metadata.csv",
+      "sha256": "8b8543be57519a7cdb09c2e35146290d8155bfd176ebb62bb6ec4f69677ca3a3"
+    },
+    {
+      "bytes": 3484067,
+      "path": "task_id_mapping.csv",
+      "sha256": "3733b299d179b7f1b3a90b147d4c48d67acb86a584bf002687d60ed6b4d321f4"
+    },
+    {
+      "bytes": 1855,
+      "path": "validation_report.json",
+      "sha256": "c6b5a42f2ea70f64d951c4ea20fa6c94f6e8a5e6c827a14e4b1401a149f0c33f"
+    }
+  ],
+  "phase": "7D-final-experiment-freeze",
+  "prompt_template_version": "api_calls.create_context_specific_prompt@24c4520",
+  "statistics": {
+    "BQA": 6032,
+    "OEQA": 3016,
+    "historical_v1_0_responses_in_primary": 0,
+    "primary_experiment_observations": 81432,
+    "public_id_max": 9048,
+    "public_id_min": 1,
+    "public_id_unique": 9048,
+    "total": 9048
+  },
+  "status": "not-released",
+  "version": "v1.1.0-staging"
+}

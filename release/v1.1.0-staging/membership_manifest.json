@@ -1,0 +1,19 @@
+{
+  "membership_source": "data/output_v1_1_staging/phase5/membership_manifest.json",
+  "phase": "7D-final-experiment-freeze",
+  "phase5_manifest_sha256": "1a472e9dac3f36d853653d8658fcfdebd6db8653df920efc70058c2cfd4bcd1b",
+  "phase5_semantic_membership_sha256": "dc72690877817522989691b76452cf8cfcd783ca4b95796192a4c713f396b379",
+  "public_ids_sha256": "f9d58c3239cd8e60d5a06e546dd0ddc28d17a14e522a01d73e7ee2d89320d3c1",
+  "row_count": 9048,
+  "semantic_keys_sha256": "7a3650e7958fbca66469a90e4976831bfab3dd971d1b10b75baee7cc6905783d",
+  "sort_key": [
+    "dataset order FamilyOWL, Pizza100, Pizza250, OWL2Bench",
+    "hop 1hop then 2hop",
+    "task group BQA then OEQA",
+    "root entity",
+    "normalized formal query",
+    "canonical gold answer",
+    "stable semantic provenance key",
+    "semantic key final uniqueness tie-breaker"
+  ]
+}

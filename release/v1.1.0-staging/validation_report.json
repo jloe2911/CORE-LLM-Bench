@@ -1,0 +1,65 @@
+{
+  "all_matrix_input_hashes_match": true,
+  "all_rows_reference_one_configuration_hash": true,
+  "ar_validation": {
+    "duplicate_exact_sentences": 0,
+    "mapping_inconsistencies": 0,
+    "original_identifiers_remaining": 0,
+    "original_lexical_labels_remaining": 0,
+    "unmapped_required_entities": 0,
+    "validated_rows": 9048
+  },
+  "benchmark_experiment_calls": 0,
+  "compatible_equivalence_groups_retained": 24,
+  "complexity_distribution": {
+    "BQA": {
+      "High": 770,
+      "Low": 2116,
+      "Medium": 3146
+    },
+    "OEQA": {
+      "High": 527,
+      "Low": 1738,
+      "Medium": 751
+    }
+  },
+  "configuration_blockers": [
+    {
+      "detail": "The exact snapshot's single Phase 7D.1 direct-OpenAI diagnostic was rejected with credit_balance_exhausted before inference. This is an operational billing failure, not model unavailability.",
+      "id": "gpt-snapshot-executability-unverified"
+    }
+  ],
+  "configuration_hash": "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3",
+  "diagnostic_provider_requests": 3,
+  "duplicate_audit": {
+    "AR": {
+      "compatible_groups": 7,
+      "compatible_rows": 14,
+      "incompatible_groups": 0,
+      "incompatible_rows": 0
+    },
+    "FS": {
+      "compatible_groups": 5,
+      "compatible_rows": 10,
+      "incompatible_groups": 0,
+      "incompatible_rows": 0
+    },
+    "NL": {
+      "compatible_groups": 12,
+      "compatible_rows": 24,
+      "incompatible_groups": 0,
+      "incompatible_rows": 0
+    }
+  },
+  "historical_v1_0_responses_in_primary": 0,
+  "input_hash_rows": 27144,
+  "matrix_rows": 81432,
+  "membership_rows": 9048,
+  "pending_model_calls": 81432,
+  "pending_rows": 81432,
+  "phase": "7D",
+  "phase7d1_diagnostic_provider_requests": 1,
+  "release_published": false,
+  "status": "configuration-blocked-before-execution",
+  "v1_0_modified": false
+}

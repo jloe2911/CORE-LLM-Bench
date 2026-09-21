@@ -1,0 +1,186 @@
+{
+  "config_version": "core-llm-bench-v1.1-experiment-config-1",
+  "configuration_uncertainties": [
+    {
+      "blocking": true,
+      "detail": "Historical run_config files record models and operational settings but not the per-request parameter dictionary; values above are reconstructed from the evaluation source used by the saved pipeline.",
+      "id": "request-parameter-provenance"
+    },
+    {
+      "blocking": true,
+      "detail": "OpenRouter model IDs are recorded, but the routed backend/provider revision and returned model identifier were not persisted in reusable checkpoint rows.",
+      "id": "openrouter-backend-revision"
+    },
+    {
+      "blocking": true,
+      "detail": "No Gemini or Qwen thinking/reasoning parameter was sent; the effective provider/model default was not recorded.",
+      "id": "thinking-defaults"
+    },
+    {
+      "blocking": true,
+      "detail": "Historical run_config files contain more than one concurrency, batch, and checkpoint setting. Exact values are recoverable per source run, but there is no single v1.0-wide value.",
+      "id": "run-specific-concurrency"
+    },
+    {
+      "blocking": true,
+      "detail": "Exact evaluated inputs with incompatible gold semantics exist; see duplicate_input_hash_audit.csv.",
+      "id": "incompatible-duplicate-inputs"
+    }
+  ],
+  "execution_authorized": false,
+  "execution_design": {
+    "batching": "one manifest row per submitted request",
+    "checkpoint_frequency": "after every completed provider response",
+    "recommended_max_workers": 1,
+    "request_fingerprint": "sha256(canonical JSON of input_hash, config_version, model configuration)",
+    "sole_work_source": "release/v1.1.0-staging/pending_model_runs.csv",
+    "technical_retry_policy": {
+      "backoff_seconds": [
+        2,
+        4,
+        8
+      ],
+      "maximum_retries_after_initial_attempt": 3,
+      "retryable": [
+        "timeout",
+        "rate_limit",
+        "provider_transient_error",
+        "empty_response"
+      ],
+      "terminal_without_resampling": [
+        "nonempty_malformed_structured_output",
+        "valid_model_answer"
+      ]
+    }
+  },
+  "historical_evidence": {
+    "recorded_field_values": {
+      "batch_size": {
+        "24": 12,
+        "5": 36
+      },
+      "checkpoint_frequency": {
+        "10": 6,
+        "20": 6,
+        "25": 12,
+        "5": 12,
+        "50": 12
+      },
+      "limit_questions": {
+        "null": 48
+      },
+      "max_api_calls": {
+        "0": 12,
+        "null": 36
+      },
+      "max_workers": {
+        "1": 36,
+        "6": 12
+      }
+    },
+    "recorded_provider_model_identifiers": [
+      {
+        "model_id": "gpt-5-mini-2025-08-07",
+        "provider": "openai"
+      },
+      {
+        "model_id": "google/gemini-2.5-flash-lite",
+        "provider": "openrouter"
+      },
+      {
+        "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "openrouter"
+      }
+    ],
+    "run_config_files_examined": 48,
+    "source_root": "data/output/final_benchmark_llm_results"
+  },
+  "models": {
+    "GPT-5 mini": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_completion_tokens",
+      "model_id": "gpt-5-mini-2025-08-07",
+      "parameter_note": "temperature and top_p were omitted, not explicitly set",
+      "provider": "OpenAI",
+      "provider_specific_parameters": {},
+      "reasoning_effort": "low",
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "runtime": "OpenAI Python client, Chat Completions API",
+      "seed": null,
+      "temperature": null,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": null,
+      "verbosity": "low"
+    },
+    "Gemini 2.5 Flash-Lite": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_tokens",
+      "model_id": "google/gemini-2.5-flash-lite",
+      "provider": "OpenRouter",
+      "provider_specific_parameters": {
+        "frequency_penalty": 0.1,
+        "presence_penalty": 0.0
+      },
+      "reasoning_or_thinking": "no parameter sent; provider/model default not recorded",
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "runtime": "OpenAI Python client against https://openrouter.ai/api/v1",
+      "seed": null,
+      "temperature": 0.0,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": 0.9
+    },
+    "Qwen3-30B-A3B-Instruct": {
+      "api": "OpenAI-compatible chat.completions.create",
+      "maximum_output_tokens": 1024,
+      "maximum_output_tokens_parameter": "max_tokens",
+      "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "OpenRouter",
+      "provider_specific_parameters": {
+        "frequency_penalty": 0.1,
+        "presence_penalty": 0.0
+      },
+      "reasoning_or_thinking": "no parameter sent; provider/model default not recorded",
+      "response_format": null,
+      "retry_behavior_v1_0": "no automatic retry in process_single_model_request",
+      "runtime": "OpenAI Python client against https://openrouter.ai/api/v1",
+      "seed": null,
+      "temperature": 0.0,
+      "timeout_seconds": 30,
+      "tools": null,
+      "top_p": 0.9
+    }
+  },
+  "phase6_commit": "7d1cf3b",
+  "prompt_and_response_contract": {
+    "current_parser_contract": {
+      "answer": "ANSWER field preferred; first-line fallback retained from v1.0 evaluator",
+      "confidence": "CONFIDENCE field preferred; absent or invalid values default to 0.5",
+      "extra_structured_metadata": false
+    },
+    "message_roles": [
+      "user"
+    ],
+    "requested_text_schema": {
+      "BQA": [
+        "ANSWER: TRUE|FALSE",
+        "CONFIDENCE: float in [0,1]"
+      ],
+      "OEQA": [
+        "ANSWER: local names, semicolon-separated",
+        "CONFIDENCE: float in [0,1]"
+      ],
+      "explanation_requested": false
+    },
+    "structured_output": null,
+    "system_prompt": null,
+    "user_prompt_template_version": "api_calls.create_context_specific_prompt@24c4520"
+  },
+  "ready_for_execution": false,
+  "status": "blocked_pending_scientific_resolution"
+}

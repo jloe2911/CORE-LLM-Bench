@@ -1,0 +1,23 @@
+{
+  "api_or_error_placeholders": 0,
+  "by_model_representation": {
+    "GPT-5 mini/AR": 0,
+    "GPT-5 mini/FS": 2126,
+    "GPT-5 mini/NL": 2123,
+    "Gemini 2.5 Flash-Lite/AR": 0,
+    "Gemini 2.5 Flash-Lite/FS": 2130,
+    "Gemini 2.5 Flash-Lite/NL": 2130,
+    "Qwen3-30B-A3B-Instruct/AR": 0,
+    "Qwen3-30B-A3B-Instruct/FS": 2118,
+    "Qwen3-30B-A3B-Instruct/NL": 2127
+  },
+  "empty_responses": 0,
+  "input_hash_mismatches": 0,
+  "model_mismatches": 0,
+  "original_response_files_modified": false,
+  "parse_statuses": {
+    "accepted_by_current_parser_with_confidence_default": 25,
+    "requested_schema_conformant": 12729
+  },
+  "total": 12754
+}

@@ -1,0 +1,118 @@
+{
+  "duplicate_observations": 0,
+  "expected_observations": 81432,
+  "final_metrics_allowed": false,
+  "malformed_responses": 0,
+  "missing_observations": 68678,
+  "newly_generated_responses": 0,
+  "reused_responses": 12754,
+  "sample_duplicate_observations": [],
+  "sample_malformed_responses": [],
+  "sample_missing_observations": [
+    [
+      "1",
+      "AR",
+      "GPT-5 mini"
+    ],
+    [
+      "1",
+      "AR",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "1",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "1",
+      "FS",
+      "GPT-5 mini"
+    ],
+    [
+      "1",
+      "FS",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "1",
+      "FS",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "1",
+      "NL",
+      "GPT-5 mini"
+    ],
+    [
+      "1",
+      "NL",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "1",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "10",
+      "AR",
+      "GPT-5 mini"
+    ],
+    [
+      "10",
+      "AR",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "10",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "10",
+      "FS",
+      "GPT-5 mini"
+    ],
+    [
+      "10",
+      "FS",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "10",
+      "FS",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "10",
+      "NL",
+      "GPT-5 mini"
+    ],
+    [
+      "10",
+      "NL",
+      "Gemini 2.5 Flash-Lite"
+    ],
+    [
+      "10",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "100",
+      "AR",
+      "GPT-5 mini"
+    ],
+    [
+      "100",
+      "AR",
+      "Gemini 2.5 Flash-Lite"
+    ]
+  ],
+  "sample_unresolved_technical_failures": [],
+  "status": "incomplete",
+  "unexpected_observations": 0,
+  "unresolved_technical_failures": 0,
+  "usable_observations": 12754
+}

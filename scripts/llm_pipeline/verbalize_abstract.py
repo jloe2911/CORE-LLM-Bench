@@ -10,7 +10,22 @@ SECTION_HEADERS = {
     "=== DATA PROPERTIES ===",
     "=== INDIVIDUALS ===",
     "=== ONTOLOGY ABSTRACTION MAPPINGS ===",
+    "=== TEXT ALIASES ===",
 }
+
+
+def deduplicate_sentences(descriptions) -> list[str]:
+    """Keep each exact rendered sentence once, preserving first occurrence."""
+    output = []
+    seen = set()
+    for description in descriptions:
+        sentences = re.findall(r".*?[.!?](?=\s|$)|.+$", str(description).strip())
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if sentence and sentence not in seen:
+                seen.add(sentence)
+                output.append(sentence)
+    return output
 
 
 def parse_mapping_file(mapping_file: Path) -> dict[str, str]:
@@ -28,34 +43,98 @@ def parse_mapping_file(mapping_file: Path) -> dict[str, str]:
     if not mapping_file.exists():
         raise FileNotFoundError(f"Mapping file does not exist: {mapping_file}")
 
-    mappings = {}
-
     with open(mapping_file, "r", encoding="utf-8") as f:
-        for raw_line in f:
-            line = raw_line.strip()
+        return parse_mapping_lines(f)
 
-            if not line or line in SECTION_HEADERS:
-                continue
 
-            if "->" not in line:
-                continue
+def parse_mapping_lines(lines) -> dict[str, str]:
+    mappings = {}
+    for raw_line in lines:
+        line = raw_line.strip()
 
-            left, right = line.split("->", 1)
-            original = left.strip()
-            abstract_uri = right.strip()
+        if not line or line in SECTION_HEADERS:
+            continue
 
-            # Extract fragment after '#', e.g. <...#Class1> -> Class1
-            match = re.search(r"#([^>]+)>?$", abstract_uri)
-            if match:
-                abstract_name = match.group(1).strip()
-            else:
-                # Fallback: remove angle brackets if fragment is missing
-                abstract_name = abstract_uri.strip("<>").strip()
+        if "->" not in line:
+            continue
 
-            if original:
-                mappings[original] = abstract_name
+        left, right = line.split("->", 1)
+        original = left.strip()
+        if original.startswith("@alias "):
+            original = original[len("@alias ") :].strip()
+        elif original.startswith("<") and original.endswith(">"):
+            # Full URI mappings are consumed separately and resolved via
+            # formal-query identity. Only explicit safe aliases belong in
+            # the global textual replacement table.
+            continue
+        abstract_uri = right.strip()
 
+        # Extract fragment after '#', e.g. <...#Class1> -> Class1
+        match = re.search(r"#([^>]+)>?$", abstract_uri)
+        if match:
+            abstract_name = match.group(1).strip()
+        else:
+            # Fallback: remove angle brackets if fragment is missing
+            abstract_name = abstract_uri.strip("<>").strip()
+
+        if original:
+            mappings[original] = abstract_name
     return mappings
+
+
+def parse_uri_mapping_file(mapping_file: Path) -> dict[str, str]:
+    """Return full original URI to abstract local-name mappings."""
+    with open(mapping_file, "r", encoding="utf-8") as handle:
+        return parse_uri_mapping_lines(handle)
+
+
+def parse_uri_mapping_lines(lines) -> dict[str, str]:
+    mappings = {}
+    for raw_line in lines:
+        line = raw_line.strip()
+        if "->" not in line or line.startswith("@alias "):
+            continue
+        left, right = (part.strip() for part in line.split("->", 1))
+        if not (left.startswith("<") and left.endswith(">")):
+            continue
+        match = re.search(r"#([^>]+)>?$", right)
+        if match:
+            mappings[left[1:-1]] = match.group(1).strip()
+    return mappings
+
+
+def query_text_mappings(query: str, uri_mappings: dict[str, str]) -> dict[str, str]:
+    """Derive display aliases only for entities identified by this query."""
+    result = {}
+    for uri in re.findall(r"<([^>]+)>", str(query or "")):
+        target = uri_mappings.get(uri)
+        if not target:
+            # Generated questions can use a synthetic namespace while retaining
+            # the ontology entity's local name.
+            local = uri.rsplit("#", 1)[-1].rsplit("/", 1)[-1]
+            matches = {
+                mapped
+                for original, mapped in uri_mappings.items()
+                if original.rsplit("#", 1)[-1].rsplit("/", 1)[-1] == local
+            }
+            if len(matches) != 1:
+                continue
+            target = next(iter(matches))
+        else:
+            local = uri.rsplit("#", 1)[-1].rsplit("/", 1)[-1]
+        display_bases = {local, re.sub(r"_dynamic_\d+$", "", local, flags=re.I)}
+        for display_base in display_bases:
+            suffix_pattern = r"_\d{4}$|_\d+$|_v\d+$"
+            if target.startswith("Individual"):
+                suffix_pattern += r"|_\w{2,3}$"
+            cleaned = re.sub(suffix_pattern, "", display_base)
+            cleaned = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned)
+            cleaned = cleaned.replace("_", " ").replace("-", " ")
+            cleaned = " ".join(word.capitalize() for word in cleaned.split())
+            for alias in (display_base, cleaned):
+                if alias:
+                    result[alias] = target
+    return result
 
 
 def build_replacement_pattern(mapping_keys: list[str]) -> re.Pattern:
@@ -107,15 +186,21 @@ def process_csv(
         )
 
     mappings = parse_mapping_file(mapping_file)
+    uri_mappings = parse_uri_mapping_file(mapping_file)
     if not mappings:
         raise ValueError(f"No mappings found in mapping file: {mapping_file}")
 
-    pattern = build_replacement_pattern(list(mappings.keys()))
+    def abstract_row_value(row, column):
+        row_mappings = dict(mappings)
+        if "SPARQL Query" in row:
+            row_mappings.update(query_text_mappings(row["SPARQL Query"], uri_mappings))
+        pattern = build_replacement_pattern(list(row_mappings.keys()))
+        return abstract_question(row[column], row_mappings, pattern)
 
     # Replace the question and, when present, open-ended gold answers so
     # abstract evaluation compares abstract labels against abstract labels.
-    df[question_column] = df[question_column].apply(
-        lambda q: abstract_question(q, mappings, pattern)
+    df[question_column] = df.apply(
+        lambda row: abstract_row_value(row, question_column), axis=1
     )
     if answer_column in df.columns:
         answer_type = (
@@ -124,8 +209,8 @@ def process_csv(
             else pd.Series("", index=df.index)
         )
         mc_mask = answer_type.isin(["MC", "MULTI CHOICE", "MULTICHOICE"])
-        df.loc[mc_mask, answer_column] = df.loc[mc_mask, answer_column].apply(
-            lambda answer: abstract_question(answer, mappings, pattern)
+        df.loc[mc_mask, answer_column] = df.loc[mc_mask].apply(
+            lambda row: abstract_row_value(row, answer_column), axis=1
         )
 
     output_file.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,44 @@
+{
+  "estimate_date": "2026-09-21",
+  "input_token_method": "ceil(rendered prompt Unicode character count / 4); heuristic because exact provider tokenizers are not available offline",
+  "models": {
+    "GPT-5 mini": {
+      "calls": 27144,
+      "estimated_input_cost_usd": 15.943442,
+      "estimated_input_tokens": 63773766,
+      "input_price_usd_per_million": 0.25,
+      "maximum_estimated_cost_usd": 71.534354,
+      "maximum_output_cost_usd": 55.590912,
+      "maximum_output_token_exposure": 27795456,
+      "output_price_usd_per_million": 2.0
+    },
+    "Gemini 2.5 Flash-Lite": {
+      "calls": 27144,
+      "estimated_input_cost_usd": 6.377377,
+      "estimated_input_tokens": 63773766,
+      "input_price_usd_per_million": 0.1,
+      "maximum_estimated_cost_usd": 17.495559,
+      "maximum_output_cost_usd": 11.118182,
+      "maximum_output_token_exposure": 27795456,
+      "output_price_usd_per_million": 0.4
+    },
+    "Qwen3-30B-A3B-Instruct": {
+      "calls": 27144,
+      "estimated_input_cost_usd": 5.739639,
+      "estimated_input_tokens": 63773766,
+      "input_price_usd_per_million": 0.09,
+      "maximum_estimated_cost_usd": 14.078276,
+      "maximum_output_cost_usd": 8.338637,
+      "maximum_output_token_exposure": 27795456,
+      "output_price_usd_per_million": 0.3
+    }
+  },
+  "output_assumption": "maximum configured exposure of 1,024 tokens per call",
+  "pricing_sources": {
+    "GPT-5 mini": "https://developers.openai.com/api/docs/models/gpt-5-mini",
+    "Gemini 2.5 Flash-Lite": "https://openrouter.ai/google/gemini-2.5-flash-lite/pricing",
+    "Qwen3-30B-A3B-Instruct": "OpenRouter endpoints API metadata captured in release/v1.1.0-phase7d/endpoint_validation.json"
+  },
+  "total_calls": 81432,
+  "total_maximum_estimated_cost_usd": 103.108188
+}

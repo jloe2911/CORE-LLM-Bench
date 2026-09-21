@@ -1,0 +1,9 @@
+Subject: CORE-LLM-Bench v1.1 corrected benchmark for scientific review
+
+Dear Professor,
+
+We investigated your comments on CORE-LLM-Bench and corrected the underlying benchmark-construction causes rather than patching individual examples. The proposed corrected benchmark contains 9,048 questions, with complete binary pairs, revised multi-answer explanation semantics and complexity, and validated NL, FS, and abstract representations.
+
+The attached short review document summarizes the identified causes, corrections, validation results, and the design decisions that require scientific approval. Experiments are currently paused. Before continuing the GPT and Qwen experiments or updating the paper, we would like to confirm that the revised benchmark design is scientifically agreed.
+
+Best regards,

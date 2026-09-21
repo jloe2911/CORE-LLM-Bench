@@ -1,0 +1,88 @@
+{
+  "artifacts": [
+    {
+      "bytes": 14836284,
+      "path": "data/output_v1_1_staging/phase5/semantic_membership.csv",
+      "sha256": "dc72690877817522989691b76452cf8cfcd783ca4b95796192a4c713f396b379"
+    },
+    {
+      "bytes": 19124650,
+      "path": "data/output_v1_1_staging/phase5/semantic_membership.jsonl",
+      "sha256": "13f3e3bee290ac34df2e8da43f5b5347055b38107a46338080b69990f4fb28db"
+    },
+    {
+      "bytes": 4429649,
+      "path": "data/output_v1_1_staging/phase5/eligible_group_decisions.csv",
+      "sha256": "9c45fc91ec0716e204a0025dcab5888e9b163d00fc7f8c0dab84fef5eb152f6f"
+    },
+    {
+      "bytes": 2034962,
+      "path": "data/output_v1_1_staging/phase5/v1_vs_v1_1_membership.csv",
+      "sha256": "6205e5c48edfcdbdbcf855e3e2c63463cd9f6b02392b2db2cb433e0e231bb986"
+    },
+    {
+      "bytes": 12457699,
+      "path": "data/output_v1_1_staging/phase5/prediction_reuse_plan.csv",
+      "sha256": "e7107f6e93115453e3de45c9be8b37021e7e320a9e58f1450c50a3b2c7e19b65"
+    },
+    {
+      "bytes": 12086,
+      "path": "data/output_v1_1_staging/phase5/phase5_report.json",
+      "sha256": "040a2229f7164ae1f68c2c5b87b5f88fefdfea2e6f8e01075118102a9ab36226"
+    }
+  ],
+  "inputs": [
+    {
+      "bytes": 41701358,
+      "path": "data/output_v1_1_symbolic/audit/eligible_source_pool_complexity.csv",
+      "sha256": "76459dc862c3158f62914782b81b5b4ae8063dfb4cb2b8ffaf146072feffc467"
+    },
+    {
+      "bytes": 2677142,
+      "path": "data/output_v1_1_symbolic/FamilyOWL/1hop/SPARQL_questions.csv",
+      "sha256": "31de09cf21a914b7afed79fbd0a736dcf978f7e933a6061c5c5d869e8b6ac35e"
+    },
+    {
+      "bytes": 2677142,
+      "path": "data/output_v1_1_symbolic/FamilyOWL/2hop/SPARQL_questions.csv",
+      "sha256": "e0326b33aa5ecc226ff302a29a3a10accf4b4a300484fd185b29b213b16db283"
+    },
+    {
+      "bytes": 1814838,
+      "path": "data/output_v1_1_symbolic/OWL2Bench/1hop/SPARQL_questions.csv",
+      "sha256": "1bb050f611d37a6fe4ca1660f313067e2ac98910543ef1e348b027470cf8a99c"
+    },
+    {
+      "bytes": 1982702,
+      "path": "data/output_v1_1_symbolic/OWL2Bench/2hop/SPARQL_questions.csv",
+      "sha256": "b14aac1195566bffc02215f95ce54365922319228a2698910ac95100ab82e61c"
+    },
+    {
+      "bytes": 724298,
+      "path": "data/output_v1_1_symbolic/pizza_100/1hop/SPARQL_questions.csv",
+      "sha256": "cea181aba081e022764bb6228493f4b845254eb09ecae8c6d0b4753cd4e398e4"
+    },
+    {
+      "bytes": 728422,
+      "path": "data/output_v1_1_symbolic/pizza_100/2hop/SPARQL_questions.csv",
+      "sha256": "aa16a850e68251f5eb1998ce9ac2925b2aa1aa14d994cf424fe697d022dd6f3a"
+    },
+    {
+      "bytes": 918591,
+      "path": "data/output_v1_1_symbolic/pizza_250/1hop/SPARQL_questions.csv",
+      "sha256": "1a2083c891c9d4f01f3410df9587a07edbeb433472eb4d1b058801f22a8771cb"
+    },
+    {
+      "bytes": 925165,
+      "path": "data/output_v1_1_symbolic/pizza_250/2hop/SPARQL_questions.csv",
+      "sha256": "f0be72903af4fc82a69b2abb65ed51bed188219d708b2aededd1c925f058ac59"
+    }
+  ],
+  "parameters": {
+    "benchmark_fraction": 0.25,
+    "random_state": 42
+  },
+  "phase": 5,
+  "public_ids_assigned": false,
+  "semantic_key_definition": "SHA-256 of canonical JSON(dataset, hop, task, root, normalized query, normalized answer)"
+}

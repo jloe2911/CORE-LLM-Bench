@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles formatting of explanations into various output formats
@@ -52,7 +55,9 @@ public class ExplanationFormatter {
 
         // Explanations section
         json.append("    \"explanations\" : [ ");
-        List<ExplanationPath> pathList = new ArrayList<>(paths);
+        List<ExplanationPath> pathList = paths.stream()
+                .sorted(Comparator.comparing(ExplanationFormatter::semanticPathIdentity))
+                .collect(Collectors.toList());
         for (int i = 0; i < pathList.size(); i++) {
             ExplanationPath path = pathList.get(i);
 
@@ -74,6 +79,17 @@ public class ExplanationFormatter {
             }
 
             json.append(" ]");
+            if (i < pathList.size() - 1) {
+                json.append(", ");
+            }
+        }
+        json.append(" ],\n");
+
+        // Machine-readable semantic provenance for v1.1 complexity auditing.
+        // This remains separate from the legacy display-oriented explanations.
+        json.append("    \"structuredExplanations\" : [ ");
+        for (int i = 0; i < pathList.size(); i++) {
+            appendStructuredExplanation(json, pathList.get(i), tagger);
             if (i < pathList.size() - 1) {
                 json.append(", ");
             }
@@ -161,6 +177,68 @@ public class ExplanationFormatter {
         }
 
         return justifications;
+    }
+
+    private static List<OWLAxiom> semanticAxioms(ExplanationPath path) {
+        if (path == null || path.getAxioms() == null) {
+            return List.of();
+        }
+        Set<OWLAxiom> unique = new LinkedHashSet<>();
+        for (OWLAxiom axiom : path.getAxioms()) {
+            unique.add(axiom.getAxiomWithoutAnnotations());
+        }
+        return unique.stream()
+                .sorted(Comparator.comparing(OWLAxiom::toString))
+                .collect(Collectors.toList());
+    }
+
+    private static String semanticPathIdentity(ExplanationPath path) {
+        return semanticAxioms(path).stream()
+                .map(OWLAxiom::toString)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private static void appendStructuredExplanation(
+            StringBuilder json, ExplanationPath path, EnhancedExplanationTagger tagger) {
+        List<OWLAxiom> axioms = semanticAxioms(path);
+        String tagString = tagger.tagExplanation(path);
+        List<String> primitiveTags = tagString.codePoints()
+                .mapToObj(cp -> new String(Character.toChars(cp)))
+                .filter(tag -> !EnhancedExplanationTagger.TAG_MULTI_STEP.equals(tag))
+                .collect(Collectors.toList());
+        Set<String> distinctTags = new LinkedHashSet<>(primitiveTags);
+
+        json.append("{ \"semanticAxioms\" : [ ");
+        for (int i = 0; i < axioms.size(); i++) {
+            OWLAxiom axiom = axioms.get(i);
+            List<String> axiomTags = tagger.tagSingleAxiom(axiom);
+            json.append("{ \"identity\" : \"")
+                    .append(OntologyUtils.escapeJson(axiom.toString()))
+                    .append("\", \"rendering\" : \"")
+                    .append(OntologyUtils.escapeJson(OntologyUtils.formatAxiom(axiom)))
+                    .append("\", \"primitiveTags\" : ");
+            appendStringArray(json, axiomTags);
+            json.append(" }");
+            if (i < axioms.size() - 1) json.append(", ");
+        }
+        json.append(" ], \"primitiveTags\" : ");
+        appendStringArray(json, primitiveTags);
+        json.append(", \"distinctPrimitiveTags\" : ");
+        appendStringArray(json, new ArrayList<>(distinctTags));
+        json.append(", \"axiomCount\" : ").append(axioms.size())
+                .append(", \"primitiveTagCount\" : ").append(primitiveTags.size())
+                .append(", \"m\" : ")
+                .append(tagString.contains(EnhancedExplanationTagger.TAG_MULTI_STEP))
+                .append(" }");
+    }
+
+    private static void appendStringArray(StringBuilder json, List<String> values) {
+        json.append("[ ");
+        for (int i = 0; i < values.size(); i++) {
+            json.append("\"").append(OntologyUtils.escapeJson(values.get(i))).append("\"");
+            if (i < values.size() - 1) json.append(", ");
+        }
+        json.append(" ]");
     }
 
 }

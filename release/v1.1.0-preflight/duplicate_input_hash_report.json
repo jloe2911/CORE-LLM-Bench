@@ -1,0 +1,27 @@
+{
+  "across_representations": {
+    "duplicate_hash_groups": 0,
+    "rows_involved": 0
+  },
+  "automatic_deduplication_performed": false,
+  "compatible_duplicate_hash_groups": 435,
+  "fatal_incompatible_gold_semantics": true,
+  "incompatible_duplicate_hash_groups": 9,
+  "note": "The prompt hash is model-independent, so each count applies identically to all three models.",
+  "same_representation": {
+    "AR": {
+      "duplicate_hash_groups": 7,
+      "rows_involved": 14
+    },
+    "FS": {
+      "duplicate_hash_groups": 5,
+      "rows_involved": 10
+    },
+    "NL": {
+      "duplicate_hash_groups": 432,
+      "rows_involved": 1624
+    }
+  },
+  "scientific_review_required": true,
+  "scope": "exact evaluated input hashes, audited independently within each model"
+}

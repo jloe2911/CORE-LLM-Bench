@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Phase 6 pre-commit focused freeze tests",
+      "result": "17 passed",
+      "command": ".venv\\Scripts\\python.exe -m pytest -q -p no:cacheprovider tests\\test_phase6_materialization.py tests\\test_phase5_membership.py --basetemp .tmp\\phase7a_precommit"
+    },
+    {
+      "name": "Phase 6 checksum boundary plus Phase 7A focused tests",
+      "result": "16 passed",
+      "command": ".venv\\Scripts\\python.exe -m pytest -q -p no:cacheprovider tests\\test_phase6_materialization.py tests\\test_phase7a_preflight.py --basetemp .tmp\\phase7a-freeze-boundary-b"
+    },
+    {
+      "name": "Complete tracked Python suite",
+      "result": "78 passed, 4 subtests passed",
+      "command": ".venv\\Scripts\\python.exe -m pytest -q -p no:cacheprovider tests --basetemp .tmp\\phase7a-full-b"
+    },
+    {
+      "name": "Java suite",
+      "result": "9 passed",
+      "command": "mvn test -q"
+    },
+    {
+      "name": "Python syntax compilation",
+      "result": "passed",
+      "command": ".venv\\Scripts\\python.exe -m py_compile scripts\\phase7a_preflight.py scripts\\run_v1_1_experiments.py scripts\\validate_v1_1_experiment_completeness.py tests\\test_phase7a_preflight.py"
+    },
+    {
+      "name": "Git whitespace validation",
+      "result": "passed",
+      "command": "git diff --check"
+    }
+  ],
+  "known_non-scientific_test_issue": "An earlier full-suite attempt had two Windows ACL failures from TemporaryDirectory under .tmp; those tests were changed to use an exact preflight-local scratch file. The final focused and full suites passed."
+}

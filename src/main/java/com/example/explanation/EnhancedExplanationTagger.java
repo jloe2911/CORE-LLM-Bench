@@ -1,541 +1,215 @@
-// com/example/explanation/EnhancedExplanationTagger.java
 package com.example.explanation;
 
 import org.semanticweb.owlapi.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * FIXED: Enhanced explanation tagger with comprehensive OWL reasoning patterns
- * Tags each axiom individually but prevents redundant duplicate tags
- */
+/** Canonical 20-tag classifier with recursive OWLAPI class-expression traversal. */
 public class EnhancedExplanationTagger {
+    public static final String TAG_DIRECT = "D";
+    public static final String TAG_HIERARCHY = "H";
+    public static final String TAG_TRANSITIVITY = "T";
+    public static final String TAG_SYMMETRY = "S";
+    public static final String TAG_ASYMMETRIC = "A";
+    public static final String TAG_DISJOINT = "J";
+    public static final String TAG_CHAIN = "N";
+    public static final String TAG_EXISTENTIAL = "E";
+    public static final String TAG_INTERSECTION = "∩";
+    public static final String TAG_COMPLEMENT = "¬";
+    public static final String TAG_INVERSE = "I";
+    public static final String TAG_FUNCTIONAL = "F";
+    public static final String TAG_REFLEXIVE = "V";
+    public static final String TAG_IRREFLEXIVE = "Y";
+    public static final String TAG_EQUIVALENCE = "Q";
+    public static final String TAG_DOMAIN_RANGE = "R";
+    public static final String TAG_CARDINALITY = "C";
+    public static final String TAG_UNIVERSAL = "L";
+    public static final String TAG_UNION = "U";
+    public static final String TAG_MULTI_STEP = "M";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EnhancedExplanationTagger.class);
+    private static final List<String> CANONICAL_ORDER = Arrays.asList(
+            TAG_DIRECT, TAG_HIERARCHY, TAG_TRANSITIVITY, TAG_SYMMETRY,
+            TAG_ASYMMETRIC, TAG_DISJOINT, TAG_CHAIN, TAG_EXISTENTIAL,
+            TAG_INTERSECTION, TAG_COMPLEMENT, TAG_INVERSE, TAG_FUNCTIONAL,
+            TAG_REFLEXIVE, TAG_IRREFLEXIVE, TAG_EQUIVALENCE,
+            TAG_DOMAIN_RANGE, TAG_CARDINALITY, TAG_UNIVERSAL, TAG_UNION,
+            TAG_MULTI_STEP);
 
-    // Tag constants
-    public static final String TAG_DIRECT = "D";           // Direct assertion
-    public static final String TAG_TRANSITIVITY = "T";     // Transitive property
-    public static final String TAG_HIERARCHY = "H";        // Subclass/subproperty hierarchy
-    public static final String TAG_INVERSE = "I";          // Inverse property
-    public static final String TAG_SYMMETRY = "S";         // Symmetric property
-    public static final String TAG_FUNCTIONAL = "F";       // Functional property
-    public static final String TAG_EQUIVALENCE = "Q";      // Equivalence (owl:equivalentClass, etc.)
-    public static final String TAG_DISJOINT = "J";         // Disjoint classes/properties
-    public static final String TAG_DOMAIN_RANGE = "R";     // Domain/range restrictions
-    public static final String TAG_CHAIN = "N";            // Property chain
-    public static final String TAG_CARDINALITY = "C";      // Cardinality restrictions
-    public static final String TAG_EXISTENTIAL = "E";      // Existential restriction (owl:someValuesFrom)
-    public static final String TAG_UNIVERSAL = "L";        // Universal restriction (owl:allValuesFrom)
-    public static final String TAG_INTERSECTION = "∩";     // Intersection (owl:intersectionOf)
-    public static final String TAG_UNION = "U";            // Union (owl:unionOf)
-    public static final String TAG_COMPLEMENT = "¬";       // Complement (owl:complementOf)
-    public static final String TAG_REFLEXIVE = "V";        // Reflexive property
-    public static final String TAG_IRREFLEXIVE = "Y";      // Irreflexive property
-    public static final String TAG_ASYMMETRIC = "A";       // Asymmetric property
-    public static final String TAG_MULTI_STEP = "M";       // Multi-step reasoning (>2 TBox axioms)
-
-    /**
-     * FIXED: Tag explanation path by counting EACH axiom individually
-     **/
+    /** De-duplicates semantic axioms and never re-counts their text rendering. */
     public String tagExplanation(ExplanationPath path) {
-        if (path == null || (path.getAxioms().isEmpty() &&
-                (path.getJustifications() == null || path.getJustifications().isEmpty()))) {
-            return TAG_MULTI_STEP;
-        }
-
-        List<String> tagSequence = new ArrayList<>();
-        Set<String> processedAxioms = new HashSet<>();
-        Set<String> tboxAxiomTypes = new HashSet<>(); // Track TYPES of TBox axioms
-        Set<String> aboxAxioms = new HashSet<>();
-
-        // STEP 1: Analyze EACH axiom individually
+        if (path == null) return "";
+        List<TagOccurrence> occurrences = new ArrayList<>();
+        Set<OWLAxiom> processedAxioms = new LinkedHashSet<>();
         for (OWLAxiom axiom : path.getAxioms()) {
-            String axiomStr = axiom.toString();
-
-            if (!processedAxioms.contains(axiomStr)) {
-                String tag = tagSingleAxiom(axiom);
-                if (!tag.isEmpty()) {
-                    tagSequence.add(tag);
-                    LOGGER.debug("Axiom: {} -> Tag: {}", axiomStr, tag);
-                }
-
-                processedAxioms.add(axiomStr);
-
-                // Classify and track TBox axiom TYPES
-                if (isTBoxAxiom(axiom)) {
-                    String axiomType = getAxiomTypeForMultiStep(axiom);
-                    tboxAxiomTypes.add(axiomType);
-                } else {
-                    aboxAxioms.add(axiomStr);
-                }
-            }
+            OWLAxiom semanticAxiom = axiom.getAxiomWithoutAnnotations();
+            if (!processedAxioms.add(semanticAxiom)) continue;
+            appendOccurrences(occurrences, tagSingleAxiom(semanticAxiom),
+                    "axiom:" + semanticAxiom);
         }
 
-        // STEP 2: Analyze justifications (same as before)
-        Set<String> processedJustifications = new HashSet<>();
-        if (path.getJustifications() != null && !path.getJustifications().isEmpty()) {
+        // Justifications are display serializations of structured axioms.  They
+        // are a fallback only, preventing historic H/I/N/S/T doubling.
+        if (processedAxioms.isEmpty() && path.getJustifications() != null) {
+            Set<String> processedText = new LinkedHashSet<>();
             for (String justification : path.getJustifications()) {
-                if (!justification.trim().isEmpty() && !processedJustifications.contains(justification)) {
-                    if (!isRedundantJustification(justification, processedAxioms)) {
-                        String tag = tagJustificationString(justification);
-                        if (!tag.isEmpty()) {
-                            tagSequence.add(tag);
-                            LOGGER.debug("Justification: {} -> Tag: {}", justification, tag);
-                        }
-
-                        // Classify justification TBox types
-                        if (isTBoxJustification(justification)) {
-                            String justificationType = getJustificationTypeForMultiStep(justification);
-                            tboxAxiomTypes.add(justificationType);
-                        } else {
-                            aboxAxioms.add(justification);
-                        }
-                    }
-                    processedJustifications.add(justification);
-                }
+                String identity = normalizeText(justification);
+                if (identity.isEmpty() || !processedText.add(identity)) continue;
+                appendOccurrences(occurrences, tagJustificationString(justification),
+                        "text:" + identity);
             }
         }
 
-        // STEP 3: Add multi-step tag if 2+ different TBox axiom types
-        if (tboxAxiomTypes.size() >= 2) {
-            tagSequence.add(TAG_MULTI_STEP);
-            LOGGER.debug("Added multi-step tag: {} different TBox types: {}",
-                    tboxAxiomTypes.size(), tboxAxiomTypes);
+        Set<String> distinctNonDirectTypes = new LinkedHashSet<>();
+        for (TagOccurrence occurrence : occurrences) {
+            if (!TAG_DIRECT.equals(occurrence.tag())) {
+                distinctNonDirectTypes.add(occurrence.tag());
+            }
         }
-
-        // STEP 4: Build final tag
-        String finalTag = buildOrderedTagString(tagSequence);
-
-        LOGGER.debug("Final tag for path '{}': {} (TBox types: {})",
-                path.getDescription(), finalTag, tboxAxiomTypes);
-
-        return !finalTag.isEmpty() ? finalTag : TAG_MULTI_STEP;
+        if (distinctNonDirectTypes.size() >= 2) {
+            occurrences.add(new TagOccurrence(TAG_MULTI_STEP, "meta:heterogeneous-tbox"));
+        }
+        return buildOrderedTagString(occurrences);
     }
 
-    /**
-     * NEW: Get axiom type for multi-step detection
-     */
-    private String getAxiomTypeForMultiStep(OWLAxiom axiom) {
-        // Group related axiom types together
-        if (axiom instanceof OWLSubClassOfAxiom || axiom instanceof OWLSubObjectPropertyOfAxiom ||
-                axiom instanceof OWLSubDataPropertyOfAxiom) {
-            return "HIERARCHY";
-        }
-
-        if (axiom instanceof OWLEquivalentClassesAxiom || axiom instanceof OWLEquivalentObjectPropertiesAxiom ||
-                axiom instanceof OWLEquivalentDataPropertiesAxiom) {
-            return "EQUIVALENCE";
-        }
-
-        if (axiom instanceof OWLObjectPropertyDomainAxiom || axiom instanceof OWLObjectPropertyRangeAxiom ||
-                axiom instanceof OWLDataPropertyDomainAxiom || axiom instanceof OWLDataPropertyRangeAxiom) {
-            return "DOMAIN_RANGE";
-        }
-
-        if (axiom instanceof OWLTransitiveObjectPropertyAxiom) {
-            return "TRANSITIVITY";
-        }
-
-        if (axiom instanceof OWLSymmetricObjectPropertyAxiom) {
-            return "SYMMETRY";
-        }
-
-        if (axiom instanceof OWLInverseObjectPropertiesAxiom) {
-            return "INVERSE";
-        }
-
-        if (axiom instanceof OWLFunctionalObjectPropertyAxiom || axiom instanceof OWLFunctionalDataPropertyAxiom ||
-                axiom instanceof OWLInverseFunctionalObjectPropertyAxiom) {
-            return "FUNCTIONAL";
-        }
-
-        if (axiom instanceof OWLSubPropertyChainOfAxiom) {
-            return "PROPERTY_CHAIN";
-        }
-
-        if (axiom instanceof OWLDisjointClassesAxiom || axiom instanceof OWLDisjointObjectPropertiesAxiom ||
-                axiom instanceof OWLDisjointDataPropertiesAxiom) {
-            return "DISJOINT";
-        }
-
-        // For complex class expressions, analyze content
-        String axiomString = axiom.toString().toLowerCase();
-        if (axiomString.contains("intersectionof")) {
-            return "INTERSECTION";
-        }
-        if (axiomString.contains("unionof")) {
-            return "UNION";
-        }
-        if (axiomString.contains("somevaluesfrom")) {
-            return "EXISTENTIAL";
-        }
-        if (axiomString.contains("allvaluesfrom")) {
-            return "UNIVERSAL";
-        }
-        if (axiomString.contains("cardinality")) {
-            return "CARDINALITY";
-        }
-
-        return "OTHER";
+    /** M is categorical metadata and is excluded from primitive complexity. */
+    public int primitiveTagCount(ExplanationPath path) {
+        return (int) tagExplanation(path).codePoints()
+                .filter(cp -> cp != TAG_MULTI_STEP.codePointAt(0)).count();
     }
 
-    /**
-     * NEW: Get justification type for multi-step detection
-     */
-    private String getJustificationTypeForMultiStep(String justification) {
-        String lower = justification.toLowerCase().trim();
-
-        if (lower.contains("subclassof") || lower.contains("subpropertyof")) {
-            return "HIERARCHY";
-        }
-        if (lower.contains("equivalentclass") || lower.contains("equivalentproperty")) {
-            return "EQUIVALENCE";
-        }
-        if (lower.contains("domain") || lower.contains("range")) {
-            return "DOMAIN_RANGE";
-        }
-        if (lower.contains("transitive")) {
-            return "TRANSITIVITY";
-        }
-        if (lower.contains("symmetric")) {
-            return "SYMMETRY";
-        }
-        if (lower.contains("inverse")) {
-            return "INVERSE";
-        }
-        if (lower.contains("functional")) {
-            return "FUNCTIONAL";
-        }
-        if (lower.contains("propertychain")) {
-            return "PROPERTY_CHAIN";
-        }
-        if (lower.contains("disjoint")) {
-            return "DISJOINT";
-        }
-        if (lower.contains("intersectionof") || lower.contains("intersection")) {
-            return "INTERSECTION";
-        }
-        if (lower.contains("unionof") || lower.contains("union")) {
-            return "UNION";
-        }
-        if (lower.contains("somevaluesfrom")) {
-            return "EXISTENTIAL";
-        }
-        if (lower.contains("allvaluesfrom")) {
-            return "UNIVERSAL";
-        }
-        if (lower.contains("cardinality")) {
-            return "CARDINALITY";
-        }
-
-        return "OTHER";
+    List<String> tagSingleAxiom(OWLAxiom axiom) {
+        List<String> tags = new ArrayList<>();
+        if (axiom == null) return tags;
+        if (axiom instanceof OWLClassAssertionAxiom classAssertion) {
+            tags.add(TAG_DIRECT);
+            collectClassExpressionTags(classAssertion.getClassExpression(), tags);
+        } else if (axiom instanceof OWLObjectPropertyAssertionAxiom
+                || axiom instanceof OWLDataPropertyAssertionAxiom) {
+            tags.add(TAG_DIRECT);
+        } else if (axiom instanceof OWLSubClassOfAxiom subClass) {
+            tags.add(TAG_HIERARCHY);
+            collectClassExpressionTags(subClass.getSubClass(), tags);
+            collectClassExpressionTags(subClass.getSuperClass(), tags);
+        } else if (axiom instanceof OWLSubObjectPropertyOfAxiom
+                || axiom instanceof OWLSubDataPropertyOfAxiom) {
+            tags.add(TAG_HIERARCHY);
+        } else if (axiom instanceof OWLEquivalentClassesAxiom equivalent) {
+            tags.add(TAG_EQUIVALENCE);
+            equivalent.getClassExpressions().forEach(e -> collectClassExpressionTags(e, tags));
+        } else if (axiom instanceof OWLEquivalentObjectPropertiesAxiom
+                || axiom instanceof OWLEquivalentDataPropertiesAxiom) {
+            tags.add(TAG_EQUIVALENCE);
+        } else if (axiom instanceof OWLDisjointClassesAxiom disjoint) {
+            tags.add(TAG_DISJOINT);
+            disjoint.getClassExpressions().forEach(e -> collectClassExpressionTags(e, tags));
+        } else if (axiom instanceof OWLDisjointObjectPropertiesAxiom
+                || axiom instanceof OWLDisjointDataPropertiesAxiom) {
+            tags.add(TAG_DISJOINT);
+        } else if (axiom instanceof OWLSubPropertyChainOfAxiom) tags.add(TAG_CHAIN);
+        else if (axiom instanceof OWLTransitiveObjectPropertyAxiom) tags.add(TAG_TRANSITIVITY);
+        else if (axiom instanceof OWLSymmetricObjectPropertyAxiom) tags.add(TAG_SYMMETRY);
+        else if (axiom instanceof OWLAsymmetricObjectPropertyAxiom) tags.add(TAG_ASYMMETRIC);
+        else if (axiom instanceof OWLReflexiveObjectPropertyAxiom) tags.add(TAG_REFLEXIVE);
+        else if (axiom instanceof OWLIrreflexiveObjectPropertyAxiom) tags.add(TAG_IRREFLEXIVE);
+        else if (axiom instanceof OWLInverseObjectPropertiesAxiom) tags.add(TAG_INVERSE);
+        else if (axiom instanceof OWLFunctionalObjectPropertyAxiom
+                || axiom instanceof OWLFunctionalDataPropertyAxiom
+                || axiom instanceof OWLInverseFunctionalObjectPropertyAxiom) tags.add(TAG_FUNCTIONAL);
+        else if (axiom instanceof OWLObjectPropertyDomainAxiom domain) {
+            tags.add(TAG_DOMAIN_RANGE); collectClassExpressionTags(domain.getDomain(), tags);
+        } else if (axiom instanceof OWLObjectPropertyRangeAxiom range) {
+            tags.add(TAG_DOMAIN_RANGE); collectClassExpressionTags(range.getRange(), tags);
+        } else if (axiom instanceof OWLDataPropertyDomainAxiom domain) {
+            tags.add(TAG_DOMAIN_RANGE); collectClassExpressionTags(domain.getDomain(), tags);
+        } else if (axiom instanceof OWLDataPropertyRangeAxiom) tags.add(TAG_DOMAIN_RANGE);
+        return tags;
     }
 
-    /**
-     * UPDATED: Build ordered tag string
-     */
-    private String buildOrderedTagString(List<String> tagSequence) {
-        if (tagSequence.isEmpty()) return "";
+    private void collectClassExpressionTags(OWLClassExpression expression, List<String> tags) {
+        if (expression == null || !expression.isAnonymous()) return;
+        if (expression instanceof OWLObjectIntersectionOf x) {
+            tags.add(TAG_INTERSECTION); x.getOperands().forEach(e -> collectClassExpressionTags(e, tags));
+        } else if (expression instanceof OWLObjectUnionOf x) {
+            tags.add(TAG_UNION); x.getOperands().forEach(e -> collectClassExpressionTags(e, tags));
+        } else if (expression instanceof OWLObjectComplementOf x) {
+            tags.add(TAG_COMPLEMENT); collectClassExpressionTags(x.getOperand(), tags);
+        } else if (expression instanceof OWLObjectSomeValuesFrom x) {
+            tags.add(TAG_EXISTENTIAL); collectClassExpressionTags(x.getFiller(), tags);
+        } else if (expression instanceof OWLDataSomeValuesFrom) tags.add(TAG_EXISTENTIAL);
+        else if (expression instanceof OWLObjectAllValuesFrom x) {
+            tags.add(TAG_UNIVERSAL); collectClassExpressionTags(x.getFiller(), tags);
+        } else if (expression instanceof OWLDataAllValuesFrom) tags.add(TAG_UNIVERSAL);
+        else if (expression instanceof OWLObjectMinCardinality x) {
+            tags.add(TAG_CARDINALITY); collectClassExpressionTags(x.getFiller(), tags);
+        } else if (expression instanceof OWLObjectMaxCardinality x) {
+            tags.add(TAG_CARDINALITY); collectClassExpressionTags(x.getFiller(), tags);
+        } else if (expression instanceof OWLObjectExactCardinality x) {
+            tags.add(TAG_CARDINALITY); collectClassExpressionTags(x.getFiller(), tags);
+        } else if (expression instanceof OWLDataMinCardinality
+                || expression instanceof OWLDataMaxCardinality
+                || expression instanceof OWLDataExactCardinality) tags.add(TAG_CARDINALITY);
+    }
 
-        Map<String, Integer> tagCounts = new LinkedHashMap<>();
-        for (String tag : tagSequence) {
-            tagCounts.merge(tag, 1, Integer::sum);
+    private List<String> tagJustificationString(String justification) {
+        String lower = normalizeText(justification);
+        List<String> tags = new ArrayList<>();
+        addIf(tags, TAG_DIRECT, lower.contains("rdf:type") || lower.contains("classassertion")
+                || lower.contains("propertyassertion"));
+        addIf(tags, TAG_HIERARCHY, lower.contains("subclassof") || lower.contains("subpropertyof"));
+        addIf(tags, TAG_TRANSITIVITY, lower.contains("transitiveobjectproperty"));
+        addIf(tags, TAG_ASYMMETRIC, lower.contains("asymmetricobjectproperty"));
+        addIf(tags, TAG_SYMMETRY, lower.contains("symmetricobjectproperty")
+                && !lower.contains("asymmetricobjectproperty"));
+        addIf(tags, TAG_DISJOINT, lower.contains("disjoint"));
+        addIf(tags, TAG_CHAIN, lower.contains("propertychain"));
+        addIf(tags, TAG_EXISTENTIAL, lower.contains("somevaluesfrom"));
+        addIf(tags, TAG_INTERSECTION, lower.contains("intersectionof"));
+        addIf(tags, TAG_COMPLEMENT, lower.contains("complementof"));
+        addIf(tags, TAG_INVERSE, lower.contains("inverseof"));
+        addIf(tags, TAG_FUNCTIONAL, lower.contains("functional"));
+        addIf(tags, TAG_REFLEXIVE, lower.contains("reflexiveobjectproperty")
+                && !lower.contains("irreflexiveobjectproperty"));
+        addIf(tags, TAG_IRREFLEXIVE, lower.contains("irreflexiveobjectproperty"));
+        addIf(tags, TAG_EQUIVALENCE, lower.contains("equivalentclass")
+                || lower.contains("equivalentpropert"));
+        addIf(tags, TAG_DOMAIN_RANGE, lower.contains("domain(") || lower.contains("range(")
+                || lower.contains("rdfs:domain") || lower.contains("rdfs:range"));
+        addIf(tags, TAG_CARDINALITY, lower.contains("cardinality"));
+        addIf(tags, TAG_UNIVERSAL, lower.contains("allvaluesfrom"));
+        addIf(tags, TAG_UNION, lower.contains("unionof"));
+        return tags;
+    }
+
+    private static void addIf(Collection<String> tags, String tag, boolean condition) {
+        if (condition) tags.add(tag);
+    }
+
+    private static void appendOccurrences(List<TagOccurrence> target, List<String> tags, String source) {
+        for (int i = 0; i < tags.size(); i++) target.add(new TagOccurrence(tags.get(i), source + "#" + i));
+    }
+
+    private String buildOrderedTagString(List<TagOccurrence> occurrences) {
+        Map<String, Integer> counts = new LinkedHashMap<>();
+        Set<String> identities = new LinkedHashSet<>();
+        for (TagOccurrence occurrence : occurrences) {
+            if (identities.add(occurrence.sourceIdentity())) counts.merge(occurrence.tag(), 1, Integer::sum);
         }
-
         StringBuilder result = new StringBuilder();
-        List<String> orderedTags = Arrays.asList(
-                TAG_DIRECT, TAG_HIERARCHY, TAG_EQUIVALENCE, TAG_TRANSITIVITY,
-                TAG_SYMMETRY, TAG_INVERSE, TAG_FUNCTIONAL, TAG_CHAIN,
-                TAG_EXISTENTIAL, TAG_UNIVERSAL, TAG_CARDINALITY,
-                TAG_INTERSECTION, TAG_UNION, TAG_DOMAIN_RANGE,
-                TAG_MULTI_STEP, TAG_DISJOINT, TAG_REFLEXIVE,
-                TAG_ASYMMETRIC, TAG_IRREFLEXIVE, TAG_COMPLEMENT
-        );
-
-        for (String tag : orderedTags) {
-            int count = tagCounts.getOrDefault(tag, 0);
-            for (int i = 0; i < count; i++) {
-                result.append(tag);
-            }
-        }
-
+        for (String tag : CANONICAL_ORDER) result.append(tag.repeat(counts.getOrDefault(tag, 0)));
         return result.toString();
     }
 
-    /**
-     * Check if justification is redundant (just a string form of an already-processed axiom)
-     */
-    private boolean isRedundantJustification(String justification, Set<String> processedAxioms) {
-        String justLower = justification.toLowerCase().trim();
-
-        // Check if this justification is just describing an axiom we already processed
-        for (String axiomStr : processedAxioms) {
-            String axiomLower = axiomStr.toLowerCase();
-
-            // Simple heuristic: if justification contains key parts of the axiom, it's likely redundant
-            if (justLower.contains("rdf:type") && axiomLower.contains("classassertion") ||
-                    justLower.contains("rdfs:subclassof") && axiomLower.contains("subclassof") ||
-                    justLower.contains("domain(") && axiomLower.contains("domain") ||
-                    justLower.contains("range(") && axiomLower.contains("range")) {
-                return true;
-            }
-        }
-
-        return false;
+    private static String normalizeText(String value) {
+        return value == null ? "" : value.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
     }
 
-    /**
-     * ENHANCED: Tag a single axiom with comprehensive pattern matching
-     */
-    private String tagSingleAxiom(OWLAxiom axiom) {
-        if (axiom == null) return "";
-
-        // Direct assertions (ABox)
-        if (axiom instanceof OWLClassAssertionAxiom || axiom instanceof OWLObjectPropertyAssertionAxiom ||
-                axiom instanceof OWLDataPropertyAssertionAxiom) {
-            return TAG_DIRECT;
-        }
-
-        // Hierarchy (TBox)
-        if (axiom instanceof OWLSubClassOfAxiom || axiom instanceof OWLSubObjectPropertyOfAxiom ||
-                axiom instanceof OWLSubDataPropertyOfAxiom) {
-            return TAG_HIERARCHY;
-        }
-
-        // Equivalence (TBox)
-        if (axiom instanceof OWLEquivalentClassesAxiom || axiom instanceof OWLEquivalentObjectPropertiesAxiom ||
-                axiom instanceof OWLEquivalentDataPropertiesAxiom) {
-            return TAG_EQUIVALENCE;
-        }
-
-        // Disjointness (TBox)
-        if (axiom instanceof OWLDisjointClassesAxiom || axiom instanceof OWLDisjointObjectPropertiesAxiom ||
-                axiom instanceof OWLDisjointDataPropertiesAxiom) {
-            return TAG_DISJOINT;
-        }
-
-        // Property characteristics (TBox)
-        if (axiom instanceof OWLTransitiveObjectPropertyAxiom) {
-            return TAG_TRANSITIVITY;
-        }
-        if (axiom instanceof OWLSymmetricObjectPropertyAxiom) {
-            return TAG_SYMMETRY;
-        }
-        if (axiom instanceof OWLAsymmetricObjectPropertyAxiom) {
-            return TAG_ASYMMETRIC;
-        }
-        if (axiom instanceof OWLReflexiveObjectPropertyAxiom) {
-            return TAG_REFLEXIVE;
-        }
-        if (axiom instanceof OWLIrreflexiveObjectPropertyAxiom) {
-            return TAG_IRREFLEXIVE;
-        }
-        if (axiom instanceof OWLInverseObjectPropertiesAxiom) {
-            return TAG_INVERSE;
-        }
-        if (axiom instanceof OWLFunctionalObjectPropertyAxiom || axiom instanceof OWLFunctionalDataPropertyAxiom ||
-                axiom instanceof OWLInverseFunctionalObjectPropertyAxiom) {
-            return TAG_FUNCTIONAL;
-        }
-
-        // Domain and range (TBox)
-        if (axiom instanceof OWLObjectPropertyDomainAxiom || axiom instanceof OWLObjectPropertyRangeAxiom ||
-                axiom instanceof OWLDataPropertyDomainAxiom || axiom instanceof OWLDataPropertyRangeAxiom) {
-            return TAG_DOMAIN_RANGE;
-        }
-
-        // Property chains (TBox)
-        if (axiom instanceof OWLSubPropertyChainOfAxiom) {
-            return TAG_CHAIN;
-        }
-
-        // Analyze complex class expressions in the axiom
-        return analyzeComplexAxiom(axiom);
-    }
-
-    /**
-     * ENHANCED: Analyze complex axioms for specific class expression patterns
-     */
-    private String analyzeComplexAxiom(OWLAxiom axiom) {
-        String axiomString = axiom.toString().toLowerCase();
-
-        // Look for class expressions that indicate specific reasoning patterns
-        if (axiomString.contains("objectintersectionof") || axiomString.contains("intersectionof")) {
-            return TAG_INTERSECTION;
-        }
-        if (axiomString.contains("objectunionof") || axiomString.contains("unionof")) {
-            return TAG_UNION;
-        }
-        if (axiomString.contains("objectcomplementof") || axiomString.contains("complementof")) {
-            return TAG_COMPLEMENT;
-        }
-        if (axiomString.contains("objectsomevaluesfrom") || axiomString.contains("somevaluesfrom")) {
-            return TAG_EXISTENTIAL;
-        }
-        if (axiomString.contains("objectallvaluesfrom") || axiomString.contains("allvaluesfrom")) {
-            return TAG_UNIVERSAL;
-        }
-        if (axiomString.contains("objectmincardinality") || axiomString.contains("objectmaxcardinality") ||
-                axiomString.contains("objectexactcardinality") || axiomString.contains("cardinality")) {
-            return TAG_CARDINALITY;
-        }
-
-        // If we can't categorize it, it's complex
-        return "";
-    }
-
-    /**
-     * ENHANCED: Tag justification string by analyzing its semantic content
-     */
-    private String tagJustificationString(String justification) {
-        if (justification == null || justification.trim().isEmpty()) {
-            return "";
-        }
-
-        String lower = justification.toLowerCase().trim();
-
-        // Direct assertions - look for simple type/property assertions
-        if ((lower.contains("rdf:type") || lower.contains("a ")) &&
-                !lower.contains("subclassof") && !lower.contains("subpropertyof") &&
-                !lower.contains("domain") && !lower.contains("range")) {
-            return TAG_DIRECT;
-        }
-
-        // Hierarchy - subclass/subproperty relationships
-        if (lower.contains("rdfs:subclassof") || lower.contains("subclassof") ||
-                lower.contains("rdfs:subpropertyof") || lower.contains("subpropertyof") ||
-                lower.contains("⊑")) {
-            return TAG_HIERARCHY;
-        }
-
-        // Equivalence
-        if (lower.contains("owl:equivalentclass") || lower.contains("equivalentclass") ||
-                lower.contains("owl:equivalentproperty") || lower.contains("equivalentproperty") ||
-                lower.contains("≡")) {
-            return TAG_EQUIVALENCE;
-        }
-
-        // Domain and range restrictions
-        if (lower.contains("domain(") || lower.contains("range(") ||
-                lower.contains("rdfs:domain") || lower.contains("rdfs:range")) {
-            return TAG_DOMAIN_RANGE;
-        }
-
-        // Property characteristics
-        if (lower.contains("transitiveobjectproperty") || lower.contains("transitive")) {
-            return TAG_TRANSITIVITY;
-        }
-        if (lower.contains("symmetricobjectproperty") || lower.contains("symmetric")) {
-            return TAG_SYMMETRY;
-        }
-        if (lower.contains("asymmetricobjectproperty") || lower.contains("asymmetric")) {
-            return TAG_ASYMMETRIC;
-        }
-        if (lower.contains("reflexiveobjectproperty") || lower.contains("reflexive")) {
-            return TAG_REFLEXIVE;
-        }
-        if (lower.contains("irreflexiveobjectproperty") || lower.contains("irreflexive")) {
-            return TAG_IRREFLEXIVE;
-        }
-        if (lower.contains("inverseof") || lower.contains("inverse") || lower.contains("⁻")) {
-            return TAG_INVERSE;
-        }
-        if (lower.contains("functionalobjectproperty") || lower.contains("functional")) {
-            return TAG_FUNCTIONAL;
-        }
-
-        // Disjointness
-        if (lower.contains("owl:disjointwith") || lower.contains("disjoint")) {
-            return TAG_DISJOINT;
-        }
-
-        // Property chains
-        if (lower.contains("propertychain") || lower.contains("∘") || lower.contains("○")) {
-            return TAG_CHAIN;
-        }
-
-        // Restrictions
-        if (lower.contains("somevaluesfrom") || lower.contains("∃")) {
-            return TAG_EXISTENTIAL;
-        }
-        if (lower.contains("allvaluesfrom") || lower.contains("∀")) {
-            return TAG_UNIVERSAL;
-        }
-        if (lower.contains("cardinality") || lower.contains("min ") || lower.contains("max ") ||
-                lower.contains("exactly ")) {
-            return TAG_CARDINALITY;
-        }
-
-        // Complex expressions
-        if (lower.contains("intersectionof") || lower.contains("∩") ||
-                lower.contains("intersection") || lower.contains("member of all")) {
-            return TAG_INTERSECTION;
-        }
-        if (lower.contains("unionof") || lower.contains("∪") || lower.contains("union")) {
-            return TAG_UNION;
-        }
-        if (lower.contains("complementof") || lower.contains("¬") || lower.contains("complement")) {
-            return TAG_COMPLEMENT;
-        }
-
-        // If we can't categorize the justification, don't tag it
-        return "";
-    }
-
-    /**
-     * Check if axiom belongs to TBox (terminological box)
-     */
-    private boolean isTBoxAxiom(OWLAxiom axiom) {
-        return axiom instanceof OWLSubClassOfAxiom ||
-                axiom instanceof OWLEquivalentClassesAxiom ||
-                axiom instanceof OWLDisjointClassesAxiom ||
-                axiom instanceof OWLSubObjectPropertyOfAxiom ||
-                axiom instanceof OWLSubDataPropertyOfAxiom ||
-                axiom instanceof OWLEquivalentObjectPropertiesAxiom ||
-                axiom instanceof OWLEquivalentDataPropertiesAxiom ||
-                axiom instanceof OWLObjectPropertyDomainAxiom ||
-                axiom instanceof OWLObjectPropertyRangeAxiom ||
-                axiom instanceof OWLDataPropertyDomainAxiom ||
-                axiom instanceof OWLDataPropertyRangeAxiom ||
-                axiom instanceof OWLTransitiveObjectPropertyAxiom ||
-                axiom instanceof OWLSymmetricObjectPropertyAxiom ||
-                axiom instanceof OWLAsymmetricObjectPropertyAxiom ||
-                axiom instanceof OWLReflexiveObjectPropertyAxiom ||
-                axiom instanceof OWLIrreflexiveObjectPropertyAxiom ||
-                axiom instanceof OWLFunctionalObjectPropertyAxiom ||
-                axiom instanceof OWLFunctionalDataPropertyAxiom ||
-                axiom instanceof OWLInverseFunctionalObjectPropertyAxiom ||
-                axiom instanceof OWLInverseObjectPropertiesAxiom ||
-                axiom instanceof OWLSubPropertyChainOfAxiom;
-    }
-
-    /**
-     * Check if justification string represents TBox knowledge
-     */
-    private boolean isTBoxJustification(String justification) {
-        String lower = justification.toLowerCase();
-        return lower.contains("subclassof") ||
-                lower.contains("subpropertyof") ||
-                lower.contains("equivalentclass") ||
-                lower.contains("equivalentproperty") ||
-                lower.contains("disjoint") ||
-                lower.contains("domain") ||
-                lower.contains("range") ||
-                lower.contains("transitive") ||
-                lower.contains("symmetric") ||
-                lower.contains("functional") ||
-                lower.contains("inverse") ||
-                lower.contains("propertychain") ||
-                lower.contains("somevaluesfrom") ||
-                lower.contains("allvaluesfrom") ||
-                lower.contains("cardinality") ||
-                lower.contains("intersectionof") ||
-                lower.contains("unionof") ||
-                lower.contains("complementof");
-    }
-
+    private record TagOccurrence(String tag, String sourceIdentity) {}
 }

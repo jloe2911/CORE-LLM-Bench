@@ -1,0 +1,44 @@
+{
+  "availability_check": "passed",
+  "requested_model": "qwen/qwen3-30b-a3b-instruct-2507",
+  "requested_provider_name": "Alibaba Cloud International",
+  "required_parameters": [
+    "frequency_penalty",
+    "max_tokens",
+    "presence_penalty",
+    "seed",
+    "temperature",
+    "top_p"
+  ],
+  "resolved_at": "2026-09-21T11:24:12.630241+00:00",
+  "resolved_provider_identifier": "alibaba",
+  "selected_endpoint": {
+    "context_length": 131072,
+    "max_completion_tokens": 32768,
+    "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+    "name": "Alibaba | qwen/qwen3-30b-a3b-instruct-2507",
+    "pricing": {
+      "completion": "0.00000052",
+      "discount": 0,
+      "prompt": "0.00000013"
+    },
+    "provider_name": "Alibaba",
+    "status": 0,
+    "supported_parameters": [
+      "max_tokens",
+      "temperature",
+      "top_p",
+      "seed",
+      "presence_penalty",
+      "response_format",
+      "tools",
+      "tool_choice",
+      "logprobs",
+      "top_logprobs",
+      "top_k",
+      "frequency_penalty",
+      "stop"
+    ],
+    "tag": "alibaba"
+  }
+}
