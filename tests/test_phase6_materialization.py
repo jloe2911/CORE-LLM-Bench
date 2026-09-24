@@ -151,11 +151,11 @@ class Phase6MaterializationTests(unittest.TestCase):
             explanations = json.loads(row["answer_explanations"])
             self.assertGreater(len(explanations), 0)
             for answer_group in explanations:
-                self.assertIn("Answer", answer_group)
-                self.assertGreater(len(answer_group["Alternatives"]), 0)
+                self.assertIn("answer", answer_group)
+                self.assertGreater(len(answer_group["alternatives"]), 0)
                 self.assertEqual(
-                    answer_group["Source Provenance"]["inferred.object"],
-                    answer_group["Answer"],
+                    answer_group["source_provenance"]["inferred.object"],
+                    answer_group["answer"],
                 )
         self.assertEqual(oeqa_count, 3016)
         expected = {

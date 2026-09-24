@@ -159,7 +159,7 @@ public class ExplanationFormatter {
         // Priority 2: Convert axioms to justifications using standardized formatting
         if (path.getAxioms() != null && !path.getAxioms().isEmpty()) {
             for (OWLAxiom axiom : path.getAxioms()) {
-                String formatted = OntologyUtils.formatAxiom(axiom);
+                String formatted = SemanticAxiomRenderer.render(axiom);
                 if (formatted != null && !formatted.trim().isEmpty()) {
                     justifications.add(formatted);
                 }
@@ -215,7 +215,7 @@ public class ExplanationFormatter {
             json.append("{ \"identity\" : \"")
                     .append(OntologyUtils.escapeJson(axiom.toString()))
                     .append("\", \"rendering\" : \"")
-                    .append(OntologyUtils.escapeJson(OntologyUtils.formatAxiom(axiom)))
+                    .append(OntologyUtils.escapeJson(SemanticAxiomRenderer.render(axiom)))
                     .append("\", \"primitiveTags\" : ");
             appendStringArray(json, axiomTags);
             json.append(" }");

@@ -45,6 +45,12 @@ class EnhancedExplanationTaggerTest {
         assertEquals("J", tag(df.getOWLDisjointClassesAxiom(a, b)));
     }
 
+    @Test void unsupportedAxiomsAreNeverSilentlyClassifiedAsDirect() {
+        OWLAxiom unsupported = df.getOWLDeclarationAxiom(a);
+        assertEquals("", tag(unsupported));
+        assertFalse(tagger.tagSingleAxiom(unsupported).contains("D"));
+    }
+
     @Test void duplicateAxiomAndTextRenderingAreNotDoubleCounted() {
         OWLAxiom hierarchy = df.getOWLSubClassOfAxiom(a, b);
         ExplanationPath path = path(List.of(hierarchy, hierarchy));

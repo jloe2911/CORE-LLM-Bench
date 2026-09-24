@@ -80,8 +80,10 @@ tests/*
 !tests/test_phase7c_collision_audit.py
 !tests/test_phase7d_final_freeze.py
 !tests/test_phase7e_qwen_alibaba.py
+!tests/test_explanation_schema.py
 
 # Locally prepared release payloads (reproducible via scripts; do not commit copies).
+/release/v1.1.0-staging-pre-schema-finalization/
 release/huggingface/*.parquet
 release/huggingface/dataset_info.json
 release/zenodo/package/

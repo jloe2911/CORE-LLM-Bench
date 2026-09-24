@@ -51,6 +51,97 @@
       "incompatible_rows": 0
     }
   },
+  "explanation_schema_finalization": {
+    "architecture": "post-process immutable Phase-7D staging; symbolic data used only for explanations",
+    "explanations": {
+      "BQA_alternatives": {
+        "groups": 6032,
+        "maximum": 20,
+        "mean": 1.58256,
+        "minimum": 1,
+        "total_alternatives": 9546
+      },
+      "OEQA_alternatives": {
+        "groups": 8019,
+        "maximum": 20,
+        "mean": 1.423744,
+        "minimum": 1,
+        "total_alternatives": 11417
+      },
+      "OEQA_maximum_combination_count": 28,
+      "OEQA_maximum_tied_global_minima": 21,
+      "OEQA_rows_with_multiple_tied_global_minima": 422,
+      "primitive_tags_exercised": [
+        "D",
+        "H",
+        "I",
+        "N",
+        "R",
+        "S",
+        "T"
+      ]
+    },
+    "gemini": {
+      "input_hash_mismatches": 0,
+      "observations": 27144,
+      "rerun_required": false,
+      "response_files_modified_or_moved": false
+    },
+    "membership": {
+      "BQA": 6032,
+      "FALSE": 3016,
+      "OEQA": 3016,
+      "TRUE": 3016,
+      "complete_bqa_pairs": 3016,
+      "dataset_hop": {
+        "FamilyOWL/1hop": 1881,
+        "FamilyOWL/2hop": 1881,
+        "OWL2Bench/1hop": 1467,
+        "OWL2Bench/2hop": 1593,
+        "Pizza100/1hop": 495,
+        "Pizza100/2hop": 495,
+        "Pizza250/1hop": 618,
+        "Pizza250/2hop": 618
+      },
+      "total": 9048
+    },
+    "model_input_changes": {
+      "AR": 0,
+      "FS": 0,
+      "NL": 0
+    },
+    "model_input_manifest_sha256": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18",
+    "schema": {
+      "canonical_fields": [
+        "answer_explanations",
+        "complete_explanation"
+      ],
+      "m_status": "derived metadata only; excluded from primitive tags and complexity",
+      "manchester_renderer": "ManchesterOWLSyntaxOWLObjectRendererImpl",
+      "owlapi_version": "5.1.20",
+      "prefix_policy": "full-iri-no-prefixes",
+      "primitive_tags": [
+        "D",
+        "H",
+        "I",
+        "R",
+        "S",
+        "T",
+        "N"
+      ],
+      "removed_fields": [
+        "complete_explanation_combination_count",
+        "explanations",
+        "legacy_explanation_fields",
+        "maximum_axiom_count",
+        "minimum_axiom_count",
+        "structured_explanations"
+      ],
+      "semantic_identity": "annotation-free OWLAPI axiom identity",
+      "tag_sequence_semantics": "primitive tags corresponding to axioms in stored axiom order"
+    },
+    "source": "release/v1.1.0-staging"
+  },
   "historical_v1_0_responses_in_primary": 0,
   "input_hash_rows": 27144,
   "matrix_rows": 81432,

@@ -1,46 +1,75 @@
 {
   "benchmark": "CORE-LLM-Bench",
   "configuration_hash": "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3",
+  "explanation_schema": {
+    "canonical_fields": [
+      "answer_explanations",
+      "complete_explanation"
+    ],
+    "m_status": "derived metadata only; excluded from primitive tags and complexity",
+    "manchester_renderer": "ManchesterOWLSyntaxOWLObjectRendererImpl",
+    "owlapi_version": "5.1.20",
+    "prefix_policy": "full-iri-no-prefixes",
+    "primitive_tags": [
+      "D",
+      "H",
+      "I",
+      "R",
+      "S",
+      "T",
+      "N"
+    ],
+    "removed_fields": [
+      "complete_explanation_combination_count",
+      "explanations",
+      "legacy_explanation_fields",
+      "maximum_axiom_count",
+      "minimum_axiom_count",
+      "structured_explanations"
+    ],
+    "semantic_identity": "annotation-free OWLAPI axiom identity",
+    "tag_sequence_semantics": "primitive tags corresponding to axioms in stored axiom order"
+  },
   "files": [
     {
-      "bytes": 88227410,
+      "bytes": 89729635,
       "path": "benchmark/FamilyOWL_1hop.json",
-      "sha256": "be9d5c897856e26aaac2be015649907d942a5de51ca1854d70e38e7853cb469e"
+      "sha256": "1fb8d1006eeb5ab2c45ff907aeb2a13b51aa5ce788aa57481b1b5a8f63f23c1c"
     },
     {
-      "bytes": 203849891,
+      "bytes": 205352668,
       "path": "benchmark/FamilyOWL_2hop.json",
-      "sha256": "b112510a8b784bd70b9b6105e3ab85bfb45fa5c26e0d58e1129f90f3ddb4b927"
+      "sha256": "78b3d4c7a88efd3218f7cf81393f73fee228323d4110190504b2be1fee5939a1"
     },
     {
-      "bytes": 26514512,
+      "bytes": 28326331,
       "path": "benchmark/OWL2Bench_1hop.json",
-      "sha256": "b2652709b9f6a9d6b2b8cdfc4434e4481d45a24f458fad07b5326086929ec400"
+      "sha256": "0b633af84779ae56eabf72ee94dff896e7e58ceb570dcc46189f766781c3a379"
     },
     {
-      "bytes": 61422084,
+      "bytes": 63572699,
       "path": "benchmark/OWL2Bench_2hop.json",
-      "sha256": "ccef7c06ea3aa7b140b3b48f86a36955fdb510be11b8c78f91c7b446588c1935"
+      "sha256": "82d70e2978e6735a08aea8cfa64a85a6ed598f595f540d4d306fd4f649c7fecc"
     },
     {
-      "bytes": 17252572,
+      "bytes": 18102356,
       "path": "benchmark/Pizza100_1hop.json",
-      "sha256": "ed607ed5f811872f0926f88816031f23759bc0b671195ef7dc14df3b57fbad85"
+      "sha256": "6e1729232266b66a1425542c7a0a0013f1af1b83b1a6f17791a88004005d5441"
     },
     {
-      "bytes": 37849900,
+      "bytes": 38777937,
       "path": "benchmark/Pizza100_2hop.json",
-      "sha256": "c9ad6600d828481a3cb783cfbb1170d1f51bf0c8d9dfb5fa6d6427dd7e8e4136"
+      "sha256": "eacea066e489c7a153ea2965f70376170a610fc1e5dcdd1ed7e02c8e7c80c18c"
     },
     {
-      "bytes": 21793891,
+      "bytes": 22817075,
       "path": "benchmark/Pizza250_1hop.json",
-      "sha256": "a8ff39cca7c3b99059b580aceea37a287817a6fdc99f1c3edd04ca1a774d6817"
+      "sha256": "43ac2d08ca4d66aa78b92a3bdac9a711d5f9345a30569b350f6eb451cc1124d3"
     },
     {
-      "bytes": 54947166,
+      "bytes": 55985540,
       "path": "benchmark/Pizza250_2hop.json",
-      "sha256": "dca092b3fc641c0f04b075f994a7c108ec803d19bc8e5255c1010d240d30fda6"
+      "sha256": "5ea5baa46b538c8713420f63df5e050cf15da49f6f283a9419cdb1b43082be36"
     },
     {
       "bytes": 1189854,
@@ -53,9 +82,9 @@
       "sha256": "5788b42d5779ff35fb86438f6283e64d699e4cb5caea7377ccd86d3a8270c298"
     },
     {
-      "bytes": 9870709,
+      "bytes": 10223171,
       "path": "core_llm_bench_v1_1.parquet",
-      "sha256": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859"
+      "sha256": "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc"
     },
     {
       "bytes": 1780,
@@ -118,12 +147,12 @@
       "sha256": "3733b299d179b7f1b3a90b147d4c48d67acb86a584bf002687d60ed6b4d321f4"
     },
     {
-      "bytes": 1855,
+      "bytes": 4369,
       "path": "validation_report.json",
-      "sha256": "c6b5a42f2ea70f64d951c4ea20fa6c94f6e8a5e6c827a14e4b1401a149f0c33f"
+      "sha256": "aeb49d578bb5b52303f99e1a142a9511f069855646696f71057f9df401d9f2d2"
     }
   ],
-  "phase": "7D-final-experiment-freeze",
+  "phase": "explanation-schema-finalized",
   "prompt_template_version": "api_calls.create_context_specific_prompt@24c4520",
   "statistics": {
     "BQA": 6032,
