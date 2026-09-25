@@ -3,11 +3,13 @@
 ## 1.1.0 - 2026-09-25
 
 - Publish the schema-finalized 9,048-question benchmark with deterministic public IDs and semantic keys.
+- Publish the version through the [GitHub release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0), [Hugging Face v1.1.0 revision](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0), and Zenodo DOI [`10.5281/zenodo.22959957`](https://zenodo.org/records/22959957).
 - Preserve all aligned NL, FS, and AR inputs used by the frozen 81,432-observation experiment.
 - Add complete answer-level explanation objects, tied minimum explanations, primitive reasoning tags, and derived complexity metadata.
 - Publish corrected offline Answer EM/F1 and hallucination evaluation without rerunning or modifying model responses.
 - Add the final reasoning-tag difficulty analysis and explicit sensitivity results for three confirmed defective AR prompts.
 - Preserve v1.0.0 as an immutable historical GitHub, Hugging Face, and Zenodo version.
+- Retain prepublication labels inside frozen provenance and the immutable archive as historical build-state metadata; see `docs/PUBLICATION_STATUS.md` for the current status.
 
 ## 1.0.0 - 2026-09-13
 

@@ -1,3 +1,6 @@
+HISTORICAL PREPUBLICATION TEMPLATE — SUPERSEDED BY THE v1.1.0 PUBLICATION ON 2026-09-25.
+See docs/PUBLICATION_STATUS.md for the current release status. Do not send this as a current publication-status message.
+
 Subject: CORE-LLM-Bench v1.1 corrected benchmark for scientific review
 
 Dear Professor,

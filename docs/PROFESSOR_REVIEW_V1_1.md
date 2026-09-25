@@ -1,5 +1,11 @@
 # CORE-LLM-Bench v1.1: scientific review candidate
 
+> **Historical prepublication review record:** this document describes the
+> scientific-review state before v1.1.0 was approved and published. The current
+> release is v1.1.0, published on 2026-09-25; see
+> [`PUBLICATION_STATUS.md`](PUBLICATION_STATUS.md). Status statements below are
+> retained as dated provenance and are not current instructions.
+
 Status: **candidate for professor review; not released**. Model experiments are paused pending scientific approval.
 
 ## 1. Why v1.1 was necessary

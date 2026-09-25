@@ -1,5 +1,12 @@
 # Finalized v1.1 artifacts excluded from the explanation-schema finalization commit
 
+> **Historical staging record:** this file records the prepublication state of
+> the finalized artifacts. CORE-LLM-Bench v1.1.0 was published on 2026-09-25 at
+> the [GitHub release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0),
+> [Hugging Face v1.1.0 revision](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0),
+> and [Zenodo DOI 10.5281/zenodo.22959957](https://zenodo.org/records/22959957).
+> The staging language and paths below are retained for provenance only.
+
 The finalized generated benchmark payload revisions below are intentionally
 excluded from the explanation-schema finalization commit. They remain in the
 local canonical staging tree and are intended for the eventual GitHub Release

@@ -3,12 +3,12 @@
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
 > **Current release:** CORE-LLM-Bench v1.1.0 contains 9,048 frozen question-hop
-> instances and is available
-> on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+> instances and was published on 2026-09-25. The versioned tabular dataset is
+> available on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
 > The complete source and data package is attached to the
 > [GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
-> Zenodo DOI [10.5281/zenodo.22959957](https://doi.org/10.5281/zenodo.22959957)
-> is reserved for the manually published archival copy. The immutable v1.0.0
+> Zenodo DOI [10.5281/zenodo.22959957](https://zenodo.org/records/22959957)
+> identifies the published archival copy. The immutable v1.0.0
 > archive remains at [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977).
 
 Version 1.1.0 contains **9,048 unique question-hop instances** from four source datasets:
@@ -42,9 +42,12 @@ The **1-hop/2-hop designation describes ontology-context extraction depth** arou
 
 | Purpose | Location |
 | --- | --- |
-| Ready-to-use benchmark packages | `final_benchmark/*.zip` |
-| Version, hashes, counts, and identity definition | `final_benchmark/manifest.json` |
-| Per-instance complexity, reasoning tags, and negative-BQA proof links | `final_benchmark/reasoning_metadata.csv` |
+| Current v1.1.0 benchmark | [GitHub release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0), [Hugging Face v1.1.0](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0), and [Zenodo](https://zenodo.org/records/22959957) |
+| Current publication status and frozen-metadata clarification | `docs/PUBLICATION_STATUS.md` |
+| Immutable v1.1.0 package manifest and metadata snapshot | `release/v1.1.0/` |
+| Historical v1.0.0 ready-to-use packages | `final_benchmark/*.zip` |
+| Historical v1.0.0 hashes, counts, and identity definition | `final_benchmark/manifest.json` |
+| Historical v1.0.0 complexity, reasoning tags, and negative-BQA proof links | `final_benchmark/reasoning_metadata.csv` |
 | Source ontologies used for generation | `data/input/*.owl` |
 | Benchmark generation | `scripts/run_final_benchmark_pipeline.py`, `final_benchmark/create_final_bench.py`, `src/` |
 | LLM evaluation | `scripts/llm_pipeline/run_final_benchmark.py` |
@@ -52,7 +55,11 @@ The **1-hop/2-hop designation describes ontology-context extraction depth** arou
 | Offline release checks and exports | `scripts/validate_release.py`, `scripts/export_huggingface.py`, `scripts/prepare_zenodo.py` |
 | Tests | `tests/` |
 
-## Using the released benchmark
+## Historical v1.0.0 local workflow
+
+The checked-in `final_benchmark/` packages and the commands in this section are
+the preserved v1.0.0 workflow. They do not describe or regenerate the published
+v1.1.0 artifact. Use the versioned public links above for v1.1.0.
 
 You do **not** need to regenerate the benchmark or use an API to load and validate it.
 
@@ -113,10 +120,10 @@ python scripts/llm_pipeline/run_final_benchmark.py \
 
 Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is resumable. Use `--limit-questions` and `--max-api-calls` for a deliberately bounded smoke test. Answer EM/F1 manuscript processing delegates through `scripts/llm_pipeline/sageqa_answer_metrics.py` to the exact manuscript-frozen SAGE-QA evaluator vendored under `scripts/llm_pipeline/vendor/`; it does not depend on a mutable sibling checkout or silently substitute Jaccard similarity. The frozen source commit, hashes, and MIT license are recorded in the vendor README.
 
-### Tabular Hugging Face export
+### Current v1.1.0 tabular dataset and historical v1.0.0 export
 
 The canonical tabular 9,048-row v1.1.0 dataset view is published at
-[huggingface.co/datasets/jloe2911/CORE-LLM-Bench](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+[huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
 Each row is one unique question-hop instance, with NL, FS, and AR retained as
 aligned columns.
 
@@ -135,7 +142,7 @@ manifests, and checksums under `release/huggingface/full/` and
 The full profile has 9,032 rows. The public-safe fallback has 5,272 rows and
 excludes every Family/FHKB payload. Nothing is uploaded.
 
-## Regenerating the benchmark from source ontologies
+## Historical v1.0.0 regeneration workflow
 
 Regeneration is optional and separate from benchmark use. It requires Java 17, Maven, the Python requirements under `scripts/`, and API credentials for LLM-based ontology/SPARQL verbalization.
 
@@ -157,7 +164,7 @@ comparison and a qualified local reconstruction path are recorded in
 
 The pipeline performs subgraph extraction, Pellet reasoning/explanation generation, SPARQL task creation, stratified sampling, abstraction, verbalization, and final JSON assembly. Do not overwrite the v1.0.0 packages when experimenting; use a separate output checkout or preserve and revalidate the hashes in `final_benchmark/manifest.json`.
 
-## Reproducing manuscript analyses
+## Historical v1.0.0 manuscript-analysis workflow
 
 The release-facing, API-free analyses are:
 
@@ -179,7 +186,7 @@ python scripts/create_chapter4_interpretation_audit.py
 
 Those scripts do not need new model calls when the saved predictions are present. Large intermediate generation artifacts and saved experimental responses are intentionally not part of the compact benchmark packages; archive them separately if full response-level reproduction is required.
 
-## Preparing archival deposits
+## Historical v1.0.0 archival-preparation workflow
 
 Prepare both local, checksum-indexed staging packages with:
 
@@ -196,7 +203,8 @@ excludes all Family/FHKB payload.
 
 ## Known limitations
 
-- The four ontology families do not cover every OWL construct; only eight of 20 reasoning tags occur in v1.0.0.
+- In v1.1.0, three AR prompts (task IDs 1274, 4094, and 5165) are confirmed defective. The primary frozen-observation analysis retains them and reports a separately identified exclusion sensitivity; no response was rerun.
+- The four ontology families do not cover every OWL construct. Historical v1.0.0 instantiates eight of its 20 documented reasoning tags; see the v1.1.0 release package for the current finalized explanation and primitive-tag schema.
 - Ontology-context depth and proof complexity are related but distinct and must not be conflated.
 - Natural-language and abstract verbalizations are generated and may contain stylistic or entity-rendering artifacts.
 - BQA and OEQA totals are not balanced across datasets or hops.
@@ -213,13 +221,15 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 
 The current benchmark version is `1.1.0`; the release tag is `v1.1.0`, and the
 release date is 2026-09-25. The canonical tabular 9,048-row dataset view is available
-on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
+on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
 The v1.1.0 Zenodo DOI is
-[`10.5281/zenodo.22959957`](https://doi.org/10.5281/zenodo.22959957), pending
-manual publication. The source release is available from the
+[`10.5281/zenodo.22959957`](https://zenodo.org/records/22959957). The source release is available from the
 [GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
 The historical v1.0.0 GitHub, Hugging Face, and Zenodo artifacts remain unchanged.
-See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`.
+Frozen provenance files and the immutable v1.1.0 archive may retain staging or
+`prepared-not-published` labels that accurately record their prepublication
+creation state; they are not the current publication status. See
+`docs/PUBLICATION_STATUS.md`, `VERSION`, and `CITATION.cff`.
 
 Licensing has three distinct layers:
 

@@ -1,5 +1,13 @@
 # Zenodo deposit preparation
 
+CORE-LLM-Bench v1.1.0 is the current release. It was published on 2026-09-25
+at https://zenodo.org/records/22959957 under DOI
+`10.5281/zenodo.22959957`. The published archive is immutable and must not be
+rebuilt or replaced. Its embedded prepublication status fields are historical;
+see `release/v1.1.0/POST_PUBLICATION_CLARIFICATION.md`.
+
+## Historical v1.0.0 preparation workflow
+
 CORE-LLM-Bench v1.0.0 is archived at
 https://zenodo.org/records/22742977 under DOI `10.5281/zenodo.22742977`.
 The canonical tabular 9,032-row dataset view is available at

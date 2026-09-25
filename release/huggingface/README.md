@@ -1,9 +1,12 @@
 # Local Hugging Face export preparation
 
-The public dataset is available at
-https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench. It provides the
-canonical tabular 9,032-row dataset view, with one row per unique question-hop
-instance and NL, FS, and AR stored as aligned columns.
+CORE-LLM-Bench v1.1.0 is the current 9,048-row dataset revision and is published
+at https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0.
+
+## Historical v1.0.0 export workflow
+
+The commands and 9,032-row counts below apply only to the preserved v1.0.0
+export workflow. They do not reproduce or upload v1.1.0.
 
 To reproduce the export locally without uploading, generate either release
 profile from the repository root:

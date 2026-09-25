@@ -1,5 +1,8 @@
 # CORE-LLM-Bench v1.0.0 release notes
 
+> **Historical release:** v1.0.0 is preserved and remains citable, but v1.1.0
+> is the current benchmark version. See `docs/PUBLICATION_STATUS.md`.
+
 Release date: **2026-09-13**
 GitHub Release URL: **https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0**
 Zenodo DOI: **10.5281/zenodo.22742977**

@@ -1,5 +1,9 @@
 # CORE-LLM-Bench v1.0.0 public-safe fallback note (draft)
 
+> **Historical, unused contingency workflow:** this draft applies only to the
+> v1.0.0 fallback candidate. It is not the current v1.1.0 release or a pending
+> publication instruction. See `docs/PUBLICATION_STATUS.md`.
+
 The paper evaluates Family, Pizza 100, Pizza 250, and OWL2Bench. This fallback
 distribution contains only Pizza 100, Pizza 250, and OWL2Bench: 5,272 unique
 question-hop instances (3,455 BQA and 1,817 OEQA). It excludes every

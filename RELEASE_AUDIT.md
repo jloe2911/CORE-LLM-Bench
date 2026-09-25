@@ -1,5 +1,11 @@
 # CORE-LLM-Bench v1.0.0 release audit
 
+> **Historical document:** this audit records the v1.0.0 preparation and
+> publication workflow. CORE-LLM-Bench v1.1.0 is the current release; see
+> [`docs/PUBLICATION_STATUS.md`](docs/PUBLICATION_STATUS.md). Prepublication
+> gates and candidate language below are retained as v1.0.0 provenance, not as
+> instructions or status for v1.1.0.
+
 Audit date: 2026-09-11
 
 Licensing-documentation reconciliation: 2026-09-13

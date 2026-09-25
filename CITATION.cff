@@ -7,8 +7,8 @@ date-released: 2026-09-25
 doi: "10.5281/zenodo.22959957"
 identifiers:
   - type: other
-    value: "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench"
-    description: "Canonical tabular 9,048-row dataset view on Hugging Face"
+    value: "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0"
+    description: "Canonical versioned 9,048-row v1.1.0 dataset view on Hugging Face"
 authors:
   - family-names: "Loesch"
     given-names: "Julie"

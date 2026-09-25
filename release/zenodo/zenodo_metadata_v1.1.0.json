@@ -42,5 +42,5 @@
       "scheme": "doi"
     }
   ],
-  "notes": "Upload the single prepared archive CORE-LLM-Bench-v1.1.0-full.zip to the existing reserved Zenodo draft 22959957 only. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; modified/adapted Family/FHKB-derived material CC BY-SA 3.0. Consult NOTICE.md in the archive."
+  "notes": "Published on 2026-09-25 as Zenodo record 22959957 under DOI 10.5281/zenodo.22959957. The immutable archive is CORE-LLM-Bench-v1.1.0-full.zip; embedded prepared-not-published or staging labels record its prepublication build state and do not describe the current publication status. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; modified/adapted Family/FHKB-derived material CC BY-SA 3.0. Consult NOTICE.md in the archive."
 }
