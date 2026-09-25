@@ -1,0 +1,47 @@
+{
+  "benchmark": {
+    "benchmark_json_files": 8,
+    "benchmark_json_rows": 9048,
+    "benchmark_parquet_rows": 9048,
+    "benchmark_sha256": "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc",
+    "public_ids": "1..9048 unique",
+    "semantic_keys_unique": 9048,
+    "task_counts": {
+      "BQA": 6032,
+      "OEQA": 3016
+    }
+  },
+  "canonical_release_directory": "release/v1.1.0",
+  "offline_only": true,
+  "provenance": {
+    "accepted_observations": 81432,
+    "evaluation_outputs_verified": 29,
+    "evaluation_tree_files_byte_preserved": 30,
+    "experiment_provenance_files_byte_preserved": 6,
+    "model_input_manifest_sha256": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18",
+    "reasoning_tag_outputs_verified": 22,
+    "reasoning_tag_tree_files_byte_preserved": 23,
+    "schema_finalization_files_byte_preserved": 3,
+    "source_observation_hashes_verified": {
+      "GPT-5 mini": "669b4243e01bc693b25d39fff56bb374db0ffb04b42a57398fc477301c74254f",
+      "Gemini 2.5 Flash-Lite": "bcd674564a071dfed38279af4e0b487a850226758199242458fb110855454306",
+      "Qwen3-30B-A3B-Instruct": "f44dc8aa35fef85af950c37043a287bc92268cb76e3327d76c5e6addc25e31c4"
+    }
+  },
+  "publication_actions_performed": [],
+  "release_metadata": {
+    "publication_date": null,
+    "zenodo_doi": "10.5281/zenodo.22959957",
+    "zenodo_published": false,
+    "zenodo_record_id": 22959957,
+    "zenodo_record_url": "https://zenodo.org/records/22959957"
+  },
+  "staging_identifiers_resolved": true,
+  "status": "passed",
+  "v1_preservation": {
+    "github_tag_commit": "ee766caa48bb23905956a14b1ca5836bcfe19e6d",
+    "hugging_face_tag_commit": "14ab8bcdcbcbd464b4768175c85adacd917393fc",
+    "zenodo_archive_md5_verified": true,
+    "zenodo_doi": "10.5281/zenodo.22742977"
+  }
+}

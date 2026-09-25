@@ -1,0 +1,4 @@
+model,source,raw_rows,accepted_observations,usable,malformed_accepted,diagnostic_nonaccepted_rows,duplicate_accepted_cells,missing_cells,extra_cells,semantic_or_input_mismatches,mismatch_fields,parser_replay_mismatches,intentional_blank_answer_parser_corrections,unexpected_parser_mismatches,provider_mismatches,returned_model_mismatches,observed_providers,returned_model_identifiers
+GPT-5 mini,data\output\v1.1.0-gpt-openrouter-primary\responses\gpt_observations.jsonl,27144,27144,27137,7,0,0,0,0,0,{},2461,2461,0,0,0,OpenAI,openai/gpt-5-mini
+Gemini 2.5 Flash-Lite,release\v1.1.0-phase7d\responses\gemini_observations.jsonl,27144,27144,27139,5,0,0,0,0,0,{},658,658,0,0,0,Google AI Studio,google/gemini-2.5-flash-lite
+Qwen3-30B-A3B-Instruct,release\v1.1.0-phase7e\responses\qwen_alibaba_observations.jsonl,27153,27144,27086,58,9,0,0,0,0,{},15,15,0,0,0,Alibaba,qwen/qwen3-30b-a3b-instruct-2507

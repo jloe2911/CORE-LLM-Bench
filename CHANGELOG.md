@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 - 2026-09-25
+
+- Publish the schema-finalized 9,048-question benchmark with deterministic public IDs and semantic keys.
+- Preserve all aligned NL, FS, and AR inputs used by the frozen 81,432-observation experiment.
+- Add complete answer-level explanation objects, tied minimum explanations, primitive reasoning tags, and derived complexity metadata.
+- Publish corrected offline Answer EM/F1 and hallucination evaluation without rerunning or modifying model responses.
+- Add the final reasoning-tag difficulty analysis and explicit sensitivity results for three confirmed defective AR prompts.
+- Preserve v1.0.0 as an immutable historical GitHub, Hugging Face, and Zenodo version.
+
 ## 1.0.0 - 2026-09-13
 
 - Define the public benchmark as 9,032 unique question-hop instances from Family, Pizza 100, Pizza 250, and OWL2Bench.

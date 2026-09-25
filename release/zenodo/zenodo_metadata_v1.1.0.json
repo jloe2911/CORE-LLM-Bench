@@ -1,0 +1,46 @@
+{
+  "title": "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models",
+  "upload_type": "dataset",
+  "description": "CORE-LLM-Bench v1.1.0 is a controlled neurosymbolic benchmark containing 9,048 question-hop instances across FamilyOWL, Pizza100, Pizza250, and OWL2Bench: 6,032 binary question-answering instances in 3,016 TRUE/FALSE pairs and 3,016 open-ended question-answering instances. Each instance aligns natural-language, formal-symbolic, and abstract-representation conditions and includes finalized answer-level explanations, complete tied-minimum explanation sets, primitive reasoning tags, complexity metadata, and source provenance. The release also contains the corrected offline evaluation of 81,432 frozen accepted model observations and a reasoning-tag difficulty analysis. No model response was regenerated or modified. Three AR prompts, task IDs 1274, 4094, and 5165, are confirmed defective; the primary analysis retains them and provides a separately identified exclusion sensitivity.",
+  "creators": [
+    {"name": "Loesch, Julie", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Falahatkar, Sara", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Kilk, Nicole", "affiliation": "University College Maastricht, Maastricht University, Netherlands"},
+    {"name": "Jakhar, Rishabh", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Mutharaju, Raghava", "affiliation": "Mehta Family School of Data Science and AI, IIT Palakkad, Kerala, India"},
+    {"name": "Dumontier, Michel", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"},
+    {"name": "Celebi, Remzi", "affiliation": "Department of Advanced Computing Sciences, Maastricht University, Netherlands"}
+  ],
+  "keywords": [
+    "neurosymbolic AI",
+    "large language models",
+    "ontology reasoning",
+    "benchmark",
+    "symbolic reasoning",
+    "description logic",
+    "OWL",
+    "question answering",
+    "knowledge representation"
+  ],
+  "version": "1.1.0",
+  "publication_date": "2026-09-25",
+  "doi": "10.5281/zenodo.22959957",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.22742977",
+      "relation": "isNewVersionOf",
+      "scheme": "doi"
+    }
+  ],
+  "notes": "Upload the single prepared archive CORE-LLM-Bench-v1.1.0-full.zip to the existing reserved Zenodo draft 22959957 only. Licensing is component-specific: software MIT; separable original CORE material CC BY 4.0; Pizza CC BY 3.0; OWL2Bench Apache-2.0; modified/adapted Family/FHKB-derived material CC BY-SA 3.0. Consult NOTICE.md in the archive."
+}

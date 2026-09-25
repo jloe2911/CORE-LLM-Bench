@@ -1,25 +1,446 @@
 {
-  "alibaba_provider_requests": 0,
+  "alibaba_provider_requests": 31856,
   "benchmark_and_gemini_hashes_unchanged": true,
-  "canary": null,
-  "configuration_hash": "3f5ff8a2078f2836225a9efc8fe51e64e477ca2e477611cd9ab8c2a45083e5ff",
+  "calculated_cost_usd": 11.04004759,
+  "canary": {
+    "accepted": 12,
+    "configuration_hash": "68ba5917f3197234f41316cf765e9581b3421981041ccb899218968346d3b031",
+    "coverage": {
+      "dataset": [
+        "FamilyOWL",
+        "OWL2Bench",
+        "Pizza100",
+        "Pizza250"
+      ],
+      "hop": [
+        "1hop",
+        "2hop"
+      ],
+      "representation": [
+        "AR",
+        "FS",
+        "NL"
+      ],
+      "task": [
+        "BQA",
+        "OEQA"
+      ]
+    },
+    "failures": [],
+    "primary_keys": [
+      [
+        "1",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "755",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "1509",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "2263",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "3017",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "3771",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "4525",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "4588",
+        "FS",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "4753",
+        "AR",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "5279",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "5989",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ],
+      [
+        "6033",
+        "NL",
+        "Qwen3-30B-A3B-Instruct"
+      ]
+    ],
+    "rate_limit_attempts": 0,
+    "status": "passed"
+  },
+  "configuration_hash": "68ba5917f3197234f41316cf765e9581b3421981041ccb899218968346d3b031",
+  "dataset_counts": {
+    "FamilyOWL": 11286,
+    "OWL2Bench": 9180,
+    "Pizza100": 2970,
+    "Pizza250": 3708
+  },
   "dekallm_primary_contribution": 0,
   "duplicate_accepted_observations": 0,
   "gemini_accepted_observations": 27144,
   "gpt_observations": 0,
-  "malformed_but_retained": 0,
-  "malformed_keys": [],
-  "observed_provider_backends": [],
+  "historical_exhausted_retry_rows_resolved_on_resume": 9,
+  "hop_counts": {
+    "1hop": 13383,
+    "2hop": 13761
+  },
+  "input_hash_mismatches": 0,
+  "input_tokens": 82397683,
+  "malformed_but_retained": 58,
+  "malformed_keys": [
+    [
+      "1312",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "1839",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3136",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3153",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3155",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3157",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3165",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3178",
+      "FS",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3183",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3189",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3194",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3199",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3201",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3208",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3232",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3240",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3247",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3249",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3247",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3252",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3347",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3355",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3356",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3366",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3368",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3375",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3387",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3398",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3405",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3405",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3412",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3411",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3420",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3442",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3449",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3470",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3503",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3561",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3578",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3599",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3610",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3618",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3634",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3633",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3662",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3674",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3705",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3744",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "3755",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "4650",
+      "AR",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8591",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8593",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8609",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8680",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8675",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8793",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8914",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ],
+    [
+      "8928",
+      "NL",
+      "Qwen3-30B-A3B-Instruct"
+    ]
+  ],
+  "model_mismatches": 0,
+  "observed_provider_backends": [
+    "Alibaba"
+  ],
+  "old_alibaba_diagnostic_observations_imported": 0,
   "openai_api_key_loaded": false,
-  "pending_observations": 27144,
+  "output_paths": {
+    "attempts": "release\\v1.1.0-phase7e\\responses\\qwen_alibaba_attempts.jsonl",
+    "execution_metadata": "release\\v1.1.0-phase7e\\qwen_alibaba_execution_metadata.json",
+    "observations": "release\\v1.1.0-phase7e\\responses\\qwen_alibaba_observations.jsonl",
+    "report": "release\\v1.1.0-phase7e\\PHASE7E_REPORT.json"
+  },
+  "output_tokens": 631440,
+  "pending_observations": 0,
+  "permanent_technical_failures": 0,
   "provider_metadata_name": "Alibaba",
+  "provider_mismatches": 0,
   "provider_model_availability_check": "passed",
-  "qwen_accepted_observations": 0,
+  "provider_reported_cost_usd": 11.03785735,
+  "qwen_accepted_observations": 27144,
   "release_published": false,
+  "representation_counts": {
+    "AR": 9048,
+    "FS": 9048,
+    "NL": 9048
+  },
   "resolved_openrouter_provider_identifier": "alibaba",
-  "returned_models": [],
-  "status": "incomplete",
-  "technical_retries": 0,
-  "unresolved_failures": 0,
+  "returned_models": [
+    "qwen/qwen3-30b-a3b-instruct-2507"
+  ],
+  "runtime_seconds_between_first_and_last_request": 5539.41827,
+  "schema_usable_outputs": 27086,
+  "status": "complete",
+  "task_type_counts": {
+    "BQA": 18096,
+    "OEQA": 9048
+  },
+  "technical_retries": 4712,
+  "unique_primary_keys": 27144,
   "v1_0_modified": false
 }

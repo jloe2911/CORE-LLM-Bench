@@ -1,11 +1,23 @@
 {
   "api_provider": "OpenRouter",
-  "config_version": "core-llm-bench-v1.1-qwen-alibaba-phase7e-1",
-  "configuration_hash": "3f5ff8a2078f2836225a9efc8fe51e64e477ca2e477611cd9ab8c2a45083e5ff",
+  "benchmark_hash_transition": {
+    "canonical_v1_1_parquet_sha256": "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc",
+    "change_scope": "schema-only; model-facing NL/FS/AR inputs unchanged",
+    "model_input_manifest_sha256": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18",
+    "model_inputs_regenerated": false,
+    "pre_schema_parquet_sha256": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859"
+  },
+  "config_version": "core-llm-bench-v1.1-qwen-alibaba-phase7e-2",
+  "configuration_hash": "68ba5917f3197234f41316cf765e9581b3421981041ccb899218968346d3b031",
   "credential_source": "OPENROUTER_API_KEY",
   "endpoint_capability_snapshot": {
     "context_length": 131072,
     "max_completion_tokens": 32768,
+    "pricing": {
+      "completion": "0.00000052",
+      "discount": 0,
+      "prompt": "0.00000013"
+    },
     "provider_name": "Alibaba",
     "status": 0,
     "supported_parameters": [
@@ -27,8 +39,9 @@
   },
   "fallback": false,
   "frozen_file_sha256": {
-    "benchmark_parquet": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859",
+    "benchmark_parquet": "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc",
     "gemini_observations": "bcd674564a071dfed38279af4e0b487a850226758199242458fb110855454306",
+    "model_input_manifest": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18",
     "primary_manifest": "732c0a6306f970dcb7ec4aa36903fc5739f2b5f941f6ce14096fcca1049b0bbc",
     "staging_config": "47a60d2536dbfc718658fe91c12599a89d5fda66a03828a6eb20cff24d7a8da7"
   },
@@ -37,7 +50,7 @@
   "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
   "openai_api_key_loaded": false,
   "parser": "phase7a_preflight.parse_response",
-  "prepared_at": "2026-09-21T11:24:12.630241+00:00",
+  "prepared_at": "2026-09-24T17:49:03.260676+00:00",
   "prompt": {
     "message_roles": [
       "user"

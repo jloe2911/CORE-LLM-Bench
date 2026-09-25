@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllllll}
+\toprule
+Model & Task & N & EM & F1 & Conf.-corr. & OEQA empty & Generated & OEQA hall. \\
+\midrule
+GPT-5 mini & BQA & 18096 & 71.00 & 71.00 & 71.06 & 0 & 0 &  \\
+GPT-5 mini & OEQA & 9048 & 37.53 & 43.04 & 57.53 & 2768 & 14391 & 28.71 \\
+Gemini 2.5 Flash-Lite & BQA & 18096 & 69.88 & 69.88 & 70.14 & 0 & 0 &  \\
+Gemini 2.5 Flash-Lite & OEQA & 9048 & 31.87 & 38.03 & 48.81 & 658 & 23213 & 57.09 \\
+Qwen3-30B-A3B-Instruct & BQA & 18096 & 73.92 & 73.92 & 73.76 & 0 & 0 &  \\
+Qwen3-30B-A3B-Instruct & OEQA & 9048 & 33.78 & 40.87 & 44.45 & 15 & 40159 & 73.39 \\
+\bottomrule
+\end{tabular}
+\caption{Final v1.1 results by task (percent).}
+\label{tab:core-v11-task}
+\end{table}

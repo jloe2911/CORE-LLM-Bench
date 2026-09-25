@@ -1,0 +1,31 @@
+{
+  "v1.0.0": {
+    "github": {
+      "commit": "ee766caa48bb23905956a14b1ca5836bcfe19e6d",
+      "independently_verified": true,
+      "tag": "v1.0.0",
+      "tag_object": "6873eb5b6f656c744183e5851e5e2920a3b89c46",
+      "verification_method": "git ls-remote --tags with peeled annotated tag"
+    },
+    "hugging_face": {
+      "commit": "14ab8bcdcbcbd464b4768175c85adacd917393fc",
+      "dataset": "jloe2911/CORE-LLM-Bench",
+      "independently_verified": true,
+      "tag": "v1.0.0",
+      "verification_method": "git ls-remote --tags against the public dataset repository"
+    },
+    "preservation_policy": "Immutable historical release; v1.1.0 is a new version and must not replace, retag, or overwrite these objects.",
+    "zenodo": {
+      "archive": "CORE-LLM-Bench-v1.0.0-full.zip",
+      "archive_bytes": 78761233,
+      "archive_md5": "571dbc6447272352dfb6d38e391158fc",
+      "archive_sha256": "4d89a978c8e86f2a846cb9b1b59b2378111b57df9a730a390ecf0df4bb47596d",
+      "concept_record_id": 22742976,
+      "doi": "10.5281/zenodo.22742977",
+      "independently_verified": true,
+      "record_id": 22742977,
+      "status": "published",
+      "verification_method": "Zenodo public record API plus local archive digest comparison"
+    }
+  }
+}

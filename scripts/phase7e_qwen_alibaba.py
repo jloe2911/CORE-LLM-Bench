@@ -13,6 +13,7 @@ import csv
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import threading
 import time
@@ -33,9 +34,10 @@ CONFIG_PATH = PHASE7E / "qwen_alibaba_config.json"
 MANIFEST_PATH = PHASE7E / "qwen_alibaba_primary_manifest.csv"
 METADATA_PATH = PHASE7E / "openrouter_alibaba_endpoint.json"
 REPORT_PATH = PHASE7E / "PHASE7E_REPORT.json"
+RUN_METADATA_PATH = PHASE7E / "qwen_alibaba_execution_metadata.json"
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from phase6_materialize_release import create_context_specific_prompt  # noqa: E402
+from phase6_materialize_release import create_context_specific_prompt, prompt_hash  # noqa: E402
 from phase7a_preflight import parse_response, read_csv  # noqa: E402
 from run_v1_1_experiments import task_payloads  # noqa: E402
 
@@ -46,13 +48,21 @@ PROVIDER_TAG = "alibaba"
 PROVIDER_METADATA_NAME = "Alibaba"
 PROVIDER_REQUESTED_NAME = "Alibaba Cloud International"
 BASE_CONFIGURATION_HASH = "c1562554bd9e252bf97356ef098edde997f813536dd8e547f35f5981a1023df3"
-CONFIG_VERSION = "core-llm-bench-v1.1-qwen-alibaba-phase7e-1"
+CONFIG_VERSION = "core-llm-bench-v1.1-qwen-alibaba-phase7e-2"
+PRE_SCHEMA_PARQUET_SHA256 = "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859"
+CANONICAL_PARQUET_SHA256 = "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc"
+MODEL_INPUT_MANIFEST_SHA256 = "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18"
+CANARY_SIZE = 12
 ACCEPTED = {"usable", "malformed_response"}
 REQUIRED_PARAMETERS = {
     "max_tokens", "temperature", "top_p", "seed",
     "presence_penalty", "frequency_penalty",
 }
 WRITE_LOCK = threading.Lock()
+
+
+class ProviderIdentityError(RuntimeError):
+    """A successful response came from an unauthorized model/provider."""
 
 
 def canonical_json(value: Any) -> str:
@@ -177,6 +187,14 @@ def configuration_basis(endpoint: dict[str, Any]) -> dict[str, Any]:
             "supported_parameters": sorted(endpoint.get("supported_parameters") or []),
             "context_length": endpoint.get("context_length"),
             "max_completion_tokens": endpoint.get("max_completion_tokens"),
+            "pricing": endpoint.get("pricing"),
+        },
+        "benchmark_hash_transition": {
+            "pre_schema_parquet_sha256": PRE_SCHEMA_PARQUET_SHA256,
+            "canonical_v1_1_parquet_sha256": CANONICAL_PARQUET_SHA256,
+            "model_input_manifest_sha256": MODEL_INPUT_MANIFEST_SHA256,
+            "change_scope": "schema-only; model-facing NL/FS/AR inputs unchanged",
+            "model_inputs_regenerated": False,
         },
     }
 
@@ -185,10 +203,105 @@ def frozen_files() -> dict[str, str]:
     paths = {
         "benchmark_parquet": STAGE / "core_llm_bench_v1_1.parquet",
         "primary_manifest": STAGE / "primary_experiment_manifest.csv",
+        "model_input_manifest": STAGE / "model_input_manifest.csv",
         "staging_config": STAGE / "experiment_config_v1_1.json",
         "gemini_observations": PHASE7D / "responses" / "gemini_observations.jsonl",
     }
     return {name: sha256_file(path) for name, path in paths.items()}
+
+
+def git_output(*args: str) -> str:
+    return subprocess.run(
+        ["git", *args], cwd=ROOT, check=True, capture_output=True, text=True,
+    ).stdout.strip()
+
+
+def relevant_runner_status() -> list[str]:
+    output = git_output(
+        "status", "--short", "--", "scripts/phase7e_qwen_alibaba.py",
+        "tests/test_phase7e_qwen_alibaba.py", "release/v1.1.0-phase7e",
+    )
+    return output.splitlines() if output else []
+
+
+def write_execution_metadata(config: dict[str, Any], authenticated: bool = False) -> dict[str, Any]:
+    previous = (
+        json.loads(RUN_METADATA_PATH.read_text(encoding="utf-8"))
+        if RUN_METADATA_PATH.is_file() else {}
+    )
+    runner_hash = sha256_file(Path(__file__))
+    runner_history = list(previous.get("execution_runner_sha256_history") or [])
+    previous_runner = previous.get("runner_sha256")
+    if previous_runner and previous_runner not in runner_history:
+        runner_history.append(previous_runner)
+    if runner_hash not in runner_history:
+        runner_history.append(runner_hash)
+    metadata = {
+        "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "branch": git_output("branch", "--show-current"),
+        "head": git_output("rev-parse", "HEAD"),
+        "relevant_runner_files_modified": relevant_runner_status(),
+        "runner_sha256": runner_hash,
+        "execution_runner_sha256_history": runner_history,
+        "config_sha256": sha256_file(CONFIG_PATH),
+        "pre_schema_parquet_sha256": PRE_SCHEMA_PARQUET_SHA256,
+        "canonical_v1_1_parquet_sha256": sha256_file(STAGE / "core_llm_bench_v1_1.parquet"),
+        "model_input_manifest_sha256": sha256_file(STAGE / "model_input_manifest.csv"),
+        "parquet_hash_change_scope": "schema-only; model-facing NL/FS/AR inputs unchanged",
+        "authentication_material_loaded": authenticated,
+        "non_secret_effective_config": {
+            "model": config["model_id"],
+            "provider_order": [config["provider_tag"]],
+            "fallback": config["fallback"],
+            "request_parameters": config["request_parameters"],
+            "timeout_seconds": config["timeout_seconds"],
+            "retry_policy": config["retry_policy"],
+        },
+    }
+    write_json(RUN_METADATA_PATH, metadata)
+    return metadata
+
+
+def select_canary_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    required = {
+        *(f"representation:{value}" for value in ("NL", "FS", "AR")),
+        *(f"task:{value}" for value in ("BQA", "OEQA")),
+        *(f"hop:{value}" for value in ("1hop", "2hop")),
+        *(f"dataset:{value}" for value in ("FamilyOWL", "Pizza100", "Pizza250", "OWL2Bench")),
+    }
+
+    def features(row: dict[str, str]) -> set[str]:
+        return {
+            f"representation:{row['representation']}", f"task:{row['task']}",
+            f"hop:{row['hop']}", f"dataset:{row['dataset']}",
+        }
+
+    selected: list[dict[str, str]] = []
+    selected_keys: set[tuple[str, str, str]] = set()
+    uncovered = set(required)
+    while uncovered:
+        candidate = max(rows, key=lambda row: len(features(row) & uncovered))
+        gain = features(candidate) & uncovered
+        if not gain:
+            raise RuntimeError(f"Canary coverage unavailable: {sorted(uncovered)!r}")
+        selected.append(candidate)
+        selected_keys.add(observation_key(candidate))
+        uncovered -= gain
+    for index in range(CANARY_SIZE):
+        candidate = rows[(index * len(rows)) // CANARY_SIZE]
+        if observation_key(candidate) not in selected_keys:
+            selected.append(candidate)
+            selected_keys.add(observation_key(candidate))
+        if len(selected) == CANARY_SIZE:
+            break
+    if len(selected) < CANARY_SIZE:
+        for candidate in rows:
+            if observation_key(candidate) not in selected_keys:
+                selected.append(candidate)
+                selected_keys.add(observation_key(candidate))
+            if len(selected) == CANARY_SIZE:
+                break
+    return selected
 
 
 def prepare() -> dict[str, Any]:
@@ -209,7 +322,8 @@ def prepare() -> dict[str, Any]:
     rows = [row for row in base_rows if row["model_id"] == MODEL_ID]
     if len(rows) != 27144 or len({observation_key(row) for row in rows}) != 27144:
         raise RuntimeError("Frozen Qwen manifest is not a unique 27,144-row matrix")
-    fields = list(rows[0]) + ["requested_provider", "requested_provider_name"]
+    canary_keys = {observation_key(row) for row in select_canary_rows(rows)}
+    fields = list(rows[0]) + ["requested_provider", "requested_provider_name", "canary"]
     PHASE7E.mkdir(parents=True, exist_ok=True)
     with MANIFEST_PATH.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
@@ -219,6 +333,7 @@ def prepare() -> dict[str, Any]:
             item["configuration_hash"] = config_hash
             item["requested_provider"] = PROVIDER_TAG
             item["requested_provider_name"] = PROVIDER_REQUESTED_NAME
+            item["canary"] = "true" if observation_key(row) in canary_keys else "false"
             writer.writerow(item)
     safe_endpoint = {
         key: endpoint.get(key) for key in (
@@ -236,6 +351,14 @@ def prepare() -> dict[str, Any]:
         "availability_check": "passed",
     })
     write_json(CONFIG_PATH, config)
+    write_json(PHASE7E / "qwen_alibaba_canary.json", {
+        "status": "not_run",
+        "accepted": 0,
+        "configuration_hash": config_hash,
+        "primary_keys": [list(key) for key in sorted(canary_keys)],
+        "failures": [],
+    })
+    write_execution_metadata(config)
     return config
 
 
@@ -252,11 +375,36 @@ def validate_preflight(config: dict[str, Any]) -> list[dict[str, str]]:
         raise RuntimeError("Provider pin/fallback drift")
     if config.get("frozen_file_sha256") != frozen_files():
         raise RuntimeError("Frozen benchmark, Gemini, manifest, or staging config changed")
+    if sha256_file(STAGE / "core_llm_bench_v1_1.parquet") != CANONICAL_PARQUET_SHA256:
+        raise RuntimeError("Canonical v1.1 Parquet hash mismatch")
+    if sha256_file(STAGE / "model_input_manifest.csv") != MODEL_INPUT_MANIFEST_SHA256:
+        raise RuntimeError("Frozen model-input manifest hash mismatch")
     rows = read_csv(MANIFEST_PATH)
     if len(rows) != 27144 or {row["configuration_hash"] for row in rows} != {stored_hash}:
         raise RuntimeError("Phase 7E primary manifest drift")
     if {row["requested_provider"] for row in rows} != {PROVIDER_TAG}:
         raise RuntimeError("Phase 7E manifest provider drift")
+    expected_counts = {
+        "rows": 27144, "tasks": 9048,
+        "NL": 9048, "FS": 9048, "AR": 9048,
+        "BQA": 18096, "OEQA": 9048,
+    }
+    actual_counts = {
+        "rows": len(rows),
+        "tasks": len({row["task_id"] for row in rows}),
+        **{rep: sum(row["representation"] == rep for row in rows) for rep in ("NL", "FS", "AR")},
+        **{task: sum(row["task"] == task for row in rows) for task in ("BQA", "OEQA")},
+    }
+    if actual_counts != expected_counts:
+        raise RuntimeError(f"Frozen matrix count mismatch: {actual_counts!r}")
+    input_rows = read_csv(STAGE / "model_input_manifest.csv")
+    input_hashes = {(row["task_id"], row["representation"]): row["input_hash"] for row in input_rows}
+    mismatches = sum(
+        row["input_hash"] != input_hashes.get((row["task_id"], row["representation"]))
+        for row in rows
+    )
+    if mismatches:
+        raise RuntimeError(f"Frozen matrix has {mismatches} input-hash mismatches")
     return rows
 
 
@@ -292,12 +440,31 @@ def classify_exception(error: Exception) -> str:
     return "nonretryable_provider_error"
 
 
+def validate_response_identity(returned_model: Any, provider: Any) -> None:
+    if returned_model != MODEL_ID:
+        raise ProviderIdentityError(
+            f"model_mismatch: requested={MODEL_ID!r}, returned={returned_model!r}"
+        )
+    if provider != PROVIDER_METADATA_NAME:
+        raise ProviderIdentityError(
+            f"provider_mismatch: requested={PROVIDER_TAG!r}, returned={provider!r}"
+        )
+
+
 def execute_one(
-    row: dict[str, str], payload: tuple[str, str, str], config: dict[str, Any], client: Any
+    row: dict[str, str], payload: tuple[str, str, str], config: dict[str, Any], client: Any,
+    stop_event: threading.Event | None = None,
 ) -> dict[str, Any]:
+    if stop_event is not None and stop_event.is_set():
+        raise RuntimeError("Run stopped before request submission")
     question, context, answer_type = payload
     context_mode = "inline_owl" if row["representation"] == "FS" else "inline_nl"
     prompt = create_context_specific_prompt(question, context, context_mode, answer_type)
+    actual_input_hash = prompt_hash(question, context, row["representation"], answer_type)
+    if actual_input_hash != row["input_hash"]:
+        raise RuntimeError(
+            f"Input hash mismatch before request: {row['task_id']}/{row['representation']}"
+        )
     retry = config["retry_policy"]
     maximum_attempts = 1 + int(retry["maximum_retries_after_initial_attempt"])
     backoff = list(retry["backoff_seconds"])
@@ -312,10 +479,16 @@ def execute_one(
         "requested_provider_name": PROVIDER_REQUESTED_NAME,
         "api_provider": "OpenRouter",
         "credential_source": "OPENROUTER_API_KEY",
+        "seed": config["request_parameters"]["seed"],
+        "generation_config": {
+            key: value for key, value in config["request_parameters"].items()
+            if key != "extra_body"
+        },
     }
     last: dict[str, Any] = {}
     for attempt in range(1, maximum_attempts + 1):
         requested_at = datetime.now(timezone.utc).isoformat()
+        failure_content = ""
         try:
             response = client.chat.completions.create(
                 model=MODEL_ID,
@@ -325,27 +498,60 @@ def execute_one(
             )
             raw = response.model_dump(mode="json")
             content = response.choices[0].message.content or ""
-            if content.strip():
+            returned_model = getattr(response, "model", None)
+            observed_provider = raw.get("provider")
+            try:
+                validate_response_identity(returned_model, observed_provider)
+            except ProviderIdentityError as error:
+                diagnostic = {
+                    **common, "timestamp": requested_at, "attempt": attempt,
+                    "technical_retry_count": attempt - 1,
+                    "returned_model": returned_model,
+                    "observed_provider_backend": observed_provider,
+                    "raw_provider_response": raw, "raw_response": content,
+                    "parsed_answer": None, "parsed_confidence": None,
+                    "parsed_response": None, "status": "rejected_provider_identity",
+                    "error_type": "provider_or_model_mismatch", "error": str(error),
+                }
+                append_jsonl(ATTEMPTS, diagnostic)
+                if stop_event is not None:
+                    stop_event.set()
+                raise
+            choice = (raw.get("choices") or [{}])[0]
+            embedded_error = choice.get("error")
+            if embedded_error or choice.get("finish_reason") == "error":
+                failure_type = "provider_transient_error"
+                message = f"Provider returned an errored completion: {canonical_json(embedded_error)}"
+                raw_response = raw
+                failure_content = content
+            elif content.strip():
                 parsed = parse_response(content, row["task"])
                 status = "usable" if parsed["status"] == "requested_schema_conformant" else "malformed_response"
+                usage = raw.get("usage") or {}
                 last = {
                     **common, "timestamp": requested_at, "attempt": attempt,
                     "technical_retry_count": attempt - 1,
-                    "returned_model": getattr(response, "model", None),
-                    "observed_provider_backend": raw.get("provider"),
+                    "returned_model": returned_model,
+                    "observed_provider_backend": observed_provider,
                     "raw_provider_response": raw, "raw_response": content,
                     "parsed_answer": parsed.get("answer"),
                     "parsed_confidence": parsed.get("confidence"),
                     "parsed_response": parsed, "status": status,
+                    "parse_schema_status": parsed.get("status"),
+                    "input_tokens": usage.get("prompt_tokens"),
+                    "output_tokens": usage.get("completion_tokens"),
+                    "provider_reported_cost": usage.get("cost"),
+                    "finish_reason": response.choices[0].finish_reason,
                     "error_type": None, "error": None,
                 }
                 append_jsonl(ATTEMPTS, last)
                 append_jsonl(RESPONSES, last)
                 return last
-            failure_type, message = "empty_response", "Provider returned an empty response"
-            returned_model, observed_provider, raw_response = (
-                getattr(response, "model", None), raw.get("provider"), raw,
-            )
+            else:
+                failure_type, message = "empty_response", "Provider returned an empty response"
+                raw_response = raw
+        except ProviderIdentityError:
+            raise
         except Exception as error:  # SDK exception hierarchy varies.
             failure_type, message = classify_exception(error), str(error)
             returned_model, observed_provider, raw_response = None, None, None
@@ -354,7 +560,7 @@ def execute_one(
             "technical_retry_count": attempt - 1,
             "returned_model": returned_model,
             "observed_provider_backend": observed_provider,
-            "raw_provider_response": raw_response, "raw_response": "",
+            "raw_provider_response": raw_response, "raw_response": failure_content,
             "parsed_answer": None, "parsed_confidence": None,
             "parsed_response": None, "status": "technical_failure",
             "error_type": failure_type, "error": message,
@@ -370,16 +576,25 @@ def execute_one(
 
 def validate_canary(config: dict[str, Any], rows: list[dict[str, str]]) -> dict[str, Any]:
     records = load_jsonl(RESPONSES)
-    expected = {observation_key(row): row for row in rows[:10]}
+    attempts = load_jsonl(ATTEMPTS)
+    canary_rows = [row for row in rows if row.get("canary") == "true"]
+    expected = {observation_key(row): row for row in canary_rows}
     failures: list[str] = []
-    if len(records) != 10:
-        failures.append(f"expected 10 terminal rows, found {len(records)}")
+    if len(canary_rows) != CANARY_SIZE:
+        failures.append(f"expected {CANARY_SIZE} canary manifest rows, found {len(canary_rows)}")
+    if len(records) != CANARY_SIZE:
+        failures.append(f"expected {CANARY_SIZE} terminal rows, found {len(records)}")
+    rate_limits = sum(item.get("error_type") == "rate_limit" for item in attempts)
+    if rate_limits >= 2:
+        failures.append(f"repeated 429/rate-limit attempts: {rate_limits}")
+    if any(item.get("error_type") == "nonretryable_provider_error" for item in attempts):
+        failures.append("authentication or other nonretryable provider failure")
     seen: set[tuple[str, str, str]] = set()
     for index, record in enumerate(records, 1):
         key = observation_key(record)
         manifest = expected.get(key)
         if manifest is None:
-            failures.append(f"row {index}: not in deterministic first 10")
+            failures.append(f"row {index}: not in deterministic representative canary")
             continue
         if key in seen:
             failures.append(f"row {index}: duplicate observation")
@@ -397,18 +612,24 @@ def validate_canary(config: dict[str, Any], rows: list[dict[str, str]]) -> dict[
             "input hash": record.get("input_hash") == manifest["input_hash"],
             "configuration hash": record.get("configuration_hash") == config["configuration_hash"],
             "nonempty response": bool(str(record.get("raw_response", "")).strip()),
-            "parsed ANSWER": bool(record.get("parsed_answer")),
-            "parsed CONFIDENCE": record.get("parsed_confidence") is not None,
+            "parsing infrastructure": record.get("parsed_response") is not None,
             "zero reasoning tokens": details.get("reasoning_tokens") in {None, 0},
             "no reasoning output": message.get("reasoning") in {None, ""},
+            "not truncated": record.get("finish_reason") != "length",
         }
         failures.extend(f"row {index}: {label} failed" for label, ok in checks.items() if not ok)
     if set(expected) != seen:
-        failures.append("deterministic first-10 key set mismatch")
+        failures.append("deterministic representative-canary key set mismatch")
     report = {
         "status": "passed" if not failures else "failed",
         "accepted": sum(record.get("status") in ACCEPTED for record in records),
         "configuration_hash": config["configuration_hash"],
+        "primary_keys": [list(observation_key(row)) for row in canary_rows],
+        "coverage": {
+            field: sorted({row[field] for row in canary_rows})
+            for field in ("representation", "task", "hop", "dataset")
+        },
+        "rate_limit_attempts": rate_limits,
         "failures": failures,
     }
     write_json(PHASE7E / "qwen_alibaba_canary.json", report)
@@ -429,19 +650,41 @@ def execute(limit: int | None, workers: int) -> int:
                 raise RuntimeError(f"Duplicate accepted observation: {key!r}")
             terminal[key] = record
     remaining = [row for row in rows if observation_key(row) not in terminal]
+    fresh_canary = not terminal and limit == CANARY_SIZE
+    if fresh_canary:
+        remaining = [row for row in remaining if row.get("canary") == "true"]
     if limit is not None:
         remaining = remaining[:limit]
     key = read_openrouter_key()
+    metadata = write_execution_metadata(config, authenticated=True)
+    print(json.dumps(metadata["non_secret_effective_config"], indent=2))
+    print("authentication_material_loaded=true")
     client = OpenAI(api_key=key, base_url="https://openrouter.ai/api/v1", max_retries=0)
     payloads = task_payloads()
+    stop_event = threading.Event()
+    fatal: ProviderIdentityError | None = None
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = [
-            pool.submit(execute_one, row, payloads[(row["task_id"], row["representation"])], config, client)
+            pool.submit(
+                execute_one, row, payloads[(row["task_id"], row["representation"])],
+                config, client, stop_event,
+            )
             for row in remaining
         ]
         for future in as_completed(futures):
-            future.result()
-    if limit == 10 and not terminal:
+            try:
+                future.result()
+            except ProviderIdentityError as error:
+                stop_event.set()
+                fatal = error
+                for pending in futures:
+                    pending.cancel()
+            except RuntimeError as error:
+                if str(error) != "Run stopped before request submission":
+                    raise
+    if fatal is not None:
+        raise fatal
+    if fresh_canary:
         canary = validate_canary(config, rows)
         print(json.dumps(canary, indent=2))
         return 0 if canary["status"] == "passed" else 2
@@ -457,15 +700,59 @@ def report() -> dict[str, Any]:
     accepted = [record for record in records if record.get("status") in ACCEPTED]
     accepted_keys = [observation_key(record) for record in accepted]
     duplicates = len(accepted_keys) - len(set(accepted_keys))
-    unresolved = [record for record in records if record.get("status") == "technical_failure"]
     missing = set(expected) - set(accepted_keys)
+    unresolved = [
+        record for record in records
+        if record.get("status") == "technical_failure" and observation_key(record) in missing
+    ]
     malformed = [record for record in accepted if record.get("status") == "malformed_response"]
     providers = sorted({str(record.get("observed_provider_backend")) for record in accepted})
     returned_models = sorted({str(record.get("returned_model")) for record in accepted})
+    provider_mismatches = sum(record.get("observed_provider_backend") != PROVIDER_METADATA_NAME for record in accepted)
+    model_mismatches = sum(record.get("returned_model") != MODEL_ID for record in accepted)
+    input_hash_mismatches = sum(
+        expected.get(observation_key(record), {}).get("input_hash") != record.get("input_hash")
+        for record in accepted
+    )
+    representation_counts = {
+        value: sum(row.get("representation") == value for row in accepted)
+        for value in ("NL", "FS", "AR")
+    }
+    task_type_counts = {
+        value: sum(row.get("task") == value for row in accepted)
+        for value in ("BQA", "OEQA")
+    }
+    dataset_counts = {
+        value: sum(row.get("dataset") == value for row in accepted)
+        for value in sorted({row["dataset"] for row in rows})
+    }
+    hop_counts = {
+        value: sum(row.get("hop") == value for row in accepted)
+        for value in sorted({row["hop"] for row in rows})
+    }
+    usage_rows = [(row.get("raw_provider_response") or {}).get("usage") or {} for row in attempts]
+    input_tokens = sum(int(usage.get("prompt_tokens") or 0) for usage in usage_rows)
+    output_tokens = sum(int(usage.get("completion_tokens") or 0) for usage in usage_rows)
+    provider_cost_values = [usage.get("cost") for usage in usage_rows if usage.get("cost") is not None]
+    provider_reported_cost = sum(float(value) for value in provider_cost_values) if provider_cost_values else None
+    pricing = config.get("endpoint_capability_snapshot", {}).get("pricing") or {}
+    calculated_cost = None
+    if pricing.get("prompt") is not None and pricing.get("completion") is not None:
+        calculated_cost = input_tokens * float(pricing["prompt"]) + output_tokens * float(pricing["completion"])
+    timestamps = [row.get("timestamp") for row in attempts if row.get("timestamp")]
+    runtime_seconds = None
+    if timestamps:
+        start = min(datetime.fromisoformat(value) for value in timestamps)
+        end = max(datetime.fromisoformat(value) for value in timestamps)
+        runtime_seconds = (end - start).total_seconds()
     gemini_rows = load_jsonl(PHASE7D / "responses" / "gemini_observations.jsonl")
     gemini_accepted = sum(row.get("status") in ACCEPTED for row in gemini_rows)
+    complete = (
+        len(accepted) == 27144 and not duplicates and not unresolved and not missing
+        and not provider_mismatches and not model_mismatches and not input_hash_mismatches
+    )
     result = {
-        "status": "complete" if len(accepted) == 27144 and not duplicates and not unresolved else "incomplete",
+        "status": "complete" if complete else "incomplete",
         "resolved_openrouter_provider_identifier": PROVIDER_TAG,
         "provider_metadata_name": PROVIDER_METADATA_NAME,
         "provider_model_availability_check": "passed",
@@ -473,21 +760,47 @@ def report() -> dict[str, Any]:
         "canary": json.loads((PHASE7E / "qwen_alibaba_canary.json").read_text(encoding="utf-8")) if (PHASE7E / "qwen_alibaba_canary.json").is_file() else None,
         "qwen_accepted_observations": len(accepted),
         "pending_observations": len(missing),
-        "technical_retries": sum(int(record.get("technical_retry_count") or 0) for record in records),
-        "unresolved_failures": len(unresolved),
+        "unique_primary_keys": len(set(accepted_keys)),
+        "representation_counts": representation_counts,
+        "task_type_counts": task_type_counts,
+        "dataset_counts": dataset_counts,
+        "hop_counts": hop_counts,
+        "schema_usable_outputs": sum(row.get("status") == "usable" for row in accepted),
+        "technical_retries": len(attempts) - len(accepted),
+        "historical_exhausted_retry_rows_resolved_on_resume": sum(
+            record.get("status") == "technical_failure"
+            and observation_key(record) in set(accepted_keys)
+            for record in records
+        ),
+        "permanent_technical_failures": len(unresolved),
         "malformed_but_retained": len(malformed),
         "malformed_keys": [observation_key(record) for record in malformed],
         "observed_provider_backends": providers,
         "returned_models": returned_models,
         "alibaba_provider_requests": len(attempts),
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "provider_reported_cost_usd": provider_reported_cost,
+        "calculated_cost_usd": calculated_cost,
+        "runtime_seconds_between_first_and_last_request": runtime_seconds,
         "duplicate_accepted_observations": duplicates,
+        "input_hash_mismatches": input_hash_mismatches,
+        "provider_mismatches": provider_mismatches,
+        "model_mismatches": model_mismatches,
         "dekallm_primary_contribution": 0,
+        "old_alibaba_diagnostic_observations_imported": 0,
         "gemini_accepted_observations": gemini_accepted,
         "gpt_observations": 0,
         "openai_api_key_loaded": False,
         "benchmark_and_gemini_hashes_unchanged": config["frozen_file_sha256"] == frozen_files(),
         "release_published": False,
         "v1_0_modified": False,
+        "output_paths": {
+            "observations": str(RESPONSES.relative_to(ROOT)),
+            "attempts": str(ATTEMPTS.relative_to(ROOT)),
+            "report": str(REPORT_PATH.relative_to(ROOT)),
+            "execution_metadata": str(RUN_METADATA_PATH.relative_to(ROOT)),
+        },
     }
     write_json(REPORT_PATH, result)
     return result

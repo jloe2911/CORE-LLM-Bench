@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllllll}
+\toprule
+Model & Hop & N & EM & F1 & Conf.-corr. & OEQA empty & Generated & OEQA hall. \\
+\midrule
+GPT-5 mini & 1hop & 13383 & 66.76 & 68.32 & 70.23 & 930 & 8330 & 25.58 \\
+GPT-5 mini & 2hop & 13761 & 53.13 & 55.23 & 62.97 & 1838 & 6061 & 33.01 \\
+Gemini 2.5 Flash-Lite & 1hop & 13383 & 63.04 & 64.98 & 67.80 & 302 & 12126 & 49.38 \\
+Gemini 2.5 Flash-Lite & 2hop & 13761 & 51.55 & 53.71 & 58.40 & 356 & 11087 & 65.52 \\
+Qwen3-30B-A3B-Instruct & 1hop & 13383 & 67.72 & 69.85 & 70.68 & 15 & 13686 & 53.37 \\
+Qwen3-30B-A3B-Instruct & 2hop & 13761 & 53.56 & 56.15 & 57.48 & 0 & 26473 & 83.74 \\
+\bottomrule
+\end{tabular}
+\caption{Final v1.1 results by hop (percent).}
+\label{tab:core-v11-hop}
+\end{table}

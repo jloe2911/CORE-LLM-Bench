@@ -1,0 +1,36 @@
+\begin{tabular}{llrrr}
+\toprule
+Task & Term & Effect & 95\% CI & Holm $p$ \\
+\midrule
+BQA & tag\_H & -0.106 & [-0.123, -0.088] & 2.87e-30 \\
+BQA & tag\_H:C(representation, Treatment(reference="NL"))[T.AR] & -0.037 & [-0.054, -0.020] & 0.000199 \\
+BQA & tag\_H:C(representation, Treatment(reference="NL"))[T.FS] & -0.030 & [-0.051, -0.009] & 0.0293 \\
+BQA & tag\_H:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & -0.008 & [-0.021, 0.004] & 0.577 \\
+BQA & tag\_H:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & 0.054 & [0.037, 0.070] & 1.42e-09 \\
+BQA & tag\_I & -0.056 & [-0.074, -0.038] & 9.71e-09 \\
+BQA & tag\_I:C(representation, Treatment(reference="NL"))[T.AR] & -0.114 & [-0.132, -0.097] & 5.26e-35 \\
+BQA & tag\_I:C(representation, Treatment(reference="NL"))[T.FS] & 0.076 & [0.054, 0.097] & 5.62e-11 \\
+BQA & tag\_I:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & -0.065 & [-0.076, -0.053] & 5.84e-28 \\
+BQA & tag\_I:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & -0.005 & [-0.019, 0.009] & 0.994 \\
+BQA & tag\_R & -0.152 & [-0.171, -0.134] & 1.21e-55 \\
+BQA & tag\_R:C(representation, Treatment(reference="NL"))[T.AR] & -0.022 & [-0.040, -0.004] & 0.0928 \\
+BQA & tag\_R:C(representation, Treatment(reference="NL"))[T.FS] & 0.154 & [0.128, 0.180] & 4.41e-29 \\
+BQA & tag\_R:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & -0.005 & [-0.020, 0.010] & 0.994 \\
+BQA & tag\_R:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & -0.016 & [-0.034, 0.001] & 0.265 \\
+OEQA & tag\_H & -0.305 & [-0.334, -0.276] & 5.88e-86 \\
+OEQA & tag\_H:C(representation, Treatment(reference="NL"))[T.AR] & -0.076 & [-0.105, -0.047] & 2.42e-06 \\
+OEQA & tag\_H:C(representation, Treatment(reference="NL"))[T.FS] & 0.033 & [-0.004, 0.069] & 0.0823 \\
+OEQA & tag\_H:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & 0.137 & [0.117, 0.157] & 6.22e-38 \\
+OEQA & tag\_H:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & 0.133 & [0.116, 0.150] & 2.11e-51 \\
+OEQA & tag\_I & -0.047 & [-0.080, -0.014] & 0.0128 \\
+OEQA & tag\_I:C(representation, Treatment(reference="NL"))[T.AR] & -0.293 & [-0.325, -0.262] & 1.63e-69 \\
+OEQA & tag\_I:C(representation, Treatment(reference="NL"))[T.FS] & 0.090 & [0.054, 0.127] & 6.26e-06 \\
+OEQA & tag\_I:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & -0.025 & [-0.042, -0.008] & 0.0128 \\
+OEQA & tag\_I:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & 0.032 & [0.017, 0.046] & 7.61e-05 \\
+OEQA & tag\_R & -0.211 & [-0.241, -0.182] & 6.15e-43 \\
+OEQA & tag\_R:C(representation, Treatment(reference="NL"))[T.AR] & -0.163 & [-0.186, -0.139] & 1.47e-39 \\
+OEQA & tag\_R:C(representation, Treatment(reference="NL"))[T.FS] & -0.498 & [-0.525, -0.471] & 9.14e-236 \\
+OEQA & tag\_R:C(model, Treatment(reference="GPT-5 mini"))[T.Gemini 2.5 Flash-Lite] & 0.054 & [0.040, 0.068] & 3.16e-13 \\
+OEQA & tag\_R:C(model, Treatment(reference="GPT-5 mini"))[T.Qwen3-30B-A3B-Instruct] & -0.045 & [-0.058, -0.032] & 9.91e-11 \\
+\bottomrule
+\end{tabular}

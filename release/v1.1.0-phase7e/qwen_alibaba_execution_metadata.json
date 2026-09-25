@@ -1,0 +1,72 @@
+{
+  "authentication_material_loaded": true,
+  "branch": "fix/v1.1-benchmark-corrections",
+  "canonical_v1_1_parquet_sha256": "0c39f84abb7f5a44af7496862317ea761bc41809cc1cdd490cbaed19a281bccc",
+  "config_sha256": "2c1af1c54ec755f052f3a0ae1115d47df9263519176045ffa2e24bc3ef50d144",
+  "execution_runner_sha256_history": [
+    "3f806ac413d4568e1a13e18b1a0e5e354ce08d8c834ec493b3498e1ae3597a1b",
+    "2df93ab0b00f3a05ec86fdcecebdafb20acc81ea4a3c37b3131b9b8953247d29"
+  ],
+  "head": "584ac8b2fbc330826c4d5bc5bffc4c1a5cc75ff3",
+  "model_input_manifest_sha256": "191c1c0dc221a5829dfa361f86fd1ebf8bbfd54e8f89eeaf0621810001715d18",
+  "non_secret_effective_config": {
+    "fallback": false,
+    "model": "qwen/qwen3-30b-a3b-instruct-2507",
+    "provider_order": [
+      "alibaba"
+    ],
+    "request_parameters": {
+      "extra_body": {
+        "provider": {
+          "allow_fallbacks": false,
+          "data_collection": "deny",
+          "order": [
+            "alibaba"
+          ],
+          "require_parameters": true
+        }
+      },
+      "frequency_penalty": 0.1,
+      "max_tokens": 1024,
+      "presence_penalty": 0.0,
+      "seed": 0,
+      "temperature": 0.0,
+      "top_p": 0.9
+    },
+    "retry_policy": {
+      "backoff_seconds": [
+        2,
+        4,
+        8
+      ],
+      "maximum_retries_after_initial_attempt": 3,
+      "retryable": [
+        "timeout",
+        "rate_limit",
+        "provider_transient_error",
+        "empty_response"
+      ],
+      "terminal_without_resampling": [
+        "nonempty_malformed_structured_output",
+        "valid_model_answer"
+      ]
+    },
+    "timeout_seconds": 30
+  },
+  "parquet_hash_change_scope": "schema-only; model-facing NL/FS/AR inputs unchanged",
+  "pre_schema_parquet_sha256": "7285e506483b422acf8e1882da5b5390966ba4896b4bb020820f6bb4a5218859",
+  "recorded_at": "2026-09-24T19:22:53.329143+00:00",
+  "relevant_runner_files_modified": [
+    "M release/v1.1.0-phase7e/PHASE7E_REPORT.json",
+    " M release/v1.1.0-phase7e/openrouter_alibaba_endpoint.json",
+    " M release/v1.1.0-phase7e/qwen_alibaba_canary.json",
+    " M release/v1.1.0-phase7e/qwen_alibaba_config.json",
+    " M release/v1.1.0-phase7e/qwen_alibaba_primary_manifest.csv",
+    " M scripts/phase7e_qwen_alibaba.py",
+    " M tests/test_phase7e_qwen_alibaba.py",
+    "?? release/v1.1.0-phase7e/diagnostics/",
+    "?? release/v1.1.0-phase7e/qwen_alibaba_execution_metadata.json",
+    "?? release/v1.1.0-phase7e/responses/"
+  ],
+  "runner_sha256": "2df93ab0b00f3a05ec86fdcecebdafb20acc81ea4a3c37b3131b9b8953247d29"
+}

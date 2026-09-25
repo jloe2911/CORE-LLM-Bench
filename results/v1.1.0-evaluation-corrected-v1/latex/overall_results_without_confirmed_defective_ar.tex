@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llllllll}
+\toprule
+Model & N & EM & F1 & Conf.-corr. & OEQA empty & Generated & OEQA hall. \\
+\midrule
+GPT-5 mini & 27141 & 59.85 & 61.69 & 66.55 & 2767 & 14389 & 28.70 \\
+Gemini 2.5 Flash-Lite & 27141 & 57.22 & 59.27 & 63.04 & 658 & 23159 & 57.21 \\
+Qwen3-30B-A3B-Instruct & 27141 & 60.54 & 62.91 & 63.99 & 15 & 40098 & 73.48 \\
+\bottomrule
+\end{tabular}
+\caption{Corrected v1.1 sensitivity results excluding three confirmed defective AR prompts (percent).}
+\label{tab:core-v11-overall-ar-sensitivity}
+\end{table}

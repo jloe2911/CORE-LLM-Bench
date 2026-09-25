@@ -1,0 +1,4 @@
+task_id,status,basis
+1274,confirmed_defective_ar_prompt,gold class and supporting type statement absent from AR context
+4094,confirmed_defective_ar_prompt,displayed AR type contradicts the AR gold class set
+5165,confirmed_defective_ar_prompt,required inverse-property identity absent from AR context

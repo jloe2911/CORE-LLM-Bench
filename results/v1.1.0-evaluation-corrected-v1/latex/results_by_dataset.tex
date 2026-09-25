@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllllll}
+\toprule
+Model & Dataset & N & EM & F1 & Conf.-corr. & OEQA empty & Generated & OEQA hall. \\
+\midrule
+GPT-5 mini & FamilyOWL & 11286 & 61.21 & 63.28 & 70.34 & 1383 & 4283 & 34.06 \\
+GPT-5 mini & OWL2Bench & 9180 & 64.43 & 66.05 & 69.80 & 669 & 4571 & 25.84 \\
+GPT-5 mini & Pizza100 & 2970 & 52.05 & 53.41 & 55.50 & 287 & 2521 & 26.30 \\
+GPT-5 mini & Pizza250 & 3708 & 50.59 & 52.65 & 55.82 & 429 & 3016 & 27.49 \\
+Gemini 2.5 Flash-Lite & FamilyOWL & 11286 & 55.95 & 58.56 & 64.08 & 390 & 10144 & 75.94 \\
+Gemini 2.5 Flash-Lite & OWL2Bench & 9180 & 59.97 & 61.43 & 63.18 & 111 & 5514 & 52.36 \\
+Gemini 2.5 Flash-Lite & Pizza100 & 2970 & 56.33 & 57.89 & 61.27 & 71 & 3338 & 34.39 \\
+Gemini 2.5 Flash-Lite & Pizza250 & 3708 & 54.96 & 57.14 & 60.89 & 86 & 4217 & 35.90 \\
+Qwen3-30B-A3B-Instruct & FamilyOWL & 11286 & 60.64 & 63.57 & 65.23 & 14 & 19767 & 85.48 \\
+Qwen3-30B-A3B-Instruct & OWL2Bench & 9180 & 61.90 & 64.42 & 64.73 & 1 & 11403 & 71.58 \\
+Qwen3-30B-A3B-Instruct & Pizza100 & 2970 & 58.59 & 59.56 & 60.37 & 0 & 3996 & 50.55 \\
+Qwen3-30B-A3B-Instruct & Pizza250 & 3708 & 58.44 & 59.83 & 61.26 & 0 & 4993 & 47.95 \\
+\bottomrule
+\end{tabular}
+\caption{Final v1.1 results by dataset (percent).}
+\label{tab:core-v11-dataset}
+\end{table}

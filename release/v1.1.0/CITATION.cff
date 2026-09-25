@@ -3,12 +3,8 @@ message: "If you use CORE-LLM-Bench v1.1.0, cite the published conference paper 
 title: "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models"
 type: dataset
 version: 1.1.0
-date-released: 2026-09-25
 doi: "10.5281/zenodo.22959957"
-identifiers:
-  - type: other
-    value: "https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench"
-    description: "Canonical tabular 9,048-row dataset view on Hugging Face"
+url: "https://zenodo.org/records/22959957"
 authors:
   - family-names: "Loesch"
     given-names: "Julie"
@@ -18,7 +14,7 @@ authors:
     affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
   - family-names: "Kilk"
     given-names: "Nicole"
-    affiliation: "University College Maastricht, Maastricht University, Zwingelput 4, Maastricht, 6211 KH, Netherlands"
+    affiliation: "University College Maastricht, Maastricht University, Netherlands"
   - family-names: "Jakhar"
     given-names: "Rishabh"
     affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
@@ -32,18 +28,8 @@ authors:
     given-names: "Remzi"
     affiliation: "Department of Advanced Computing Sciences, Maastricht University, Netherlands"
 repository-code: "https://github.com/jloe2911/CORE-LLM-Bench"
-repository-artifact: "https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0"
-url: "https://zenodo.org/records/22959957"
 keywords:
   - "neurosymbolic AI"
-  - "large language models"
   - "ontology reasoning"
   - "benchmark"
-  - "symbolic reasoning"
-  - "description logic"
-  - "OWL"
   - "question answering"
-  - "knowledge representation"
-# Add preferred-citation from the complete, confirmed conference-paper record.
-# No complete conference BibTeX or bibliographic record is currently stored in
-# this repository, so incomplete or inferred fields are deliberately omitted.

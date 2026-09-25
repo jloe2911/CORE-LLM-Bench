@@ -2,26 +2,26 @@
 
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
-> **Public dataset:** The canonical tabular 9,032-row dataset view is available
+> **Current release:** CORE-LLM-Bench v1.1.0 contains 9,048 frozen question-hop
+> instances and is available
 > on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
-> CORE-LLM-Bench v1.0.0 is permanently archived on
-> [Zenodo](https://zenodo.org/records/22742977) under DOI
-> [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977), with the
-> corresponding source at the
-> [GitHub repository](https://github.com/jloe2911/CORE-LLM-Bench) and
-> [GitHub v1.0.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0).
+> The complete source and data package is attached to the
+> [GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
+> Zenodo DOI [10.5281/zenodo.22959957](https://doi.org/10.5281/zenodo.22959957)
+> is reserved for the manually published archival copy. The immutable v1.0.0
+> archive remains at [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977).
 
-Version 1.0.0 contains **9,032 unique question-hop instances** from four source datasets:
+Version 1.1.0 contains **9,048 unique question-hop instances** from four source datasets:
 
 | Dataset | 1-hop | 2-hop | Total |
 | --- | ---: | ---: | ---: |
-| Family / FamilyOWL | 1,880 | 1,880 | 3,760 |
-| Pizza 100 | 492 | 492 | 984 |
-| Pizza 250 | 616 | 616 | 1,232 |
-| OWL2Bench | 1,466 | 1,590 | 3,056 |
-| **Total** | **4,454** | **4,578** | **9,032** |
+| Family / FamilyOWL | 1,881 | 1,881 | 3,762 |
+| Pizza 100 | 495 | 495 | 990 |
+| Pizza 250 | 618 | 618 | 1,236 |
+| OWL2Bench | 1,467 | 1,593 | 3,060 |
+| **Total** | **4,461** | **4,587** | **9,048** |
 
-The task totals are 5,999 binary questions (BQA) and 3,033 open-ended questions (OEQA). Dataset, hop, and `Task ID` jointly identify a benchmark instance. NL, FS, and AR are aligned representations of that instance and are not separate questions.
+The task totals are 6,032 binary questions (BQA), arranged as 3,016 TRUE/FALSE pairs, and 3,016 open-ended questions (OEQA). `task_id` and `semantic_key` identify a benchmark instance. NL, FS, and AR are aligned representations of that instance and are not separate questions.
 
 ## Benchmark design
 
@@ -115,7 +115,7 @@ Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is re
 
 ### Tabular Hugging Face export
 
-The canonical tabular 9,032-row dataset view is published at
+The canonical tabular 9,048-row v1.1.0 dataset view is published at
 [huggingface.co/datasets/jloe2911/CORE-LLM-Bench](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
 Each row is one unique question-hop instance, with NL, FS, and AR retained as
 aligned columns.
@@ -129,7 +129,7 @@ python scripts/export_huggingface.py --profile full
 python scripts/export_huggingface.py --profile public-safe
 ```
 
-These commands write profile-specific Parquet exports, dataset cards, statistics,
+These commands describe the legacy v1.0.0 export path and write profile-specific Parquet exports, dataset cards, statistics,
 manifests, and checksums under `release/huggingface/full/` and
 `release/huggingface/public-safe/`. NL, FS, and AR remain columns in one row.
 The full profile has 9,032 rows. The public-safe fallback has 5,272 rows and
@@ -211,14 +211,14 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 
 ## Version and license
 
-The benchmark version is `1.0.0`; the release tag is `v1.0.0`, and the release
-date is 2026-09-13. The canonical tabular 9,032-row dataset view is available
+The current benchmark version is `1.1.0`; the release tag is `v1.1.0`, and the
+release date is 2026-09-25. The canonical tabular 9,048-row dataset view is available
 on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench).
-The archived dataset is available on
-[Zenodo](https://zenodo.org/records/22742977) under DOI
-[`10.5281/zenodo.22742977`](https://doi.org/10.5281/zenodo.22742977), and the
-source release is available from the
-[GitHub v1.0.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.0.0).
+The v1.1.0 Zenodo DOI is
+[`10.5281/zenodo.22959957`](https://doi.org/10.5281/zenodo.22959957), pending
+manual publication. The source release is available from the
+[GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
+The historical v1.0.0 GitHub, Hugging Face, and Zenodo artifacts remain unchanged.
 See `VERSION`, `CITATION.cff`, and `final_benchmark/manifest.json`.
 
 Licensing has three distinct layers:

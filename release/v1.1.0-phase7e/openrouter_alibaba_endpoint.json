@@ -10,7 +10,7 @@
     "temperature",
     "top_p"
   ],
-  "resolved_at": "2026-09-21T11:24:12.630241+00:00",
+  "resolved_at": "2026-09-24T17:49:03.260676+00:00",
   "resolved_provider_identifier": "alibaba",
   "selected_endpoint": {
     "context_length": 131072,

@@ -1,0 +1,29 @@
+{
+  "canonical_release_directory": "release/v1.1.0",
+  "github": {
+    "published": false,
+    "repository": "jloe2911/CORE-LLM-Bench",
+    "tag": "v1.1.0"
+  },
+  "hugging_face": {
+    "dataset": "jloe2911/CORE-LLM-Bench",
+    "published": false,
+    "revision": "v1.1.0"
+  },
+  "llm_api_calls": 0,
+  "model_responses_modified": false,
+  "prepared_date": "2026-09-25",
+  "publication_date": null,
+  "release_tag": "v1.1.0",
+  "scientific_inputs_regenerated": false,
+  "status": "prepared-not-published",
+  "title": "CORE-LLM-Bench: A Controlled Neurosymbolic Benchmark for Ontology-Grounded Reasoning in Large Language Models",
+  "version": "1.1.0",
+  "zenodo": {
+    "doi": "10.5281/zenodo.22959957",
+    "published": false,
+    "record_id": 22959957,
+    "record_url": "https://zenodo.org/records/22959957",
+    "reserved": true
+  }
+}

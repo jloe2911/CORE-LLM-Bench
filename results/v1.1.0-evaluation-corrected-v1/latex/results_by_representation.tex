@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllllll}
+\toprule
+Model & Representation & N & EM & F1 & Conf.-corr. & OEQA empty & Generated & OEQA hall. \\
+\midrule
+GPT-5 mini & AR & 9048 & 48.05 & 49.00 & 55.73 & 1640 & 2823 & 24.87 \\
+GPT-5 mini & FS & 9048 & 71.85 & 72.53 & 73.14 & 504 & 5507 & 15.43 \\
+GPT-5 mini & NL & 9048 & 59.64 & 63.51 & 70.78 & 624 & 6061 & 42.57 \\
+Gemini 2.5 Flash-Lite & AR & 9048 & 52.62 & 54.80 & 57.81 & 169 & 10589 & 65.88 \\
+Gemini 2.5 Flash-Lite & FS & 9048 & 69.73 & 71.03 & 71.03 & 2 & 6722 & 38.60 \\
+Gemini 2.5 Flash-Lite & NL & 9048 & 49.29 & 51.96 & 60.26 & 487 & 5902 & 62.37 \\
+Qwen3-30B-A3B-Instruct & AR & 9048 & 51.66 & 54.12 & 55.94 & 14 & 18249 & 79.24 \\
+Qwen3-30B-A3B-Instruct & FS & 9048 & 76.47 & 78.40 & 78.42 & 0 & 7163 & 26.86 \\
+Qwen3-30B-A3B-Instruct & NL & 9048 & 53.49 & 56.20 & 57.60 & 1 & 14747 & 88.75 \\
+\bottomrule
+\end{tabular}
+\caption{Final v1.1 results by representation (percent).}
+\label{tab:core-v11-representation}
+\end{table}

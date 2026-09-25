@@ -7,3 +7,6 @@
 /release/v1.1.0-phase7c-audit/** -text -diff
 /release/v1.1.0-phase7d/** -text -diff
 /release/v1.1.0-phase7e/** -text -diff
+/release/v1.1.0/** -text -diff
+/results/v1.1.0-evaluation-corrected-v1/** -text -diff
+/results/v1.1.0-reasoning-tag-analysis/** -text -diff
