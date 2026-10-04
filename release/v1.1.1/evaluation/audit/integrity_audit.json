@@ -1,0 +1,76 @@
+{
+  "corrected_proof_metadata": {
+    "complexity_source": "answer_explanations exact conjunctive/disjunctive reconstruction; shared axioms deduplicated; primitive tags reconstructed with the existing deterministic fallback; M excluded",
+    "stale_declared_complexity_mismatch_task_ids": [],
+    "stale_declared_complexity_mismatches": 0
+  },
+  "evaluator": {
+    "ar_gold_field": "ar_gold_answer",
+    "nl_fs_gold_field": "gold_answer",
+    "oeqa_hallucination_definition": "unsupported generated normalized answers / generated normalized answers; empty predictions excluded from denominator",
+    "sageqa_evaluator_sha256": "86b9bedfb3784145f3d20e2b9b8b6082ee4252e57918807bf02529b3904eefd6",
+    "sageqa_source_commit": "dbdbb50708bdc6c686ef82518ec71c1d1bf55985"
+  },
+  "matrix": {
+    "accepted_by_source": {
+      "GPT-5 mini": 27144,
+      "Gemini 2.5 Flash-Lite": 27144,
+      "Qwen3-30B-A3B-Instruct": 27144
+    },
+    "corrected_benchmark_sha256": "2a6d5e7c68b768aada509ceef3d00e83636be7f6cee247deb11337f6d0836ee8",
+    "corrected_input_manifest_sha256": "d4d3e5684dd5b9b2c7a6789196430e8abfc8b4f862df44c22e3e5232b5eaabf2",
+    "corrected_rerun_observations": 16458,
+    "differential_audit_sha256": "8b0cd2408b10c621afbf36342fc78d8470da3c1e255fd13b1f2775d1ee21b3e4",
+    "duplicate_final_cells": 0,
+    "final_observations": 81432,
+    "missing_observations": 0,
+    "prompt_hash_mismatches": 0,
+    "qualified_nonexact_prompt_transfers": 15855,
+    "reused_frozen_observations": 64974,
+    "semantic_mismatches": 0,
+    "status": "passed",
+    "unique_final_cells": 81432
+  },
+  "offline_only": true,
+  "rerun": {
+    "attempt_journal_sha256": "f24f670feab71cd119da70af7005dde45be870a0e960d041b7bc09e92758e73a",
+    "charged_usd": 13.53325078,
+    "checkpoint_manifest_or_response_mismatches": 0,
+    "checkpoint_sha256": "1437e1cc771126b6fbc0b3e705bc2b714c7c8ad43ca3e2105c14cece6b1fb30f",
+    "checkpoint_status_counts": {
+      "completed": 16443
+    },
+    "completed_requests": 16443,
+    "duplicate_response_records": 0,
+    "extra_response_records": 0,
+    "failed": 0,
+    "historical_attempt_status_counts": {
+      "completed": 16358,
+      "excluded_ambiguous_identity": 1,
+      "rate_limited": 95,
+      "transient_reconciled": 1,
+      "transient_retryable": 2
+    },
+    "in_flight": 0,
+    "malformed_accepted_observations": 16,
+    "malformed_jsonl_lines": 0,
+    "missing_response_records": 0,
+    "pending": 0,
+    "provider_or_model_route_mismatches": 0,
+    "reconciliation_events": 1,
+    "rerun_manifest_sha256": "b1556bbcbe6c68fd6d02bd0fbf843c915be66cab56e81429f1b1149e70c582e1",
+    "reserved_usd": 0.0,
+    "response_hash_mismatches": 0,
+    "response_journal_records": 16443,
+    "response_journal_sha256": "c27c8fa80c801074dcecac6c4c953ad246ecdd8c272e81e78866db3d3ec17cab",
+    "sqlite_integrity": [
+      "ok"
+    ],
+    "status": "passed",
+    "uncertain_charged_usd": 0.0,
+    "unexpected_checkpoint_status": 0,
+    "unresolved_attempts": 0,
+    "unusable_malformed_accepted_observations": 15
+  },
+  "status": "passed"
+}

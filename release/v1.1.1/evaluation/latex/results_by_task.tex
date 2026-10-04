@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllll}
+\toprule
+Model & Task & N & EM & F1 & Conf.-corr. & OEQA hall. \\
+\midrule
+GPT-5 mini & BQA & 18096 & 75.34 & 75.34 & 75.47 &  \\
+GPT-5 mini & OEQA & 9048 & 37.27 & 46.89 & 61.73 & 22.23 \\
+Gemini 2.5 Flash-Lite & BQA & 18096 & 70.31 & 70.31 & 70.62 &  \\
+Gemini 2.5 Flash-Lite & OEQA & 9048 & 30.90 & 41.51 & 52.36 & 51.06 \\
+Qwen3-30B-A3B-Instruct & BQA & 18096 & 75.81 & 75.81 & 75.65 &  \\
+Qwen3-30B-A3B-Instruct & OEQA & 9048 & 32.87 & 43.64 & 47.22 & 70.62 \\
+\bottomrule
+\end{tabular}
+\caption{Corrected results by task}
+\label{tab:core-v11-corrected-results-by-task}
+\end{table}

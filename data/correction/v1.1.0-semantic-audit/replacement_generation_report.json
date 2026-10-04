@@ -1,0 +1,10 @@
+{
+  "family_replacements": 66,
+  "next_step": "Run Openllet and the OWLAPI structural reasoner over replacement_reasoner_input.tsv.",
+  "owl2bench_replacements": 1,
+  "preserved_distinct_pair_groups": 67,
+  "preserved_distinct_positive_members": 67,
+  "replacement_false_bqa": 67,
+  "replacement_prompt_hashes": 201,
+  "status": "prepared-no-api-calls"
+}

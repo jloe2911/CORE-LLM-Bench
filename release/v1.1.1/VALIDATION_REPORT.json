@@ -1,0 +1,71 @@
+{
+  "benchmark": {
+    "BQA": 6032,
+    "OEQA": 3016,
+    "balanced_pairs": 3016,
+    "complexity_distribution": {
+      "BQA": {
+        "High": 770,
+        "Low": 2116,
+        "Medium": 3146
+      },
+      "OEQA": {
+        "High": 1062,
+        "Low": 1447,
+        "Medium": 507
+      }
+    },
+    "json_files": 8,
+    "parquet_sha256": "0a051b7ccc021a0fafa1852ee3dd02d49ea79631d67adb86e33b360a7fccb803",
+    "questions": 9048
+  },
+  "additional_model_api_calls_during_release_preparation": false,
+  "manuscript_modified": false,
+  "observations": {
+    "malformed_accepted": 86,
+    "predictions_modified": false,
+    "qualified_nonexact_prompt_nl_transfer_observations": 15855,
+    "qualified_nonexact_prompt_nl_transfer_questions": 5285,
+    "rerun_cells": 16458,
+    "rerun_requests": 16443,
+    "rerun_requests_resolved": 16443,
+    "rerun_schema_nonconformant": 16,
+    "reused": 64974,
+    "total": 81432
+  },
+  "offline_only": true,
+  "proof_metadata": {
+    "repaired": 885,
+    "residual_stale": 0
+  },
+  "published": false,
+  "release": "v1.1.1",
+  "release_state": "frozen_final_local_release",
+  "release_validation": {
+    "canonical_tests_passed": 139,
+    "manifest_entries_verified": 84,
+    "manifest_mismatches": 0
+  },
+  "reasoning_tags": {
+    "M_excluded": true,
+    "maximum_tied_minima": 20,
+    "primitive_tags_exercised": [
+      "D",
+      "H",
+      "I",
+      "N",
+      "R",
+      "S",
+      "T",
+      "F",
+      "J",
+      "V"
+    ],
+    "questions": 9048,
+    "tied_minimum_questions": 1215
+  },
+  "status": "PASS",
+  "source_candidate": "v1.1.1-rc1",
+  "v1_1_0_modified": false,
+  "version": "v1.1.1"
+}

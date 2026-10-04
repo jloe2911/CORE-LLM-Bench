@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lllllll}
+\toprule
+Model & Hop & N & EM & F1 & Conf.-corr. & OEQA hall. \\
+\midrule
+GPT-5 mini & 1hop & 13383 & 70.89 & 74.03 & 75.97 & 19.47 \\
+GPT-5 mini & 2hop & 13761 & 54.63 & 57.90 & 65.95 & 25.91 \\
+Gemini 2.5 Flash-Lite & 1hop & 13383 & 63.27 & 66.74 & 69.60 & 42.75 \\
+Gemini 2.5 Flash-Lite & 2hop & 13761 & 51.25 & 54.84 & 59.61 & 60.15 \\
+Qwen3-30B-A3B-Instruct & 1hop & 13383 & 68.83 & 72.16 & 72.99 & 49.22 \\
+Qwen3-30B-A3B-Instruct & 2hop & 13761 & 54.37 & 58.21 & 59.54 & 81.64 \\
+\bottomrule
+\end{tabular}
+\caption{Corrected results by hop}
+\label{tab:core-v11-corrected-results-by-hop}
+\end{table}

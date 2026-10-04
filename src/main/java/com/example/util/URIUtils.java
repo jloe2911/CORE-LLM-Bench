@@ -15,7 +15,6 @@ public class URIUtils {
     private static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private static final String RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#";
     private static final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
-    private static final String GENEALOGY_NAMESPACE = "http://www.example.com/genealogy.owl#";
 
     /**
      * Convert short form back to full URI for SPARQL queries
@@ -38,9 +37,11 @@ public class URIUtils {
         if (shortForm.startsWith("rdf:")) {
             return RDF_NAMESPACE + shortForm.substring(4);
         }
-
-        // For genealogy ontology entities, reconstruct the full URI
-        return GENEALOGY_NAMESPACE + shortForm;
+        if (shortForm.matches("^[A-Za-z][A-Za-z0-9+.-]*:.*$")) {
+            return shortForm;
+        }
+        throw new IllegalArgumentException(
+                "Cannot reconstruct ontology identity from a local name alone: " + shortForm);
     }
 
     /**

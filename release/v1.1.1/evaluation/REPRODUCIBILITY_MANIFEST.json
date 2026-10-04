@@ -1,0 +1,43 @@
+{
+  "inputs": {
+    "data/correction/v1.1.0-semantic-audit/corrected_model_input_manifest.csv": "d4d3e5684dd5b9b2c7a6789196430e8abfc8b4f862df44c22e3e5232b5eaabf2",
+    "data/correction/v1.1.0-semantic-audit/observation_differential_audit.csv": "8b0cd2408b10c621afbf36342fc78d8470da3c1e255fd13b1f2775d1ee21b3e4",
+    "data/correction/v1.1.0-semantic-audit/rerun_manifest.csv": "b1556bbcbe6c68fd6d02bd0fbf843c915be66cab56e81429f1b1149e70c582e1",
+    "data/correction/v1.1.1/core_llm_bench_v1_1_1_corrected.parquet": "2a6d5e7c68b768aada509ceef3d00e83636be7f6cee247deb11337f6d0836ee8",
+    "data/output/v1.1.0-minimum-rerun/checkpoint.sqlite3": "1437e1cc771126b6fbc0b3e705bc2b714c7c8ad43ca3e2105c14cece6b1fb30f",
+    "data/output/v1.1.0-minimum-rerun/responses.jsonl": "c27c8fa80c801074dcecac6c4c953ad246ecdd8c272e81e78866db3d3ec17cab",
+    "data/output/v1.1.0-minimum-rerun/retry_attempts.jsonl": "f24f670feab71cd119da70af7005dde45be870a0e960d041b7bc09e92758e73a"
+  },
+  "offline_only": true,
+  "outputs": {
+    "EVALUATION_REPORT.md": "8144356bb2ac5a9ad11f1935e18c3f1f68e2197b0a0bac5c619997e6ac522a17",
+    "audit/integrity_audit.json": "fd2c0b75d1d137e8ff957cf5fc84b8d8685b37f79b09e05ac9a3c29a1c9bf38b",
+    "audit/malformed_accepted_observations.csv": "d73ecc75c5ea9e27e3be5f0c0ad0fe343a43e802dab57f8851c6d38f7e568f81",
+    "comparison/explanation_complexity_detailed_vs_published.csv": "c0a9ed9df3207bea5851cb7811830f44d5f04d57f72e913cf381de04d695adca",
+    "comparison/explanation_complexity_vs_published.csv": "24bb098eb8e6366d407b9f017422c2c2b7102bf51934d955237fdc03001a1770",
+    "comparison/overall_by_model_vs_published.csv": "bbb234cb7716f53846fe3c7b5e396011d8ca55f2c58e1266b72af8defe21bf70",
+    "comparison/results_by_dataset_vs_published.csv": "b5bef254bb33e41d556a3defc8359e9752fe847a8b561191b6f9c943a3313824",
+    "comparison/results_by_hop_vs_published.csv": "2af66fd209a452a139a3d338865533bd0826d52e5d8c31077b53d0289aa3021b",
+    "comparison/results_by_representation_vs_published.csv": "a5b0a307157d2ae15fee70410a645472cbe3012f5b29d0f79ffd7614cf8e558d",
+    "comparison/results_by_task_vs_published.csv": "089eae677f9fd676bad1cfbf145bc06e62b17f8c5b9760b8e4dcb0264f02856c",
+    "comparison/results_full_factorial_vs_published.csv": "05ef3ed6526902e79e2bebf083495eca1e1784648889eb75ecb4f926717184b1",
+    "csv/explanation_complexity.csv": "f09986e13922c3efcbccf08ba10c4534f8aa8410b9d090031688993249141178",
+    "csv/explanation_complexity_detailed.csv": "287363fe68732a9fd232a9e6e5a236f4ba53a8368b81221e3f89299868c26c8f",
+    "csv/final_dataset_statistics.csv": "d5a63dba246eb41ce7257c1dfcb96c37aeae5d8027448dc0d5c40698cb919c9c",
+    "csv/overall_by_model.csv": "32141d10ed72bb45b9cb7272a2be9fdbb5861a811d0610b92a6961468a866d28",
+    "csv/per_observation_scores.csv": "8b824b6f74a35ca860fe33230bad6aa7a9cbae9eddcabc8e35a60e17c06edbed",
+    "csv/results_by_dataset.csv": "3b3bbd8d4b7dd6189bff413db266bdbf14c6a8b492b68c85aff71540980283e3",
+    "csv/results_by_hop.csv": "baf4948fcbdba1d30b78b5f614d3669ad4d91a0c14dbbfd50f97b93c142dd3ff",
+    "csv/results_by_representation.csv": "3738419f0a24726735294b612b47fbf3b683a1833c430aff2258e8495a8f5891",
+    "csv/results_by_task.csv": "a41985c87bc71df7668fe1664b3ad237527426fc28e3e78c743a47e1bf14fc06",
+    "csv/results_full_factorial.csv": "f8822245f8a5a41424a05be95eeec2bc5278383f769000c2d0a90b802cb2d252",
+    "latex/explanation_complexity.tex": "bacd62f2951e757dc1c021d983fbbe5bb8f0790642834356e9054dbe61d5fbed",
+    "latex/overall_by_model.tex": "df297bc9f8896972ae074f306de0827ca27c3d8188ed48aead13952869cd4855",
+    "latex/results_by_dataset.tex": "6f6b619cd1ddce3ef0139485343fc0bc4c06eb69677eed855a18f6280b0d4ede",
+    "latex/results_by_hop.tex": "f7e8425dd2e213c8803c0dfc7aa3f13ccec56f5dac6a28d261f7747c9cb1f2c5",
+    "latex/results_by_representation.tex": "91541382a15ad8da98107f7342f1ebd17040c503b386404c9b811be35984cc40",
+    "latex/results_by_task.tex": "e8f8c2268831cf47a8fe1b05fea9f8a42447cfc274d1a11f0f4467f6e91e2e8d"
+  },
+  "script": "scripts/evaluate_v1_1_corrected_rerun_offline.py",
+  "script_sha256": "dbb9f2439c5acf8133d280bb2c036eaf6b267e39b380e6c7226aae7fbefb5802"
+}
