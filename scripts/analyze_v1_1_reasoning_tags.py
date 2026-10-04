@@ -28,8 +28,13 @@ from scipy import stats
 import statsmodels.formula.api as smf
 from statsmodels.stats.multitest import multipletests
 
+try:  # direct script execution
+    from oeqa_explanations import _construct_tags
+except ModuleNotFoundError:  # package import in tests
+    from scripts.oeqa_explanations import _construct_tags
 
-PRIMITIVE_TAGS = tuple("DHINRST")
+
+PRIMITIVE_TAGS = tuple("DHINRSTQFELC") + ("\u2229", "U", "\u00ac", "J", "V", "Y", "A")
 ADJUSTED_TAGS = ("H", "I", "R")
 MODEL_REFERENCE = "GPT-5 mini"
 REPRESENTATION_REFERENCE = "NL"
@@ -38,12 +43,35 @@ HOP_REFERENCE = "1hop"
 MIN_INFERENTIAL_QUESTIONS = 100
 
 
+def _rendered_axiom_tags(text: str) -> tuple[str, ...]:
+    tags = list(_construct_tags(text))
+    rendered_patterns = (
+        ("H", (" SubPropertyOf:",)), ("S", ("Symmetric:",)),
+        ("T", ("Transitive:",)), ("F", ("Functional:",)),
+        ("J", ("DisjointClasses:", "DisjointProperties:")),
+        ("V", ("Reflexive:",)), ("Y", ("Irreflexive:",)),
+        ("A", ("Asymmetric:",)), ("Q", ("Equivalent:",)),
+    )
+    for tag, markers in rendered_patterns:
+        if any(marker in text for marker in markers) and tag not in tags:
+            tags.append(tag)
+    return tuple(tags or ["D"])
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--benchmark-dir",
         type=Path,
         default=Path("release/v1.1.0-staging/benchmark"),
+    )
+    parser.add_argument(
+        "--benchmark-parquet",
+        type=Path,
+        help=(
+            "Optional corrected benchmark Parquet. When supplied, it replaces "
+            "--benchmark-dir and uses corrected_semantic_key for score joins."
+        ),
     )
     parser.add_argument(
         "--scores",
@@ -85,16 +113,73 @@ def _proof_tags(proof: dict) -> set[str]:
     return set(tags)
 
 
-def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
-    paths = sorted(benchmark_dir.glob("*.json"))
-    if len(paths) != 8:
-        raise ValueError(f"Expected 8 benchmark JSON files, found {len(paths)}")
+def _reconstruct_complete_minima(answer_groups: list[dict]) -> tuple[list[set[str]], int]:
+    """Rebuild complete minima from corrected answer-group alternatives.
 
-    raw_questions: list[dict] = []
-    for path in paths:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        for context in payload:
-            raw_questions.extend(context.get("QAs", []))
+    The semantic-correction artifact extends answer groups but its cached
+    complete-explanation union can retain stale combinations and concatenated
+    pre-deduplication tag sequences.  Answer-group alternatives preserve the
+    required conjunctive-across-answers/disjunctive-within-answer semantics.
+    """
+    states: set[frozenset[tuple[str, tuple[str, ...]]]] = {frozenset()}
+    for group in answer_groups:
+        alternatives = group.get("alternatives", [])
+        if not alternatives:
+            raise ValueError("Corrected answer group has no proof alternative")
+        next_states: set[frozenset[tuple[str, tuple[str, ...]]]] = set()
+        for state in states:
+            current = dict(state)
+            for alternative in alternatives:
+                axioms = alternative.get("axioms", [])
+                merged = dict(current)
+                for axiom in axioms:
+                    identity = str(axiom.get("axiom", ""))
+                    explicit = axiom.get("tag")
+                    inferred = ((explicit,) if isinstance(explicit, str) and len(explicit) == 1
+                                else _rendered_axiom_tags(identity))
+                    primitive = tuple(tag for tag in inferred if tag != "M")
+                    if set(primitive) - set(PRIMITIVE_TAGS):
+                        raise ValueError(f"Invalid reconstructed primitive tags: {primitive!r}")
+                    if identity in merged and merged[identity] != primitive:
+                        raise ValueError("Inconsistent reconstructed tags for a corrected axiom")
+                    merged[identity] = primitive
+                next_states.add(frozenset(merged.items()))
+        states = next_states
+    counts = {state: sum(len(tags) for _, tags in state) for state in states}
+    minimum_count = min(counts.values())
+    minima = [
+        {tag for _, tags in state for tag in tags}
+        for state, count in counts.items() if count == minimum_count
+    ]
+    return minima, minimum_count
+
+
+def _question_rows(
+    benchmark_dir: Path, benchmark_parquet: Path | None = None
+) -> tuple[pd.DataFrame, dict]:
+    paths: list[Path] = []
+    if benchmark_parquet is not None:
+        raw_questions = pd.read_parquet(benchmark_parquet).to_dict(orient="records")
+        for question in raw_questions:
+            question["task_type"] = question["task_group"]
+            question["semantic_key"] = question["corrected_semantic_key"]
+            positive_id = question.get("positive_task_id")
+            question["positive_task_id"] = (
+                str(int(positive_id)) if pd.notna(positive_id) else ""
+            )
+            for field in ("complete_explanation", "answer_explanations", "primitive_reasoning_tags"):
+                value = question.get(field)
+                if isinstance(value, str) and value.lstrip().startswith(("{", "[")):
+                    question[field] = json.loads(value)
+    else:
+        paths = sorted(benchmark_dir.glob("*.json"))
+        if len(paths) != 8:
+            raise ValueError(f"Expected 8 benchmark JSON files, found {len(paths)}")
+        raw_questions = []
+        for path in paths:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            for context in payload:
+                raw_questions.extend(context.get("QAs", []))
     if len(raw_questions) != 9_048:
         raise ValueError(f"Expected 9,048 questions, found {len(raw_questions):,}")
 
@@ -104,6 +189,7 @@ def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
 
     rows: list[dict] = []
     bqa_positive_basis = 0
+    declared_minimum_mismatch_ids: list[str] = []
     for q in raw_questions:
         task_id = str(q["task_id"])
         task = str(q["task_type"])
@@ -126,26 +212,35 @@ def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
 
         complete = basis.get("complete_explanation")
         minima = complete.get("minimum_explanations", []) if isinstance(complete, dict) else []
-        if not minima:
-            raise ValueError(f"No tied/global minimum explanations for task {task_id}")
-        proof_tag_sets = [_proof_tags(proof) for proof in minima]
+        if benchmark_parquet is not None:
+            proof_tag_sets, minimum_count = _reconstruct_complete_minima(
+                basis.get("answer_explanations", [])
+            )
+            tied_minimum_count = len(proof_tag_sets)
+        else:
+            if not minima:
+                raise ValueError(f"No tied/global minimum explanations for task {task_id}")
+            proof_tag_sets = [_proof_tags(proof) for proof in minima]
+            min_counts = {len(proof.get("axioms", [])) for proof in minima}
+            if len(min_counts) != 1:
+                raise ValueError(f"Tied minima have unequal size for task {task_id}")
+            minimum_count = min_counts.pop()
+            tied_minimum_count = len(minima)
         every_tags = set.intersection(*proof_tag_sets)
         any_tags = set.union(*proof_tag_sets)
-        min_counts = {len(proof.get("axioms", [])) for proof in minima}
-        if len(min_counts) != 1:
-            raise ValueError(f"Tied minima have unequal size for task {task_id}")
-        minimum_count = min_counts.pop()
         declared = int(q["raw_minimum_complete_primitive_tag_complexity"])
         if minimum_count != declared:
-            raise ValueError(
-                f"Declared minimum complexity mismatch for task {task_id}: "
-                f"schema={minimum_count}, declared={declared}"
-            )
+            if benchmark_parquet is None:
+                raise ValueError(
+                    f"Declared minimum complexity mismatch for task {task_id}: "
+                    f"schema={minimum_count}, declared={declared}"
+                )
+            declared_minimum_mismatch_ids.append(task_id)
 
         declared_tags = _canonical_tags(q["primitive_reasoning_tags"])
         if not set(any_tags).issubset(set(declared_tags)):
             raise ValueError(f"Minimum tags exceed declared tags for task {task_id}")
-        if "M" in declared_tags or any("M" in tags for tags in proof_tag_sets):
+        if "M" in declared_tags or any("M" in tag_set for tag_set in proof_tag_sets):
             raise ValueError(f"M was encoded as primitive at task {task_id}")
 
         answer_groups = basis.get("answer_explanations", [])
@@ -168,7 +263,7 @@ def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
                 "positive_task_id": str(q.get("positive_task_id", "")),
                 "cluster_id": cluster_id,
                 "gold_answer_set_size": gold_size,
-                "tied_minimum_explanation_count": len(minima),
+                "tied_minimum_explanation_count": tied_minimum_count,
                 "minimum_complete_primitive_tag_count": minimum_count,
                 "tags_every_tied_minimum": _canonical_tags(every_tags),
                 "tags_any_tied_minimum": _canonical_tags(any_tags),
@@ -182,8 +277,9 @@ def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
         )
 
     frame = pd.DataFrame(rows).sort_values("task_id", key=lambda s: s.astype(int))
-    if set("".join(frame["tags_any_tied_minimum"])) != set(PRIMITIVE_TAGS):
-        raise ValueError("The seven expected primitive reasoning tags were not exercised")
+    exercised_tags = set("".join(frame["tags_any_tied_minimum"]))
+    if not exercised_tags or exercised_tags - set(PRIMITIVE_TAGS):
+        raise ValueError("Corrected minimum explanations contain invalid primitive tags")
 
     # TRUE/FALSE rows must share one structural annotation and cluster.
     bqa = frame[frame["task"] == "BQA"]
@@ -201,15 +297,19 @@ def _question_rows(benchmark_dir: Path) -> tuple[pd.DataFrame, dict]:
         raise ValueError("BQA TRUE/FALSE structural annotations differ within a pair")
 
     audit = {
-        "benchmark_files": [str(path.as_posix()) for path in paths],
+        "benchmark_files": (
+            [str(benchmark_parquet.as_posix())] if benchmark_parquet is not None
+            else [str(path.as_posix()) for path in paths]
+        ),
         "question_count": len(frame),
         "task_counts": frame["task"].value_counts().sort_index().to_dict(),
         "bqa_pair_count": int(bqa["pair_group_id"].nunique()),
         "false_questions_resolved_to_paired_positive": bqa_positive_basis,
         "questions_with_tied_minima": int((frame["tied_minimum_explanation_count"] > 1).sum()),
         "maximum_tied_minima": int(frame["tied_minimum_explanation_count"].max()),
-        "declared_minimum_complexity_mismatches": 0,
-        "primitive_tags_exercised": list(PRIMITIVE_TAGS),
+        "declared_minimum_complexity_mismatches": len(declared_minimum_mismatch_ids),
+        "declared_minimum_complexity_mismatch_task_ids": declared_minimum_mismatch_ids,
+        "primitive_tags_exercised": [tag for tag in PRIMITIVE_TAGS if tag in exercised_tags],
         "m_excluded_from_primitive_tags": True,
     }
     return frame, audit
@@ -693,6 +793,7 @@ def _write_report(
     adjusted: pd.DataFrame,
     diagnostics: pd.DataFrame,
     defective_sensitivity: pd.DataFrame,
+    stale_cached_records: int,
 ) -> None:
     main = primary[(primary["scope"] == "all") & (primary["tag_basis"] == "every")]
     contrast_lines: list[str] = []
@@ -762,7 +863,7 @@ def _write_report(
 
 ## Scope and method
 
-This offline analysis joins 9,048 canonical questions to all 81,432 corrected accepted observations. It uses the final `complete_explanation.minimum_explanations` schema. The primary tag definition is presence in every tied minimum; presence in any tied minimum is reported as sensitivity. BQA FALSE rows use their paired TRUE entailment only as structural annotation, never as a proof of FALSE. OEQA minima cover the complete gold-answer set and retain shared-axiom deduplication. `M` is excluded.
+This offline analysis joins 9,048 canonical questions to all 81,432 corrected accepted observations. Corrected minima are reconstructed from the answer-group alternatives (conjunctive across answers, disjunctive within an answer), with shared axioms deduplicated and primitive tags reconstructed by the benchmark's deterministic fallback. The input audit found {stale_cached_records} stale cached scalar/complete-union records. The primary tag definition is presence in every tied minimum; presence in any tied minimum is reported as sensitivity. BQA FALSE rows use their paired TRUE entailment only as structural annotation, never as a proof of FALSE. `M` is excluded.
 
 Intervals for descriptive means cluster BQA at the TRUE/FALSE pair and OEQA at the question. Adjusted linear models cluster on the same units and include tag, model, representation, dataset, hop, task-specific covariates, representation-by-tag interactions, and model-by-tag interactions. Coefficients are associations, not causal effects or evidence that a model executed the tagged operation.
 
@@ -782,7 +883,7 @@ All adjusted-design diagnostics are recorded in `csv/model_diagnostics.csv`; {in
 
 ## Sensitivity and limitations
 
-Changing the tag definition from EVERY to ANY tied minimum changed a tag/representation F1 mean by at most {max_tied_delta:.6f}; full membership and estimate changes are in `csv/tied_minimum_sensitivity.csv`. Excluding the three confirmed defective AR questions (nine observations) changed any primary tag/representation F1 mean by at most {max_delta:.6f}. The analysis does not imply exhaustive semantic validation of other AR contexts. Existing complexity-bin outputs were not modified and remain optional supplementary context.
+Changing the tag definition from EVERY to ANY tied minimum changed a tag/representation F1 mean by at most {max_tied_delta:.6f}; full membership and estimate changes are in `csv/tied_minimum_sensitivity.csv`. Excluding the three confirmed defective AR questions (nine observations) changed any primary tag/representation F1 mean by at most {max_delta:.6f}. The analysis does not imply exhaustive semantic validation of other AR contexts. Corrected proof-derived complexity results are reported in the parent evaluation directory.
 """
     (output_dir / "INTERPRETATION_REPORT.md").write_text(report, encoding="utf-8")
 
@@ -795,7 +896,7 @@ def main() -> int:
     csv_dir.mkdir(parents=True, exist_ok=True)
     audit_dir.mkdir(parents=True, exist_ok=True)
 
-    questions, question_audit = _question_rows(args.benchmark_dir)
+    questions, question_audit = _question_rows(args.benchmark_dir, args.benchmark_parquet)
     observations, observation_audit = _load_scores(args.scores, questions)
     defective = pd.read_csv(args.defective_ar, dtype={"task_id": str})
     defective_ids = set(defective["task_id"])
@@ -892,7 +993,10 @@ def main() -> int:
     _write_latex_tables(output, primary_all, frequencies, adjusted)
     _plot_main(output, primary_all, frequencies)
     _plot_models(output, tables["descriptive_by_model"])
-    _write_report(output, primary_all, frequencies, adjusted, diagnostics, sensitivity)
+    _write_report(
+        output, primary_all, frequencies, adjusted, diagnostics, sensitivity,
+        int(question_audit["declared_minimum_complexity_mismatches"]),
+    )
 
     validation = {
         **question_audit,
@@ -913,7 +1017,12 @@ def main() -> int:
         json.dumps(validation, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
-    input_paths = [*sorted(args.benchmark_dir.glob("*.json")), args.scores, args.defective_ar]
+    benchmark_inputs = (
+        [args.benchmark_parquet]
+        if args.benchmark_parquet is not None
+        else list(sorted(args.benchmark_dir.glob("*.json")))
+    )
+    input_paths = [*benchmark_inputs, args.scores, args.defective_ar]
     output_paths = sorted(path for path in output.rglob("*") if path.is_file())
     manifest = {
         "analysis": "CORE-LLM-Bench v1.1 reasoning-tag difficulty",

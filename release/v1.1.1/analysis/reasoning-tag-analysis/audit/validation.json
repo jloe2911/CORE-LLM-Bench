@@ -1,0 +1,74 @@
+{
+  "adjusted_analysis": "cluster-robust OLS associations; Holm correction for focal terms",
+  "adjusted_tags": [
+    "H",
+    "I",
+    "R"
+  ],
+  "benchmark_files": [
+    "data/correction/v1.1.1/core_llm_bench_v1_1_1_corrected.parquet"
+  ],
+  "bqa_pair_count": 3016,
+  "canonical_inputs_modified": false,
+  "confirmed_defective_ar_task_ids": [
+    "1274",
+    "4094",
+    "5165"
+  ],
+  "d_ubiquitous_and_excluded_from_adjusted_models": true,
+  "declared_minimum_complexity_mismatch_task_ids": [],
+  "declared_minimum_complexity_mismatches": 0,
+  "descriptive_interval": "95% t interval using pair/question-clustered sandwich SE",
+  "duplicate_observation_count": 0,
+  "false_questions_resolved_to_paired_positive": 3016,
+  "hops": [
+    "1hop",
+    "2hop"
+  ],
+  "m_excluded_from_primitive_tags": true,
+  "malformed_but_accepted_observations_retained": 86,
+  "maximum_tied_minima": 20,
+  "models": [
+    "GPT-5 mini",
+    "Gemini 2.5 Flash-Lite",
+    "Qwen3-30B-A3B-Instruct"
+  ],
+  "observation_count": 81432,
+  "observations_excluded_in_defective_ar_sensitivity": 9,
+  "primary_tag_basis": "present in every tied minimum complete explanation",
+  "primitive_tags_exercised": [
+    "D",
+    "H",
+    "I",
+    "N",
+    "R",
+    "S",
+    "T",
+    "F",
+    "J",
+    "V"
+  ],
+  "question_count": 9048,
+  "questions_with_tied_minima": 1215,
+  "rare_tag_threshold_questions": 100,
+  "rare_tags_descriptive_only": [
+    "N",
+    "S",
+    "T"
+  ],
+  "representations": [
+    "AR",
+    "FS",
+    "NL"
+  ],
+  "sensitivity_tag_basis": "present in any tied minimum complete explanation",
+  "task_counts": {
+    "BQA": 6032,
+    "OEQA": 3016
+  },
+  "tasks": [
+    "BQA",
+    "OEQA"
+  ],
+  "unmatched_observation_count": 0
+}

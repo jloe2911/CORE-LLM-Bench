@@ -3,7 +3,6 @@ package com.example.explanation;
 
 import com.example.processing.GlobalQueryTracker;
 import com.example.util.OntologyUtils;
-import com.example.util.URIUtils;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ public class ExplanationFormatter {
 
         json.append("  \"").append(OntologyUtils.escapeJson(explanationKey)).append("\" : {\n");
 
-        // Inferred section uses short forms
+        // Inferred section retains exact ontology entity IRIs.
         json.append("    \"inferred\" : {\n");
         json.append("      \"subject\" : \"").append(parts[0]).append("\",\n");
         json.append("      \"predicate\" : \"").append(parts[1]).append("\",\n");
@@ -124,15 +123,15 @@ public class ExplanationFormatter {
         json.append("    \"sparqlQueries\" : [ ");
 
         // Always include the ASK query
-        json.append("\"ASK WHERE { <").append(URIUtils.getFullURI(parts[0]))
-                .append("> <").append(URIUtils.getFullURI(parts[1])).append("> <")
-                .append(URIUtils.getFullURI(parts[2])).append("> }\"");
+        json.append("\"ASK WHERE { <").append(parts[0])
+                .append("> <").append(parts[1]).append("> <")
+                .append(parts[2]).append("> }\"");
 
         // Add SELECT query if MC task exists
         boolean hasMCTask = allTaskIds.stream().anyMatch(taskId -> taskId.contains("-MC"));
         if (hasMCTask) {
-            json.append(", \"SELECT ?x WHERE { <").append(URIUtils.getFullURI(parts[0]))
-                    .append("> <").append(URIUtils.getFullURI(parts[1])).append("> ?x }\"");
+            json.append(", \"SELECT ?x WHERE { <").append(parts[0])
+                    .append("> <").append(parts[1]).append("> ?x }\"");
         }
 
         json.append(" ]\n");

@@ -1,0 +1,59 @@
+{
+  "checked_at_date": "2026-09-28",
+  "inference_calls_made": 0,
+  "models": [
+    {
+      "configuration_reproducible": true,
+      "current_input_usd_per_million": 0.25,
+      "current_output_usd_per_million": 2.0,
+      "identity_qualification": "The dated OpenAI snapshot remains exposed behind the pinned OpenRouter OpenAI endpoint, but it is deprecated and scheduled for shutdown on 2026-12-11.",
+      "model": "GPT-5 mini",
+      "openrouter_model_id": "openai/gpt-5-mini",
+      "original_scientific_target": "gpt-5-mini-2025-08-07",
+      "provider_backend": "OpenAI",
+      "provider_status": 0,
+      "provider_tag": "openai",
+      "route_reproducible": true,
+      "supported_original_parameters": true
+    },
+    {
+      "configuration_reproducible": true,
+      "current_input_usd_per_million": 0.1,
+      "current_output_usd_per_million": 0.4,
+      "identity_qualification": "The same provider-pinned alias is available, but the original record contains no dated model snapshot; exact historical weights cannot be established. OpenRouter marks the alias as going away on 2026-10-20.",
+      "model": "Gemini 2.5 Flash-Lite",
+      "openrouter_model_id": "google/gemini-2.5-flash-lite",
+      "original_scientific_target": "undated alias",
+      "provider_backend": "Google AI Studio",
+      "provider_status": 0,
+      "provider_tag": "google-ai-studio",
+      "route_reproducible": true,
+      "supported_original_parameters": true
+    },
+    {
+      "configuration_reproducible": true,
+      "current_input_usd_per_million": 0.13,
+      "current_output_usd_per_million": 0.52,
+      "identity_qualification": "The dated model ID and Alibaba route remain available; provider infrastructure and execution date still differ from the frozen run.",
+      "model": "Qwen3-30B-A3B-Instruct",
+      "openrouter_model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "original_scientific_target": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider_backend": "Alibaba",
+      "provider_status": 0,
+      "provider_tag": "alibaba",
+      "route_reproducible": true,
+      "supported_original_parameters": true
+    }
+  ],
+  "pricing_basis": "OpenRouter pinned standard endpoints; USD per 1M text tokens",
+  "projected_cost_from_historical_token_counts_usd": 13.77819,
+  "projected_cost_if_every_response_uses_1024_output_tokens_usd": 27.467296,
+  "sources": [
+    "https://openrouter.ai/api/v1/models/openai/gpt-5-mini/endpoints",
+    "https://openrouter.ai/api/v1/models/google/gemini-2.5-flash-lite/endpoints",
+    "https://openrouter.ai/api/v1/models/qwen/qwen3-30b-a3b-instruct-2507/endpoints",
+    "https://developers.openai.com/api/docs/models/gpt-5-mini",
+    "https://developers.openai.com/api/docs/deprecations"
+  ],
+  "status": "availability-and-pricing-confirmed-without-inference"
+}

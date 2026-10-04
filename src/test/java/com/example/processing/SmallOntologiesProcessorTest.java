@@ -3,6 +3,7 @@ package com.example.processing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,5 +48,20 @@ class SmallOntologiesProcessorTest {
                 "rdf:type", "Pizza", true));
         assertTrue(SmallOntologiesProcessor.isEligibleBinaryTarget(
                 "hasCategory", "DomainConcept", true));
+    }
+
+    @Test
+    void answerProjectionPreservesDistinctIriIdentity() {
+        assertEquals(
+                List.of("Alpha", "Beta"),
+                SmallOntologiesProcessor.identityPreservingLocalNames(List.of(
+                        "https://example.org/a#Beta",
+                        "https://example.org/a#Alpha")));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> SmallOntologiesProcessor.identityPreservingLocalNames(List.of(
+                        "https://example.org/a#Same",
+                        "https://example.org/b#Same")));
     }
 }

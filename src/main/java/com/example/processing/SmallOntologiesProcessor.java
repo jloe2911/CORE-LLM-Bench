@@ -30,6 +30,8 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmallOntologiesProcessor.class);
     private static final int MAX_ROOT_CONTEXTS_PER_BASE_QUERY = 3;
+    private static final String RDF_TYPE_IRI =
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
     // Services
     private final OntologyService ontologyService;
@@ -396,19 +398,21 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 if (OntologyUtils.isOwlThing(inferredClass)) continue;
 
                 String tripleKey = OntologyUtils.createTripleKey(
-                        OntologyUtils.getShortForm(individual),
-                        "rdf:type",
-                        OntologyUtils.getShortForm(inferredClass)
+                        individual.getIRI().toString(),
+                        RDF_TYPE_IRI,
+                        inferredClass.getIRI().toString()
                 );
 
                 // Generate explanations: "How could this inferred class membership be derived?"
                 Set<ExplanationPath> paths = explanationService.findExplanationPathsLikeProtege(individual, inferredClass);
 
+                inferences.put(tripleKey, limitExplanationPaths(paths));
                 if (!paths.isEmpty()) {
-                    inferences.put(tripleKey, limitExplanationPaths(paths));
-
                     LOGGER.debug("Found {} explanation paths for INFERRED type: {} rdf:type {}",
                             paths.size(), OntologyUtils.getShortForm(individual), OntologyUtils.getShortForm(inferredClass));
+                } else {
+                    LOGGER.warn("No explanation found for entailed type {}; retaining it in query/gold generation",
+                            tripleKey);
                 }
             }
 
@@ -428,9 +432,9 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 if (OntologyUtils.isOwlThing(inferredClass)) continue;
 
                 String tripleKey = OntologyUtils.createTripleKey(
-                        OntologyUtils.getShortForm(individual),
-                        "rdf:type",
-                        OntologyUtils.getShortForm(inferredClass)
+                        individual.getIRI().toString(),
+                        RDF_TYPE_IRI,
+                        inferredClass.getIRI().toString()
                 );
                 inferences.put(tripleKey, Collections.emptySet());
             }
@@ -458,23 +462,25 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 // Process INFERRED values for queries
                 for (OWLNamedIndividual inferredValue : inferredValues) {
                     String tripleKey = OntologyUtils.createTripleKey(
-                            OntologyUtils.getShortForm(individual),
-                            OntologyUtils.getShortForm(property),
-                            OntologyUtils.getShortForm(inferredValue)
+                            individual.getIRI().toString(),
+                            property.getIRI().toString(),
+                            inferredValue.getIRI().toString()
                     );
 
                     // Generate explanations: "How could this inferred property assertion be derived?"
                     Set<ExplanationPath> paths = explanationService.findPropertyAssertionPaths(
                             individual, property, inferredValue);
 
+                    inferences.put(tripleKey, limitExplanationPaths(paths));
                     if (!paths.isEmpty()) {
-                        inferences.put(tripleKey, limitExplanationPaths(paths));
-
                         LOGGER.debug("Found {} explanation paths for property: {} {} {}",
                                 paths.size(),
                                 OntologyUtils.getShortForm(individual),
                                 OntologyUtils.getShortForm(property),
                                 OntologyUtils.getShortForm(inferredValue));
+                    } else {
+                        LOGGER.warn("No explanation found for entailed property assertion {}; retaining it in query/gold generation",
+                                tripleKey);
                     }
                 }
             }
@@ -496,9 +502,9 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
                 for (OWLNamedIndividual inferredValue : inferredValues) {
                     String tripleKey = OntologyUtils.createTripleKey(
-                            OntologyUtils.getShortForm(individual),
-                            OntologyUtils.getShortForm(property),
-                            OntologyUtils.getShortForm(inferredValue)
+                            individual.getIRI().toString(),
+                            property.getIRI().toString(),
+                            inferredValue.getIRI().toString()
                     );
                     inferences.put(tripleKey, Collections.emptySet());
                 }
@@ -530,14 +536,14 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
         if (pizzaDataset) {
             for (Map.Entry<String, Map<String, Set<String>>> subjectEntry : subjectPredicateObjects.entrySet()) {
-                Set<String> membershipObjects = subjectEntry.getValue().get("rdf:type");
+                Set<String> membershipObjects = subjectEntry.getValue().get(RDF_TYPE_IRI);
                 if (membershipObjects == null || membershipObjects.stream().noneMatch(
                         SmallOntologiesProcessor::isDomainConcept)) {
                     continue;
                 }
 
-                Optional<String> unfiltered = selectRepresentativePositive("rdf:type", membershipObjects, false);
-                Optional<String> filtered = selectRepresentativePositive("rdf:type", membershipObjects, true);
+                Optional<String> unfiltered = selectRepresentativePositive(RDF_TYPE_IRI, membershipObjects, false);
+                Optional<String> filtered = selectRepresentativePositive(RDF_TYPE_IRI, membershipObjects, true);
                 if (filtered.isEmpty()) {
                     domainConceptOnlyGroupsOmitted++;
                 } else if (unfiltered.filter(SmallOntologiesProcessor::isDomainConcept).isPresent()) {
@@ -569,7 +575,10 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                     continue;
                 }
 
-                String taskType = "rdf:type".equals(predicate) ? "Membership" : "Property Assertion";
+                String taskType = isRdfType(predicate) ? "Membership" : "Property Assertion";
+                String subjectName = URIUtils.getLocalName(subject);
+                String predicateName = isRdfType(predicate) ? "rdf:type" : URIUtils.getLocalName(predicate);
+                String objectName = URIUtils.getLocalName(object);
 
                 // Calculate tag statistics instead of explanation statistics
                 int[] tagStats = calculateTagStats(paths);
@@ -578,15 +587,15 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                         subject, predicate, object, subjectPredicateObjects, pizzaDataset)) {
                     // 2. Write one representative positive binary query per subject-predicate group.
                     String binaryTaskId = URIUtils.generateBinaryTaskId(
-                            taskIdHopPrefix, rootEntity, subject, predicate, object);
+                            taskIdHopPrefix, rootEntity, subjectName, predicateName, objectName);
                     GlobalQueryTracker.addTaskId(inferenceKey, binaryTaskId);
 
                     String binaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
-                            URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(object));
+                            subject, predicate, object);
 
                     outputService.writeComprehensiveQuery(
                             binaryTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
-                            binaryQuery, predicate,
+                            binaryQuery, predicateName,
                             "TRUE", null, tagStats[0], tagStats[1]
                     );
                     binaryQueries++;
@@ -603,14 +612,16 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                         if (GlobalQueryTracker.markQueryProcessedWithContextLimit(
                                 negativeQueryKey, negativeBaseQueryKey, rootEntity, ontologyName,
                                 MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
-                            String negativeTaskId = generateNegativeTaskId(rootEntity, subject, predicate, negativeObject);
+                            String negativeTaskId = generateNegativeTaskId(
+                                    rootEntity, subjectName, predicateName,
+                                    URIUtils.getLocalName(negativeObject));
 
                             String negativeBinaryQuery = String.format("ASK WHERE { <%s> <%s> <%s> }",
-                                    URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate), URIUtils.getFullURI(negativeObject));
+                                    subject, predicate, negativeObject);
 
                             outputService.writeComprehensiveQuery(
                                     negativeTaskId, rootEntity, tboxSize, aboxSize, taskType, "BIN",
-                                    negativeBinaryQuery, predicate,
+                                    negativeBinaryQuery, predicateName,
                                     "FALSE", null, tagStats[0], tagStats[1]
                             );
                             GlobalQueryTracker.addTaskId(negativeQueryKey, negativeTaskId);
@@ -627,13 +638,12 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                             multiQueryKey, multiBaseQueryKey, rootEntity, ontologyName,
                             MAX_ROOT_CONTEXTS_PER_BASE_QUERY)) {
                         Set<String> allObjectsSet = subjectPredicateObjects.get(subject).get(predicate);
-                        List<String> allAnswers = allObjectsSet.stream()
-                                .sorted()
-                                .collect(Collectors.toList());
+                        List<String> allAnswers = identityPreservingLocalNames(allObjectsSet);
 
-                        String multiTaskId = URIUtils.generateTaskId(taskIdHopPrefix, rootEntity, subject, predicate, "MC");
+                        String multiTaskId = URIUtils.generateTaskId(
+                                taskIdHopPrefix, rootEntity, subjectName, predicateName, "MC");
                         GlobalQueryTracker.addTaskId(multiQueryKey, multiTaskId);
-                        for (String answerObject : allAnswers) {
+                        for (String answerObject : allObjectsSet) {
                             String answerTripleKey = OntologyUtils.createTripleKey(subject, predicate, answerObject);
                             String answerInferenceKey = createRootScopedQueryKey(rootEntity, answerTripleKey);
                             GlobalQueryTracker.addTaskId(answerInferenceKey, multiTaskId);
@@ -641,16 +651,16 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
                         // MC query is SELECT - doesn't specify the object
                         String multiQuery = String.format("SELECT ?x WHERE { <%s> <%s> ?x }",
-                                URIUtils.getFullURI(subject), URIUtils.getFullURI(predicate));
+                                subject, predicate);
 
                         outputService.writeComprehensiveQuery(
                                 multiTaskId, rootEntity, tboxSize, aboxSize, taskType, "MC",
-                                multiQuery, predicate,
-                                object, allAnswers,
+                                multiQuery, predicateName,
+                                objectName, allAnswers,
                                 tagStats[0], tagStats[1]  // Updated to use tag stats
                         );
                         multiChoiceQueries++;
-                        if (pizzaDataset && "rdf:type".equals(predicate)
+                        if (pizzaDataset && isRdfType(predicate)
                                 && allAnswers.stream().anyMatch(SmallOntologiesProcessor::isDomainConcept)) {
                             oeqaDomainConceptRowsRetained++;
                         }
@@ -748,7 +758,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
     static boolean isEligibleBinaryTarget(
             String predicate, String candidate, boolean excludeDomainConceptMembership) {
         return !(excludeDomainConceptMembership
-                && "rdf:type".equals(predicate)
+                && isRdfType(predicate)
                 && isDomainConcept(candidate));
     }
 
@@ -773,7 +783,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         Set<String> inferredClassObjects = inferences.keySet().stream()
                 .map(OntologyUtils::parseTripleKey)
                 .filter(parts -> parts.length == 3)
-                .filter(parts -> "rdf:type".equals(parts[1]))
+                .filter(parts -> isRdfType(parts[1]))
                 .map(parts -> parts[2])
                 .distinct()
                 .collect(Collectors.toCollection(TreeSet::new));
@@ -781,17 +791,17 @@ public class SmallOntologiesProcessor implements AutoCloseable {
         Set<String> inferredIndividualObjects = inferences.keySet().stream()
                 .map(OntologyUtils::parseTripleKey)
                 .filter(parts -> parts.length == 3)
-                .filter(parts -> !"rdf:type".equals(parts[1]))
+                .filter(parts -> !isRdfType(parts[1]))
                 .map(parts -> parts[2])
                 .distinct()
                 .collect(Collectors.toCollection(TreeSet::new));
 
         Set<String> signatureClasses = ontology.getClassesInSignature().stream()
-                .map(OntologyUtils::getShortForm)
+                .map(entity -> entity.getIRI().toString())
                 .collect(Collectors.toCollection(TreeSet::new));
 
         Set<String> signatureIndividuals = ontology.getIndividualsInSignature().stream()
-                .map(OntologyUtils::getShortForm)
+                .map(entity -> entity.getIRI().toString())
                 .collect(Collectors.toCollection(TreeSet::new));
 
         inferredClassObjects.addAll(signatureClasses);
@@ -831,7 +841,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
                 .sorted(negativeCandidateComparator)
                 .collect(Collectors.toList());
 
-        List<String> sameKindCandidates = "rdf:type".equals(predicate)
+        List<String> sameKindCandidates = isRdfType(predicate)
                 ? candidateObjects.classObjects
                 : candidateObjects.individualObjects;
 
@@ -878,7 +888,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
     }
 
     private static int negativeCandidatePriority(String predicate, String candidate) {
-        if (!"rdf:type".equals(predicate)) {
+        if (!isRdfType(predicate)) {
             return 0;
         }
 
@@ -892,6 +902,29 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
     private static boolean isDomainConcept(String candidate) {
         return "DomainConcept".equals(URIUtils.getLocalName(candidate));
+    }
+
+    private static boolean isRdfType(String predicate) {
+        return "rdf:type".equals(predicate) || RDF_TYPE_IRI.equals(predicate);
+    }
+
+    /**
+     * Preserve ontology identity internally and expose local answer labels only
+     * when that projection is one-to-one. Silent local-name collapse would make
+     * a complete OEQA gold set impossible to reconstruct.
+     */
+    static List<String> identityPreservingLocalNames(Collection<String> iris) {
+        Map<String, String> byLocalName = new TreeMap<>();
+        for (String iri : iris) {
+            String localName = URIUtils.getLocalName(iri);
+            String previous = byLocalName.putIfAbsent(localName, iri);
+            if (previous != null && !previous.equals(iri)) {
+                throw new IllegalStateException(
+                        "Ambiguous answer local name '" + localName + "': "
+                                + previous + " and " + iri);
+            }
+        }
+        return new ArrayList<>(byLocalName.keySet());
     }
 
     private static class CandidateObjectPools {
@@ -960,7 +993,7 @@ public class SmallOntologiesProcessor implements AutoCloseable {
 
     // NEW METHOD - Classify task type based on predicate
     private String getTaskType(String predicate) {
-        if ("rdf:type".equals(predicate)) {
+        if (isRdfType(predicate)) {
             return "Membership";
         } else {
             return "Property Assertion";

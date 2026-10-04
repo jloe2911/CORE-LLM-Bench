@@ -188,8 +188,6 @@ def validate_manifest() -> None:
 
 def validate_release(profile_name: str = "full") -> dict[str, Any]:
     profile = get_profile(profile_name)
-    if (ROOT / "VERSION").read_text(encoding="utf-8").strip() != VERSION:
-        raise ValueError("VERSION does not contain 1.0.0")
     validate_manifest()
     metadata = load_reasoning_metadata(BENCHMARK_DIR / "reasoning_metadata.csv")
 

@@ -1,0 +1,913 @@
+scope,tag_basis,task,representation,tag,outcome,reference_group,n_present_questions,n_absent_questions,estimable,reason_not_estimable,effect_present_minus_absent,standard_error_clustered,ci95_low,ci95_high,p_value,p_value_holm
+all,every,BQA,AR,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,AR,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,AR,H,answer_f1,questions without H,1586,4446,True,,-0.0682826584466043,0.0061131259936390925,-0.08026416522709257,-0.05630115166611605,5.728194767092441e-29,3.4369168602554647e-28
+all,every,BQA,AR,H,answer_exact_match,questions without H,1586,4446,True,,-0.0682826584466043,0.0061131259936390925,-0.08026416522709257,-0.05630115166611605,5.728194767092441e-29,3.4369168602554647e-28
+all,every,BQA,AR,I,answer_f1,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+all,every,BQA,AR,I,answer_exact_match,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+all,every,BQA,AR,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,R,answer_f1,questions without R,664,5368,True,,-0.12824771515271816,0.005820820162918749,-0.13965631303252346,-0.11683911727291284,1.4033190241034997e-107,1.2629871216931496e-106
+all,every,BQA,AR,R,answer_exact_match,questions without R,664,5368,True,,-0.12824771515271816,0.005820820162918749,-0.13965631303252346,-0.11683911727291284,1.4033190241034997e-107,1.2629871216931496e-106
+all,every,BQA,AR,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,AR,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,FS,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,FS,H,answer_f1,questions without H,1586,4446,True,,-0.10959688699121052,0.007291144809508773,-0.12388726822391387,-0.09530650575850717,4.5650784310876603e-51,3.1955549017613624e-50
+all,every,BQA,FS,H,answer_exact_match,questions without H,1586,4446,True,,-0.10959688699121052,0.007291144809508773,-0.12388726822391387,-0.09530650575850717,4.5650784310876603e-51,3.1955549017613624e-50
+all,every,BQA,FS,I,answer_f1,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,0.00011329311628225728
+all,every,BQA,FS,I,answer_exact_match,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,0.00011329311628225728
+all,every,BQA,FS,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,R,answer_f1,questions without R,664,5368,True,,0.015862256776733516,0.008301052475531456,-0.00040750710908519713,0.03213202066255223,0.05602090777844567,0.11204181555689134
+all,every,BQA,FS,R,answer_exact_match,questions without R,664,5368,True,,0.015862256776733516,0.008301052475531456,-0.00040750710908519713,0.03213202066255223,0.05602090777844567,0.11204181555689134
+all,every,BQA,FS,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,FS,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,NL,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,every,BQA,NL,H,answer_f1,questions without H,1586,4446,True,,-0.0787408833138046,0.007217012972365423,-0.0928859688155992,-0.06459579781201001,1.027426952584951e-27,5.137134762924755e-27
+all,every,BQA,NL,H,answer_exact_match,questions without H,1586,4446,True,,-0.0787408833138046,0.007217012972365423,-0.0928859688155992,-0.06459579781201001,1.027426952584951e-27,5.137134762924755e-27
+all,every,BQA,NL,I,answer_f1,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+all,every,BQA,NL,I,answer_exact_match,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+all,every,BQA,NL,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,R,answer_f1,questions without R,664,5368,True,,-0.07119611082183086,0.009254996832464309,-0.08933557129049319,-0.05305665035316853,1.440380985240097e-14,5.761523940960387e-14
+all,every,BQA,NL,R,answer_exact_match,questions without R,664,5368,True,,-0.07119611082183086,0.009254996832464309,-0.08933557129049319,-0.05305665035316853,1.440380985240097e-14,5.761523940960387e-14
+all,every,BQA,NL,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,BQA,NL,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,AR,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,AR,H,answer_f1,questions without H,1267,1749,True,,-0.20203563930962815,0.012086549054782887,-0.22572484015437924,-0.17834643846487705,1.0065873248983704e-62,7.046111274288593e-62
+all,every,OEQA,AR,H,answer_exact_match,questions without H,1267,1749,True,,-0.26768361189293377,0.01265734833839347,-0.2924915587759629,-0.24287566500990468,2.85008607273143e-99,1.4250430363657149e-98
+all,every,OEQA,AR,I,answer_f1,questions without I,1051,1965,True,,-0.35633912727151973,0.010633279742427651,-0.37717997260421726,-0.3354982819388222,3.2570572006525865e-246,5.536997241109397e-245
+all,every,OEQA,AR,I,answer_exact_match,questions without I,1051,1965,True,,-0.34066299796066773,0.01081272312604928,-0.36185554586252766,-0.3194704500588078,7.244968770703145e-218,5.795975016562516e-217
+all,every,OEQA,AR,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,R,answer_f1,questions without R,640,2376,True,,-0.293794547999435,0.009579430384951832,-0.31256988654634926,-0.27501920945252073,1.4608780139470286e-206,2.191317020920543e-205
+all,every,OEQA,AR,R,answer_exact_match,questions without R,640,2376,True,,-0.32561728395061534,0.008720052482088722,-0.34270827275880833,-0.30852629514242236,3.521834867253325e-305,5.987119274330653e-304
+all,every,OEQA,AR,S,answer_f1,questions without S,124,2892,True,,-0.2324487922034379,0.021077099082449743,-0.2737591473036216,-0.19113843710325418,2.78470065797569e-28,1.113880263190276e-27
+all,every,OEQA,AR,S,answer_exact_match,questions without S,124,2892,True,,-0.24509213402938246,0.012984609329378491,-0.2705415006682871,-0.21964276739047783,1.810976161502136e-79,7.243904646008544e-79
+all,every,OEQA,AR,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,F,answer_f1,questions without F,167,2849,True,,-0.2284680095305504,0.010910503102797444,-0.2498522026652459,-0.2070838163958549,2.3053743659709166e-97,2.996986675762192e-96
+all,every,OEQA,AR,F,answer_exact_match,questions without F,167,2849,True,,-0.2715572715572711,0.007618514588023323,-0.2864892857654898,-0.2566252573490524,2.8788055426111195e-278,4.3182083139166794e-277
+all,every,OEQA,AR,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,J,answer_f1,questions without J,107,2909,True,,-0.21072438868078977,0.012048385215983178,-0.23433878977598163,-0.1871099875855979,1.7122263720852718e-68,1.5410037348767447e-67
+all,every,OEQA,AR,J,answer_exact_match,questions without J,107,2909,True,,-0.2659562277987928,0.007495629561219818,-0.2806473917802374,-0.2512650638173482,9.480564619455599e-276,1.3272790467237839e-274
+all,every,OEQA,AR,V,answer_f1,questions without V,256,2760,True,,-0.1299803242318256,0.009872738448289975,-0.1493305360192578,-0.11063011244439339,1.3847084339224403e-39,8.308250603534642e-39
+all,every,OEQA,AR,V,answer_exact_match,questions without V,256,2760,True,,-0.2803140096618361,0.007807409103959304,-0.29561625031816646,-0.26501176900550577,2.6851388279226207e-282,4.296222124676193e-281
+all,every,OEQA,AR,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,AR,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,FS,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,FS,H,answer_f1,questions without H,1267,1749,True,,-0.39157040804140186,0.011902921884216999,-0.41489970624526085,-0.3682411098375429,2.42614670621283e-237,3.881834729940528e-236
+all,every,OEQA,FS,H,answer_exact_match,questions without H,1267,1749,True,,-0.45963499419144616,0.014617633098746282,-0.48828502860420947,-0.43098495977868284,5.090601207734132e-217,3.5634208454138926e-216
+all,every,OEQA,FS,I,answer_f1,questions without I,1051,1965,True,,-0.1533199377113187,0.013853589637515908,-0.18047247445744716,-0.12616740096519022,1.8104107605895796e-28,9.052053802947898e-28
+all,every,OEQA,FS,I,answer_exact_match,questions without I,1051,1965,True,,-0.1739528329980196,0.01650726774326737,-0.20630648325798343,-0.1415991827380558,5.774123452404713e-26,1.1548246904809426e-25
+all,every,OEQA,FS,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,R,answer_f1,questions without R,640,2376,True,,-0.6479059803996459,0.007466655236189671,-0.662540355747555,-0.6332716050517367,0.0,0.0
+all,every,OEQA,FS,R,answer_exact_match,questions without R,640,2376,True,,-0.6923611111111074,0.008074864419023681,-0.7081875545524378,-0.6765346676697771,0.0,0.0
+all,every,OEQA,FS,S,answer_f1,questions without S,124,2892,True,,-0.439389724902023,0.025704049712401117,-0.4897687365951563,-0.3890107132088897,1.639784788663689e-65,1.3118278309309512e-64
+all,every,OEQA,FS,S,answer_exact_match,questions without S,124,2892,True,,-0.5289489730662822,0.015790208134743015,-0.5598972123187699,-0.4980007338137945,5.0608994706728e-246,6.07307936480736e-245
+all,every,OEQA,FS,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,F,answer_f1,questions without F,167,2849,True,,-0.4534331549148341,0.010689421338448472,-0.47438403575376703,-0.4324822740759012,0.0,0.0
+all,every,OEQA,FS,F,answer_exact_match,questions without F,167,2849,True,,-0.5711665472144486,0.009939665355917903,-0.5906479333304282,-0.551685161098469,0.0,0.0
+all,every,OEQA,FS,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,J,answer_f1,questions without J,107,2909,True,,-0.48825888109799026,0.012281094655882651,-0.5123293843142476,-0.46418837788173295,0.0,0.0
+all,every,OEQA,FS,J,answer_exact_match,questions without J,107,2909,True,,-0.5547441659732684,0.011962304971981117,-0.5781898528904358,-0.531298479056101,0.0,0.0
+all,every,OEQA,FS,V,answer_f1,questions without V,256,2760,True,,-0.4162981062097927,0.0076175970886127225,-0.4312283221522108,-0.40136789026737457,0.0,0.0
+all,every,OEQA,FS,V,answer_exact_match,questions without V,256,2760,True,,-0.5983091787439585,0.008219640851728396,-0.6144193787792003,-0.5821989787087167,0.0,0.0
+all,every,OEQA,FS,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,FS,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,NL,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,every,OEQA,NL,H,answer_f1,questions without H,1267,1749,True,,-0.21752330424295646,0.011194878796045436,-0.23946486349449664,-0.19558174499141628,4.252925682760084e-84,4.6782182510360926e-83
+all,every,OEQA,NL,H,answer_exact_match,questions without H,1267,1749,True,,-0.261004559451346,0.010613662735034831,-0.28180695615606915,-0.24020216274662282,1.5622444087746863e-133,9.373466452648118e-133
+all,every,OEQA,NL,I,answer_f1,questions without I,1051,1965,True,,-0.07302170536629977,0.013043317642357876,-0.0985861381842371,-0.04745727254836245,2.1633952716539275e-08,4.326790543307855e-08
+all,every,OEQA,NL,I,answer_exact_match,questions without I,1051,1965,True,,-0.08548214108458574,0.012630021058069485,-0.1102365274823844,-0.06072775468678708,1.3042064295068154e-11,1.3042064295068154e-11
+all,every,OEQA,NL,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,R,answer_f1,questions without R,640,2376,True,,-0.18914806537593976,0.009401228879905922,-0.2075741353909732,-0.17072199536090632,4.9803206639038735e-90,5.976384796684648e-89
+all,every,OEQA,NL,R,answer_exact_match,questions without R,640,2376,True,,-0.26192480359146864,0.00763175483728786,-0.2768827682113922,-0.2469668389715451,3.8961371249725906e-258,5.064978262464368e-257
+all,every,OEQA,NL,S,answer_f1,questions without S,124,2892,True,,-0.011283016415377472,0.0251683837827449,-0.060612142178639444,0.038046109347884494,0.6539358414972908,0.6539358414972908
+all,every,OEQA,NL,S,answer_exact_match,questions without S,124,2892,True,,-0.1899604396258306,0.013241285786667277,-0.21591288287670057,-0.1640079963749606,1.1274452613426021e-46,3.382335784027806e-46
+all,every,OEQA,NL,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,F,answer_f1,questions without F,167,2849,True,,-0.2302292038615836,0.012231155227209932,-0.2542018275962339,-0.20625658012693332,4.877031878483837e-79,4.877031878483837e-78
+all,every,OEQA,NL,F,answer_exact_match,questions without F,167,2849,True,,-0.218439218439218,0.0066215635402717046,-0.23141724449949408,-0.20546119237894195,1.1653499294903928e-238,1.1653499294903928e-237
+all,every,OEQA,NL,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,J,answer_f1,questions without J,107,2909,True,,-0.23924692830318256,0.010795771310711525,-0.26040625125750794,-0.21808760534885718,8.140715169479965e-109,1.1397001237271952e-107
+all,every,OEQA,NL,J,answer_exact_match,questions without J,107,2909,True,,-0.21393376876361367,0.006510497338049179,-0.22669410906763396,-0.20117342845959338,8.246800595119691e-237,7.422120535607722e-236
+all,every,OEQA,NL,V,answer_f1,questions without V,256,2760,True,,-0.06907043356529487,0.010065828384584986,-0.08879909467364243,-0.049341772456947305,6.796358994285837e-12,2.0389076982857513e-11
+all,every,OEQA,NL,V,answer_exact_match,questions without V,256,2760,True,,-0.22548309178744066,0.006792839639784517,-0.23879681283417437,-0.21216937074070696,1.303992637756114e-241,1.4343919015317255e-240
+all,every,OEQA,NL,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,every,OEQA,NL,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,AR,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,AR,H,answer_f1,questions without H,1810,4222,True,,-0.08576351357835076,0.005887076494321899,-0.097301971481454,-0.07422505567524751,4.481895887573598e-48,3.1373271213015184e-47
+all,any,BQA,AR,H,answer_exact_match,questions without H,1810,4222,True,,-0.08576351357835076,0.005887076494321899,-0.097301971481454,-0.07422505567524751,4.481895887573598e-48,3.1373271213015184e-47
+all,any,BQA,AR,I,answer_f1,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+all,any,BQA,AR,I,answer_exact_match,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+all,any,BQA,AR,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,R,answer_f1,questions without R,1336,4696,True,,-0.15762002400649244,0.004585360352569483,-0.16660716515366653,-0.14863288285931836,6.039385093709094e-259,5.435446584338184e-258
+all,any,BQA,AR,R,answer_exact_match,questions without R,1336,4696,True,,-0.15762002400649244,0.004585360352569483,-0.16660716515366653,-0.14863288285931836,6.039385093709094e-259,5.435446584338184e-258
+all,any,BQA,AR,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,AR,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,FS,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,FS,H,answer_f1,questions without H,1810,4222,True,,-0.08173637519159384,0.006961735655137283,-0.09538112634555126,-0.06809162403763641,7.87341871797402e-32,4.7240512307844115e-31
+all,any,BQA,FS,H,answer_exact_match,questions without H,1810,4222,True,,-0.08173637519159384,0.006961735655137283,-0.09538112634555126,-0.06809162403763641,7.87341871797402e-32,4.7240512307844115e-31
+all,any,BQA,FS,I,answer_f1,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,7.552874418817152e-05
+all,any,BQA,FS,I,answer_exact_match,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,7.552874418817152e-05
+all,any,BQA,FS,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,R,answer_f1,questions without R,1336,4696,True,,-0.06498502143922837,0.007460945364580379,-0.07960820564442697,-0.05036183723402976,3.038075004559119e-18,9.114225013677357e-18
+all,any,BQA,FS,R,answer_exact_match,questions without R,1336,4696,True,,-0.06498502143922837,0.007460945364580379,-0.07960820564442697,-0.05036183723402976,3.038075004559119e-18,9.114225013677357e-18
+all,any,BQA,FS,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,FS,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,NL,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+all,any,BQA,NL,H,answer_f1,questions without H,1810,4222,True,,-0.06329216512994479,0.007077693126759003,-0.07716418875201912,-0.04942014150787046,3.805152323643717e-19,1.5220609294574869e-18
+all,any,BQA,NL,H,answer_exact_match,questions without H,1810,4222,True,,-0.06329216512994479,0.007077693126759003,-0.07716418875201912,-0.04942014150787046,3.805152323643717e-19,1.5220609294574869e-18
+all,any,BQA,NL,I,answer_f1,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+all,any,BQA,NL,I,answer_exact_match,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+all,any,BQA,NL,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,R,answer_f1,questions without R,1336,4696,True,,-0.07449198706504673,0.007053827986578882,-0.08831723587188202,-0.060666738258211436,4.542106945078441e-26,2.2710534725392206e-25
+all,any,BQA,NL,R,answer_exact_match,questions without R,1336,4696,True,,-0.07449198706504673,0.007053827986578882,-0.08831723587188202,-0.060666738258211436,4.542106945078441e-26,2.2710534725392206e-25
+all,any,BQA,NL,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,BQA,NL,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,AR,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,AR,H,answer_f1,questions without H,1267,1749,True,,-0.20203563930962815,0.012086549054782887,-0.22572484015437924,-0.17834643846487705,1.0065873248983704e-62,7.046111274288593e-62
+all,any,OEQA,AR,H,answer_exact_match,questions without H,1267,1749,True,,-0.26768361189293377,0.01265734833839347,-0.2924915587759629,-0.24287566500990468,2.85008607273143e-99,1.4250430363657149e-98
+all,any,OEQA,AR,I,answer_f1,questions without I,1051,1965,True,,-0.35633912727151973,0.010633279742427651,-0.37717997260421726,-0.3354982819388222,3.2570572006525865e-246,5.536997241109397e-245
+all,any,OEQA,AR,I,answer_exact_match,questions without I,1051,1965,True,,-0.34066299796066773,0.01081272312604928,-0.36185554586252766,-0.3194704500588078,7.244968770703145e-218,5.795975016562516e-217
+all,any,OEQA,AR,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,R,answer_f1,questions without R,640,2376,True,,-0.293794547999435,0.009579430384951832,-0.31256988654634926,-0.27501920945252073,1.4608780139470286e-206,2.191317020920543e-205
+all,any,OEQA,AR,R,answer_exact_match,questions without R,640,2376,True,,-0.32561728395061534,0.008720052482088722,-0.34270827275880833,-0.30852629514242236,3.521834867253325e-305,5.987119274330653e-304
+all,any,OEQA,AR,S,answer_f1,questions without S,124,2892,True,,-0.2324487922034379,0.021077099082449743,-0.2737591473036216,-0.19113843710325418,2.78470065797569e-28,1.113880263190276e-27
+all,any,OEQA,AR,S,answer_exact_match,questions without S,124,2892,True,,-0.24509213402938246,0.012984609329378491,-0.2705415006682871,-0.21964276739047783,1.810976161502136e-79,7.243904646008544e-79
+all,any,OEQA,AR,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,F,answer_f1,questions without F,167,2849,True,,-0.2284680095305504,0.010910503102797444,-0.2498522026652459,-0.2070838163958549,2.3053743659709166e-97,2.996986675762192e-96
+all,any,OEQA,AR,F,answer_exact_match,questions without F,167,2849,True,,-0.2715572715572711,0.007618514588023323,-0.2864892857654898,-0.2566252573490524,2.8788055426111195e-278,4.3182083139166794e-277
+all,any,OEQA,AR,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,J,answer_f1,questions without J,107,2909,True,,-0.21072438868078977,0.012048385215983178,-0.23433878977598163,-0.1871099875855979,1.7122263720852718e-68,1.5410037348767447e-67
+all,any,OEQA,AR,J,answer_exact_match,questions without J,107,2909,True,,-0.2659562277987928,0.007495629561219818,-0.2806473917802374,-0.2512650638173482,9.480564619455599e-276,1.3272790467237839e-274
+all,any,OEQA,AR,V,answer_f1,questions without V,256,2760,True,,-0.1299803242318256,0.009872738448289975,-0.1493305360192578,-0.11063011244439339,1.3847084339224403e-39,8.308250603534642e-39
+all,any,OEQA,AR,V,answer_exact_match,questions without V,256,2760,True,,-0.2803140096618361,0.007807409103959304,-0.29561625031816646,-0.26501176900550577,2.6851388279226207e-282,4.296222124676193e-281
+all,any,OEQA,AR,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,AR,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,FS,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,FS,H,answer_f1,questions without H,1267,1749,True,,-0.39157040804140186,0.011902921884216999,-0.41489970624526085,-0.3682411098375429,2.42614670621283e-237,3.881834729940528e-236
+all,any,OEQA,FS,H,answer_exact_match,questions without H,1267,1749,True,,-0.45963499419144616,0.014617633098746282,-0.48828502860420947,-0.43098495977868284,5.090601207734132e-217,3.5634208454138926e-216
+all,any,OEQA,FS,I,answer_f1,questions without I,1051,1965,True,,-0.1533199377113187,0.013853589637515908,-0.18047247445744716,-0.12616740096519022,1.8104107605895796e-28,9.052053802947898e-28
+all,any,OEQA,FS,I,answer_exact_match,questions without I,1051,1965,True,,-0.1739528329980196,0.01650726774326737,-0.20630648325798343,-0.1415991827380558,5.774123452404713e-26,1.1548246904809426e-25
+all,any,OEQA,FS,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,R,answer_f1,questions without R,640,2376,True,,-0.6479059803996459,0.007466655236189671,-0.662540355747555,-0.6332716050517367,0.0,0.0
+all,any,OEQA,FS,R,answer_exact_match,questions without R,640,2376,True,,-0.6923611111111074,0.008074864419023681,-0.7081875545524378,-0.6765346676697771,0.0,0.0
+all,any,OEQA,FS,S,answer_f1,questions without S,124,2892,True,,-0.439389724902023,0.025704049712401117,-0.4897687365951563,-0.3890107132088897,1.639784788663689e-65,1.3118278309309512e-64
+all,any,OEQA,FS,S,answer_exact_match,questions without S,124,2892,True,,-0.5289489730662822,0.015790208134743015,-0.5598972123187699,-0.4980007338137945,5.0608994706728e-246,6.07307936480736e-245
+all,any,OEQA,FS,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,F,answer_f1,questions without F,167,2849,True,,-0.4534331549148341,0.010689421338448472,-0.47438403575376703,-0.4324822740759012,0.0,0.0
+all,any,OEQA,FS,F,answer_exact_match,questions without F,167,2849,True,,-0.5711665472144486,0.009939665355917903,-0.5906479333304282,-0.551685161098469,0.0,0.0
+all,any,OEQA,FS,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,J,answer_f1,questions without J,107,2909,True,,-0.48825888109799026,0.012281094655882651,-0.5123293843142476,-0.46418837788173295,0.0,0.0
+all,any,OEQA,FS,J,answer_exact_match,questions without J,107,2909,True,,-0.5547441659732684,0.011962304971981117,-0.5781898528904358,-0.531298479056101,0.0,0.0
+all,any,OEQA,FS,V,answer_f1,questions without V,256,2760,True,,-0.4162981062097927,0.0076175970886127225,-0.4312283221522108,-0.40136789026737457,0.0,0.0
+all,any,OEQA,FS,V,answer_exact_match,questions without V,256,2760,True,,-0.5983091787439585,0.008219640851728396,-0.6144193787792003,-0.5821989787087167,0.0,0.0
+all,any,OEQA,FS,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,FS,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,NL,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+all,any,OEQA,NL,H,answer_f1,questions without H,1267,1749,True,,-0.21752330424295646,0.011194878796045436,-0.23946486349449664,-0.19558174499141628,4.252925682760084e-84,4.6782182510360926e-83
+all,any,OEQA,NL,H,answer_exact_match,questions without H,1267,1749,True,,-0.261004559451346,0.010613662735034831,-0.28180695615606915,-0.24020216274662282,1.5622444087746863e-133,9.373466452648118e-133
+all,any,OEQA,NL,I,answer_f1,questions without I,1051,1965,True,,-0.07302170536629977,0.013043317642357876,-0.0985861381842371,-0.04745727254836245,2.1633952716539275e-08,4.326790543307855e-08
+all,any,OEQA,NL,I,answer_exact_match,questions without I,1051,1965,True,,-0.08548214108458574,0.012630021058069485,-0.1102365274823844,-0.06072775468678708,1.3042064295068154e-11,1.3042064295068154e-11
+all,any,OEQA,NL,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,R,answer_f1,questions without R,640,2376,True,,-0.18914806537593976,0.009401228879905922,-0.2075741353909732,-0.17072199536090632,4.9803206639038735e-90,5.976384796684648e-89
+all,any,OEQA,NL,R,answer_exact_match,questions without R,640,2376,True,,-0.26192480359146864,0.00763175483728786,-0.2768827682113922,-0.2469668389715451,3.8961371249725906e-258,5.064978262464368e-257
+all,any,OEQA,NL,S,answer_f1,questions without S,124,2892,True,,-0.011283016415377472,0.0251683837827449,-0.060612142178639444,0.038046109347884494,0.6539358414972908,0.6539358414972908
+all,any,OEQA,NL,S,answer_exact_match,questions without S,124,2892,True,,-0.1899604396258306,0.013241285786667277,-0.21591288287670057,-0.1640079963749606,1.1274452613426021e-46,3.382335784027806e-46
+all,any,OEQA,NL,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,F,answer_f1,questions without F,167,2849,True,,-0.2302292038615836,0.012231155227209932,-0.2542018275962339,-0.20625658012693332,4.877031878483837e-79,4.877031878483837e-78
+all,any,OEQA,NL,F,answer_exact_match,questions without F,167,2849,True,,-0.218439218439218,0.0066215635402717046,-0.23141724449949408,-0.20546119237894195,1.1653499294903928e-238,1.1653499294903928e-237
+all,any,OEQA,NL,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,J,answer_f1,questions without J,107,2909,True,,-0.23924692830318256,0.010795771310711525,-0.26040625125750794,-0.21808760534885718,8.140715169479965e-109,1.1397001237271952e-107
+all,any,OEQA,NL,J,answer_exact_match,questions without J,107,2909,True,,-0.21393376876361367,0.006510497338049179,-0.22669410906763396,-0.20117342845959338,8.246800595119691e-237,7.422120535607722e-236
+all,any,OEQA,NL,V,answer_f1,questions without V,256,2760,True,,-0.06907043356529487,0.010065828384584986,-0.08879909467364243,-0.049341772456947305,6.796358994285837e-12,2.0389076982857513e-11
+all,any,OEQA,NL,V,answer_exact_match,questions without V,256,2760,True,,-0.22548309178744066,0.006792839639784517,-0.23879681283417437,-0.21216937074070696,1.303992637756114e-241,1.4343919015317255e-240
+all,any,OEQA,NL,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+all,any,OEQA,NL,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,H,answer_f1,questions without H,1586,4446,True,,-0.0682826584466043,0.0061131259936390925,-0.08026416522709257,-0.05630115166611605,5.728194767092441e-29,3.4369168602554647e-28
+exclude_confirmed_defective_ar,every,BQA,AR,H,answer_exact_match,questions without H,1586,4446,True,,-0.0682826584466043,0.0061131259936390925,-0.08026416522709257,-0.05630115166611605,5.728194767092441e-29,3.4369168602554647e-28
+exclude_confirmed_defective_ar,every,BQA,AR,I,answer_f1,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+exclude_confirmed_defective_ar,every,BQA,AR,I,answer_exact_match,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+exclude_confirmed_defective_ar,every,BQA,AR,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,R,answer_f1,questions without R,664,5368,True,,-0.12824771515271816,0.005820820162918749,-0.13965631303252346,-0.11683911727291284,1.4033190241034997e-107,1.2629871216931496e-106
+exclude_confirmed_defective_ar,every,BQA,AR,R,answer_exact_match,questions without R,664,5368,True,,-0.12824771515271816,0.005820820162918749,-0.13965631303252346,-0.11683911727291284,1.4033190241034997e-107,1.2629871216931496e-106
+exclude_confirmed_defective_ar,every,BQA,AR,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,AR,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,H,answer_f1,questions without H,1586,4446,True,,-0.10959688699121052,0.007291144809508773,-0.12388726822391387,-0.09530650575850717,4.5650784310876603e-51,3.1955549017613624e-50
+exclude_confirmed_defective_ar,every,BQA,FS,H,answer_exact_match,questions without H,1586,4446,True,,-0.10959688699121052,0.007291144809508773,-0.12388726822391387,-0.09530650575850717,4.5650784310876603e-51,3.1955549017613624e-50
+exclude_confirmed_defective_ar,every,BQA,FS,I,answer_f1,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,0.00011329311628225728
+exclude_confirmed_defective_ar,every,BQA,FS,I,answer_exact_match,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,0.00011329311628225728
+exclude_confirmed_defective_ar,every,BQA,FS,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,R,answer_f1,questions without R,664,5368,True,,0.015862256776733516,0.008301052475531456,-0.00040750710908519713,0.03213202066255223,0.05602090777844567,0.11204181555689134
+exclude_confirmed_defective_ar,every,BQA,FS,R,answer_exact_match,questions without R,664,5368,True,,0.015862256776733516,0.008301052475531456,-0.00040750710908519713,0.03213202066255223,0.05602090777844567,0.11204181555689134
+exclude_confirmed_defective_ar,every,BQA,FS,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,FS,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,H,answer_f1,questions without H,1586,4446,True,,-0.0787408833138046,0.007217012972365423,-0.0928859688155992,-0.06459579781201001,1.027426952584951e-27,5.137134762924755e-27
+exclude_confirmed_defective_ar,every,BQA,NL,H,answer_exact_match,questions without H,1586,4446,True,,-0.0787408833138046,0.007217012972365423,-0.0928859688155992,-0.06459579781201001,1.027426952584951e-27,5.137134762924755e-27
+exclude_confirmed_defective_ar,every,BQA,NL,I,answer_f1,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+exclude_confirmed_defective_ar,every,BQA,NL,I,answer_exact_match,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+exclude_confirmed_defective_ar,every,BQA,NL,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,R,answer_f1,questions without R,664,5368,True,,-0.07119611082183086,0.009254996832464309,-0.08933557129049319,-0.05305665035316853,1.440380985240097e-14,5.761523940960387e-14
+exclude_confirmed_defective_ar,every,BQA,NL,R,answer_exact_match,questions without R,664,5368,True,,-0.07119611082183086,0.009254996832464309,-0.08933557129049319,-0.05305665035316853,1.440380985240097e-14,5.761523940960387e-14
+exclude_confirmed_defective_ar,every,BQA,NL,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,BQA,NL,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,D,answer_f1,questions without D,3013,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,D,answer_exact_match,questions without D,3013,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,H,answer_f1,questions without H,1265,1748,True,,-0.20175019422763604,0.012094477226261146,-0.22545493400294778,-0.1780454544523243,1.796246464210232e-62,1.2573725249471625e-61
+exclude_confirmed_defective_ar,every,OEQA,AR,H,answer_exact_match,questions without H,1265,1748,True,,-0.2673531655224999,0.012666230067735292,-0.2921785202751594,-0.24252781076984037,6.778806890376212e-99,3.389403445188106e-98
+exclude_confirmed_defective_ar,every,OEQA,AR,I,answer_f1,questions without I,1049,1964,True,,-0.35683129636317423,0.010630043624309476,-0.3776657990209104,-0.33599679370543806,4.887397379142032e-247,8.308575544541455e-246
+exclude_confirmed_defective_ar,every,OEQA,AR,I,answer_exact_match,questions without I,1049,1964,True,,-0.34142366861531687,0.010801937232557105,-0.36259507655439105,-0.3202522606762427,2.900004814855613e-219,2.3200038518844904e-218
+exclude_confirmed_defective_ar,every,OEQA,AR,N,answer_f1,questions without N,42,2971,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,N,answer_exact_match,questions without N,42,2971,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,R,answer_f1,questions without R,638,2375,True,,-0.29373521367775174,0.009585288711634901,-0.31252203433397446,-0.274948393021529,3.140132246083394e-206,4.710198369125091e-205
+exclude_confirmed_defective_ar,every,OEQA,AR,R,answer_exact_match,questions without R,638,2375,True,,-0.3254736842105381,0.00872254301728551,-0.342569554378019,-0.30837781404305714,9.700928602499943e-305,1.6491578624249903e-303
+exclude_confirmed_defective_ar,every,OEQA,AR,S,answer_f1,questions without S,124,2889,True,,-0.2325033933195169,0.021078847108112413,-0.27381717448704346,-0.1911896121519903,2.7332964291053795e-28,1.0933185716421518e-27
+exclude_confirmed_defective_ar,every,OEQA,AR,S,answer_exact_match,questions without S,124,2889,True,,-0.24513821428706276,0.012987750533803136,-0.27059373757350774,-0.21968269100061774,1.8461831279142857e-79,7.384732511657143e-79
+exclude_confirmed_defective_ar,every,OEQA,AR,T,answer_f1,questions without T,10,3003,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,T,answer_exact_match,questions without T,10,3003,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,Q,answer_f1,questions without Q,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,Q,answer_exact_match,questions without Q,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,F,answer_f1,questions without F,167,2846,True,,-0.2285266966819865,0.010914070083912075,-0.2499178809712002,-0.20713551239277278,2.37743391160757e-97,3.090664085089841e-96
+exclude_confirmed_defective_ar,every,OEQA,AR,F,answer_exact_match,questions without F,167,2846,True,,-0.2716092761770804,0.007624088106194168,-0.2865522142801812,-0.25666633807397965,5.716742162727807e-278,8.575113244091711e-277
+exclude_confirmed_defective_ar,every,OEQA,AR,E,answer_f1,questions without E,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,E,answer_exact_match,questions without E,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,L,answer_f1,questions without L,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,L,answer_exact_match,questions without L,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,C,answer_f1,questions without C,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,C,answer_exact_match,questions without C,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,∩,answer_f1,questions without ∩,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,∩,answer_exact_match,questions without ∩,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,U,answer_f1,questions without U,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,U,answer_exact_match,questions without U,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,¬,answer_f1,questions without ¬,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,¬,answer_exact_match,questions without ¬,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,J,answer_f1,questions without J,107,2906,True,,-0.21077652212155615,0.012051449868190917,-0.23439692982470034,-0.18715611441841196,1.7158870752796145e-68,1.544298367751653e-67
+exclude_confirmed_defective_ar,every,OEQA,AR,J,answer_exact_match,questions without J,107,2906,True,,-0.266001376462487,0.00750098452209403,-0.2807030359743837,-0.25129971695059033,1.8817613655458723e-275,2.6344659117642214e-274
+exclude_confirmed_defective_ar,every,OEQA,AR,V,answer_f1,questions without V,256,2757,True,,-0.13003914553133342,0.009877175557351155,-0.149398053892721,-0.11068023716994582,1.3839583650799965e-39,8.30375019047998e-39
+exclude_confirmed_defective_ar,every,OEQA,AR,V,answer_exact_match,questions without V,256,2757,True,,-0.28037722161770423,0.007813325812210219,-0.29569105880911345,-0.265063384426295,5.332227262357602e-282,8.531563619772163e-281
+exclude_confirmed_defective_ar,every,OEQA,AR,Y,answer_f1,questions without Y,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,Y,answer_exact_match,questions without Y,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,A,answer_f1,questions without A,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,AR,A,answer_exact_match,questions without A,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,H,answer_f1,questions without H,1267,1749,True,,-0.39157040804140186,0.011902921884216999,-0.41489970624526085,-0.3682411098375429,2.42614670621283e-237,3.881834729940528e-236
+exclude_confirmed_defective_ar,every,OEQA,FS,H,answer_exact_match,questions without H,1267,1749,True,,-0.45963499419144616,0.014617633098746282,-0.48828502860420947,-0.43098495977868284,5.090601207734132e-217,3.5634208454138926e-216
+exclude_confirmed_defective_ar,every,OEQA,FS,I,answer_f1,questions without I,1051,1965,True,,-0.1533199377113187,0.013853589637515908,-0.18047247445744716,-0.12616740096519022,1.8104107605895796e-28,9.052053802947898e-28
+exclude_confirmed_defective_ar,every,OEQA,FS,I,answer_exact_match,questions without I,1051,1965,True,,-0.1739528329980196,0.01650726774326737,-0.20630648325798343,-0.1415991827380558,5.774123452404713e-26,1.1548246904809426e-25
+exclude_confirmed_defective_ar,every,OEQA,FS,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,R,answer_f1,questions without R,640,2376,True,,-0.6479059803996459,0.007466655236189671,-0.662540355747555,-0.6332716050517367,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,R,answer_exact_match,questions without R,640,2376,True,,-0.6923611111111074,0.008074864419023681,-0.7081875545524378,-0.6765346676697771,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,S,answer_f1,questions without S,124,2892,True,,-0.439389724902023,0.025704049712401117,-0.4897687365951563,-0.3890107132088897,1.639784788663689e-65,1.3118278309309512e-64
+exclude_confirmed_defective_ar,every,OEQA,FS,S,answer_exact_match,questions without S,124,2892,True,,-0.5289489730662822,0.015790208134743015,-0.5598972123187699,-0.4980007338137945,5.0608994706728e-246,6.07307936480736e-245
+exclude_confirmed_defective_ar,every,OEQA,FS,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,F,answer_f1,questions without F,167,2849,True,,-0.4534331549148341,0.010689421338448472,-0.47438403575376703,-0.4324822740759012,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,F,answer_exact_match,questions without F,167,2849,True,,-0.5711665472144486,0.009939665355917903,-0.5906479333304282,-0.551685161098469,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,J,answer_f1,questions without J,107,2909,True,,-0.48825888109799026,0.012281094655882651,-0.5123293843142476,-0.46418837788173295,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,J,answer_exact_match,questions without J,107,2909,True,,-0.5547441659732684,0.011962304971981117,-0.5781898528904358,-0.531298479056101,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,V,answer_f1,questions without V,256,2760,True,,-0.4162981062097927,0.0076175970886127225,-0.4312283221522108,-0.40136789026737457,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,V,answer_exact_match,questions without V,256,2760,True,,-0.5983091787439585,0.008219640851728396,-0.6144193787792003,-0.5821989787087167,0.0,0.0
+exclude_confirmed_defective_ar,every,OEQA,FS,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,FS,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,H,answer_f1,questions without H,1267,1749,True,,-0.21752330424295646,0.011194878796045436,-0.23946486349449664,-0.19558174499141628,4.252925682760084e-84,4.6782182510360926e-83
+exclude_confirmed_defective_ar,every,OEQA,NL,H,answer_exact_match,questions without H,1267,1749,True,,-0.261004559451346,0.010613662735034831,-0.28180695615606915,-0.24020216274662282,1.5622444087746863e-133,9.373466452648118e-133
+exclude_confirmed_defective_ar,every,OEQA,NL,I,answer_f1,questions without I,1051,1965,True,,-0.07302170536629977,0.013043317642357876,-0.0985861381842371,-0.04745727254836245,2.1633952716539275e-08,4.326790543307855e-08
+exclude_confirmed_defective_ar,every,OEQA,NL,I,answer_exact_match,questions without I,1051,1965,True,,-0.08548214108458574,0.012630021058069485,-0.1102365274823844,-0.06072775468678708,1.3042064295068154e-11,1.3042064295068154e-11
+exclude_confirmed_defective_ar,every,OEQA,NL,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,R,answer_f1,questions without R,640,2376,True,,-0.18914806537593976,0.009401228879905922,-0.2075741353909732,-0.17072199536090632,4.9803206639038735e-90,5.976384796684648e-89
+exclude_confirmed_defective_ar,every,OEQA,NL,R,answer_exact_match,questions without R,640,2376,True,,-0.26192480359146864,0.00763175483728786,-0.2768827682113922,-0.2469668389715451,3.8961371249725906e-258,5.064978262464368e-257
+exclude_confirmed_defective_ar,every,OEQA,NL,S,answer_f1,questions without S,124,2892,True,,-0.011283016415377472,0.0251683837827449,-0.060612142178639444,0.038046109347884494,0.6539358414972908,0.6539358414972908
+exclude_confirmed_defective_ar,every,OEQA,NL,S,answer_exact_match,questions without S,124,2892,True,,-0.1899604396258306,0.013241285786667277,-0.21591288287670057,-0.1640079963749606,1.1274452613426021e-46,3.382335784027806e-46
+exclude_confirmed_defective_ar,every,OEQA,NL,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,F,answer_f1,questions without F,167,2849,True,,-0.2302292038615836,0.012231155227209932,-0.2542018275962339,-0.20625658012693332,4.877031878483837e-79,4.877031878483837e-78
+exclude_confirmed_defective_ar,every,OEQA,NL,F,answer_exact_match,questions without F,167,2849,True,,-0.218439218439218,0.0066215635402717046,-0.23141724449949408,-0.20546119237894195,1.1653499294903928e-238,1.1653499294903928e-237
+exclude_confirmed_defective_ar,every,OEQA,NL,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,J,answer_f1,questions without J,107,2909,True,,-0.23924692830318256,0.010795771310711525,-0.26040625125750794,-0.21808760534885718,8.140715169479965e-109,1.1397001237271952e-107
+exclude_confirmed_defective_ar,every,OEQA,NL,J,answer_exact_match,questions without J,107,2909,True,,-0.21393376876361367,0.006510497338049179,-0.22669410906763396,-0.20117342845959338,8.246800595119691e-237,7.422120535607722e-236
+exclude_confirmed_defective_ar,every,OEQA,NL,V,answer_f1,questions without V,256,2760,True,,-0.06907043356529487,0.010065828384584986,-0.08879909467364243,-0.049341772456947305,6.796358994285837e-12,2.0389076982857513e-11
+exclude_confirmed_defective_ar,every,OEQA,NL,V,answer_exact_match,questions without V,256,2760,True,,-0.22548309178744066,0.006792839639784517,-0.23879681283417437,-0.21216937074070696,1.303992637756114e-241,1.4343919015317255e-240
+exclude_confirmed_defective_ar,every,OEQA,NL,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,every,OEQA,NL,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,H,answer_f1,questions without H,1810,4222,True,,-0.08576351357835076,0.005887076494321899,-0.097301971481454,-0.07422505567524751,4.481895887573598e-48,3.1373271213015184e-47
+exclude_confirmed_defective_ar,any,BQA,AR,H,answer_exact_match,questions without H,1810,4222,True,,-0.08576351357835076,0.005887076494321899,-0.097301971481454,-0.07422505567524751,4.481895887573598e-48,3.1373271213015184e-47
+exclude_confirmed_defective_ar,any,BQA,AR,I,answer_f1,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+exclude_confirmed_defective_ar,any,BQA,AR,I,answer_exact_match,questions without I,1520,4512,True,,-0.10633087594871965,0.005331248061582001,-0.11677993014206935,-0.09588182175536995,1.661894089253236e-88,1.3295152714025887e-87
+exclude_confirmed_defective_ar,any,BQA,AR,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,R,answer_f1,questions without R,1336,4696,True,,-0.15762002400649244,0.004585360352569483,-0.16660716515366653,-0.14863288285931836,6.039385093709094e-259,5.435446584338184e-258
+exclude_confirmed_defective_ar,any,BQA,AR,R,answer_exact_match,questions without R,1336,4696,True,,-0.15762002400649244,0.004585360352569483,-0.16660716515366653,-0.14863288285931836,6.039385093709094e-259,5.435446584338184e-258
+exclude_confirmed_defective_ar,any,BQA,AR,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,AR,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,H,answer_f1,questions without H,1810,4222,True,,-0.08173637519159384,0.006961735655137283,-0.09538112634555126,-0.06809162403763641,7.87341871797402e-32,4.7240512307844115e-31
+exclude_confirmed_defective_ar,any,BQA,FS,H,answer_exact_match,questions without H,1810,4222,True,,-0.08173637519159384,0.006961735655137283,-0.09538112634555126,-0.06809162403763641,7.87341871797402e-32,4.7240512307844115e-31
+exclude_confirmed_defective_ar,any,BQA,FS,I,answer_f1,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,7.552874418817152e-05
+exclude_confirmed_defective_ar,any,BQA,FS,I,answer_exact_match,questions without I,1520,4512,True,,0.024035709841985137,0.005832850669871386,0.012603532601836892,0.03546788708213338,3.776437209408576e-05,7.552874418817152e-05
+exclude_confirmed_defective_ar,any,BQA,FS,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,R,answer_f1,questions without R,1336,4696,True,,-0.06498502143922837,0.007460945364580379,-0.07960820564442697,-0.05036183723402976,3.038075004559119e-18,9.114225013677357e-18
+exclude_confirmed_defective_ar,any,BQA,FS,R,answer_exact_match,questions without R,1336,4696,True,,-0.06498502143922837,0.007460945364580379,-0.07960820564442697,-0.05036183723402976,3.038075004559119e-18,9.114225013677357e-18
+exclude_confirmed_defective_ar,any,BQA,FS,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,FS,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,D,answer_f1,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,D,answer_exact_match,questions without D,6032,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,H,answer_f1,questions without H,1810,4222,True,,-0.06329216512994479,0.007077693126759003,-0.07716418875201912,-0.04942014150787046,3.805152323643717e-19,1.5220609294574869e-18
+exclude_confirmed_defective_ar,any,BQA,NL,H,answer_exact_match,questions without H,1810,4222,True,,-0.06329216512994479,0.007077693126759003,-0.07716418875201912,-0.04942014150787046,3.805152323643717e-19,1.5220609294574869e-18
+exclude_confirmed_defective_ar,any,BQA,NL,I,answer_f1,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+exclude_confirmed_defective_ar,any,BQA,NL,I,answer_exact_match,questions without I,1520,4512,True,,-0.008435205922601954,0.008050153979488084,-0.02421321779240039,0.007342805947196482,0.29471618930420396,0.29471618930420396
+exclude_confirmed_defective_ar,any,BQA,NL,N,answer_f1,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,N,answer_exact_match,questions without N,78,5954,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,R,answer_f1,questions without R,1336,4696,True,,-0.07449198706504673,0.007053827986578882,-0.08831723587188202,-0.060666738258211436,4.542106945078441e-26,2.2710534725392206e-25
+exclude_confirmed_defective_ar,any,BQA,NL,R,answer_exact_match,questions without R,1336,4696,True,,-0.07449198706504673,0.007053827986578882,-0.08831723587188202,-0.060666738258211436,4.542106945078441e-26,2.2710534725392206e-25
+exclude_confirmed_defective_ar,any,BQA,NL,S,answer_f1,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,S,answer_exact_match,questions without S,40,5992,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,T,answer_f1,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,T,answer_exact_match,questions without T,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,Q,answer_f1,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,Q,answer_exact_match,questions without Q,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,F,answer_f1,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,F,answer_exact_match,questions without F,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,E,answer_f1,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,E,answer_exact_match,questions without E,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,L,answer_f1,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,L,answer_exact_match,questions without L,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,C,answer_f1,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,C,answer_exact_match,questions without C,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,∩,answer_f1,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,∩,answer_exact_match,questions without ∩,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,U,answer_f1,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,U,answer_exact_match,questions without U,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,¬,answer_f1,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,¬,answer_exact_match,questions without ¬,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,J,answer_f1,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,J,answer_exact_match,questions without J,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,V,answer_f1,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,V,answer_exact_match,questions without V,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,Y,answer_f1,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,Y,answer_exact_match,questions without Y,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,A,answer_f1,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,BQA,NL,A,answer_exact_match,questions without A,0,6032,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,D,answer_f1,questions without D,3013,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,D,answer_exact_match,questions without D,3013,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,H,answer_f1,questions without H,1265,1748,True,,-0.20175019422763604,0.012094477226261146,-0.22545493400294778,-0.1780454544523243,1.796246464210232e-62,1.2573725249471625e-61
+exclude_confirmed_defective_ar,any,OEQA,AR,H,answer_exact_match,questions without H,1265,1748,True,,-0.2673531655224999,0.012666230067735292,-0.2921785202751594,-0.24252781076984037,6.778806890376212e-99,3.389403445188106e-98
+exclude_confirmed_defective_ar,any,OEQA,AR,I,answer_f1,questions without I,1049,1964,True,,-0.35683129636317423,0.010630043624309476,-0.3776657990209104,-0.33599679370543806,4.887397379142032e-247,8.308575544541455e-246
+exclude_confirmed_defective_ar,any,OEQA,AR,I,answer_exact_match,questions without I,1049,1964,True,,-0.34142366861531687,0.010801937232557105,-0.36259507655439105,-0.3202522606762427,2.900004814855613e-219,2.3200038518844904e-218
+exclude_confirmed_defective_ar,any,OEQA,AR,N,answer_f1,questions without N,42,2971,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,N,answer_exact_match,questions without N,42,2971,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,R,answer_f1,questions without R,638,2375,True,,-0.29373521367775174,0.009585288711634901,-0.31252203433397446,-0.274948393021529,3.140132246083394e-206,4.710198369125091e-205
+exclude_confirmed_defective_ar,any,OEQA,AR,R,answer_exact_match,questions without R,638,2375,True,,-0.3254736842105381,0.00872254301728551,-0.342569554378019,-0.30837781404305714,9.700928602499943e-305,1.6491578624249903e-303
+exclude_confirmed_defective_ar,any,OEQA,AR,S,answer_f1,questions without S,124,2889,True,,-0.2325033933195169,0.021078847108112413,-0.27381717448704346,-0.1911896121519903,2.7332964291053795e-28,1.0933185716421518e-27
+exclude_confirmed_defective_ar,any,OEQA,AR,S,answer_exact_match,questions without S,124,2889,True,,-0.24513821428706276,0.012987750533803136,-0.27059373757350774,-0.21968269100061774,1.8461831279142857e-79,7.384732511657143e-79
+exclude_confirmed_defective_ar,any,OEQA,AR,T,answer_f1,questions without T,10,3003,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,T,answer_exact_match,questions without T,10,3003,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,Q,answer_f1,questions without Q,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,Q,answer_exact_match,questions without Q,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,F,answer_f1,questions without F,167,2846,True,,-0.2285266966819865,0.010914070083912075,-0.2499178809712002,-0.20713551239277278,2.37743391160757e-97,3.090664085089841e-96
+exclude_confirmed_defective_ar,any,OEQA,AR,F,answer_exact_match,questions without F,167,2846,True,,-0.2716092761770804,0.007624088106194168,-0.2865522142801812,-0.25666633807397965,5.716742162727807e-278,8.575113244091711e-277
+exclude_confirmed_defective_ar,any,OEQA,AR,E,answer_f1,questions without E,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,E,answer_exact_match,questions without E,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,L,answer_f1,questions without L,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,L,answer_exact_match,questions without L,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,C,answer_f1,questions without C,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,C,answer_exact_match,questions without C,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,∩,answer_f1,questions without ∩,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,∩,answer_exact_match,questions without ∩,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,U,answer_f1,questions without U,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,U,answer_exact_match,questions without U,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,¬,answer_f1,questions without ¬,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,¬,answer_exact_match,questions without ¬,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,J,answer_f1,questions without J,107,2906,True,,-0.21077652212155615,0.012051449868190917,-0.23439692982470034,-0.18715611441841196,1.7158870752796145e-68,1.544298367751653e-67
+exclude_confirmed_defective_ar,any,OEQA,AR,J,answer_exact_match,questions without J,107,2906,True,,-0.266001376462487,0.00750098452209403,-0.2807030359743837,-0.25129971695059033,1.8817613655458723e-275,2.6344659117642214e-274
+exclude_confirmed_defective_ar,any,OEQA,AR,V,answer_f1,questions without V,256,2757,True,,-0.13003914553133342,0.009877175557351155,-0.149398053892721,-0.11068023716994582,1.3839583650799965e-39,8.30375019047998e-39
+exclude_confirmed_defective_ar,any,OEQA,AR,V,answer_exact_match,questions without V,256,2757,True,,-0.28037722161770423,0.007813325812210219,-0.29569105880911345,-0.265063384426295,5.332227262357602e-282,8.531563619772163e-281
+exclude_confirmed_defective_ar,any,OEQA,AR,Y,answer_f1,questions without Y,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,Y,answer_exact_match,questions without Y,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,A,answer_f1,questions without A,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,AR,A,answer_exact_match,questions without A,0,3013,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,H,answer_f1,questions without H,1267,1749,True,,-0.39157040804140186,0.011902921884216999,-0.41489970624526085,-0.3682411098375429,2.42614670621283e-237,3.881834729940528e-236
+exclude_confirmed_defective_ar,any,OEQA,FS,H,answer_exact_match,questions without H,1267,1749,True,,-0.45963499419144616,0.014617633098746282,-0.48828502860420947,-0.43098495977868284,5.090601207734132e-217,3.5634208454138926e-216
+exclude_confirmed_defective_ar,any,OEQA,FS,I,answer_f1,questions without I,1051,1965,True,,-0.1533199377113187,0.013853589637515908,-0.18047247445744716,-0.12616740096519022,1.8104107605895796e-28,9.052053802947898e-28
+exclude_confirmed_defective_ar,any,OEQA,FS,I,answer_exact_match,questions without I,1051,1965,True,,-0.1739528329980196,0.01650726774326737,-0.20630648325798343,-0.1415991827380558,5.774123452404713e-26,1.1548246904809426e-25
+exclude_confirmed_defective_ar,any,OEQA,FS,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,R,answer_f1,questions without R,640,2376,True,,-0.6479059803996459,0.007466655236189671,-0.662540355747555,-0.6332716050517367,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,R,answer_exact_match,questions without R,640,2376,True,,-0.6923611111111074,0.008074864419023681,-0.7081875545524378,-0.6765346676697771,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,S,answer_f1,questions without S,124,2892,True,,-0.439389724902023,0.025704049712401117,-0.4897687365951563,-0.3890107132088897,1.639784788663689e-65,1.3118278309309512e-64
+exclude_confirmed_defective_ar,any,OEQA,FS,S,answer_exact_match,questions without S,124,2892,True,,-0.5289489730662822,0.015790208134743015,-0.5598972123187699,-0.4980007338137945,5.0608994706728e-246,6.07307936480736e-245
+exclude_confirmed_defective_ar,any,OEQA,FS,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,F,answer_f1,questions without F,167,2849,True,,-0.4534331549148341,0.010689421338448472,-0.47438403575376703,-0.4324822740759012,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,F,answer_exact_match,questions without F,167,2849,True,,-0.5711665472144486,0.009939665355917903,-0.5906479333304282,-0.551685161098469,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,J,answer_f1,questions without J,107,2909,True,,-0.48825888109799026,0.012281094655882651,-0.5123293843142476,-0.46418837788173295,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,J,answer_exact_match,questions without J,107,2909,True,,-0.5547441659732684,0.011962304971981117,-0.5781898528904358,-0.531298479056101,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,V,answer_f1,questions without V,256,2760,True,,-0.4162981062097927,0.0076175970886127225,-0.4312283221522108,-0.40136789026737457,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,V,answer_exact_match,questions without V,256,2760,True,,-0.5983091787439585,0.008219640851728396,-0.6144193787792003,-0.5821989787087167,0.0,0.0
+exclude_confirmed_defective_ar,any,OEQA,FS,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,FS,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,D,answer_f1,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,D,answer_exact_match,questions without D,3016,0,False,tag ubiquitous,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,H,answer_f1,questions without H,1267,1749,True,,-0.21752330424295646,0.011194878796045436,-0.23946486349449664,-0.19558174499141628,4.252925682760084e-84,4.6782182510360926e-83
+exclude_confirmed_defective_ar,any,OEQA,NL,H,answer_exact_match,questions without H,1267,1749,True,,-0.261004559451346,0.010613662735034831,-0.28180695615606915,-0.24020216274662282,1.5622444087746863e-133,9.373466452648118e-133
+exclude_confirmed_defective_ar,any,OEQA,NL,I,answer_f1,questions without I,1051,1965,True,,-0.07302170536629977,0.013043317642357876,-0.0985861381842371,-0.04745727254836245,2.1633952716539275e-08,4.326790543307855e-08
+exclude_confirmed_defective_ar,any,OEQA,NL,I,answer_exact_match,questions without I,1051,1965,True,,-0.08548214108458574,0.012630021058069485,-0.1102365274823844,-0.06072775468678708,1.3042064295068154e-11,1.3042064295068154e-11
+exclude_confirmed_defective_ar,any,OEQA,NL,N,answer_f1,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,N,answer_exact_match,questions without N,42,2974,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,R,answer_f1,questions without R,640,2376,True,,-0.18914806537593976,0.009401228879905922,-0.2075741353909732,-0.17072199536090632,4.9803206639038735e-90,5.976384796684648e-89
+exclude_confirmed_defective_ar,any,OEQA,NL,R,answer_exact_match,questions without R,640,2376,True,,-0.26192480359146864,0.00763175483728786,-0.2768827682113922,-0.2469668389715451,3.8961371249725906e-258,5.064978262464368e-257
+exclude_confirmed_defective_ar,any,OEQA,NL,S,answer_f1,questions without S,124,2892,True,,-0.011283016415377472,0.0251683837827449,-0.060612142178639444,0.038046109347884494,0.6539358414972908,0.6539358414972908
+exclude_confirmed_defective_ar,any,OEQA,NL,S,answer_exact_match,questions without S,124,2892,True,,-0.1899604396258306,0.013241285786667277,-0.21591288287670057,-0.1640079963749606,1.1274452613426021e-46,3.382335784027806e-46
+exclude_confirmed_defective_ar,any,OEQA,NL,T,answer_f1,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,T,answer_exact_match,questions without T,10,3006,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,Q,answer_f1,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,Q,answer_exact_match,questions without Q,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,F,answer_f1,questions without F,167,2849,True,,-0.2302292038615836,0.012231155227209932,-0.2542018275962339,-0.20625658012693332,4.877031878483837e-79,4.877031878483837e-78
+exclude_confirmed_defective_ar,any,OEQA,NL,F,answer_exact_match,questions without F,167,2849,True,,-0.218439218439218,0.0066215635402717046,-0.23141724449949408,-0.20546119237894195,1.1653499294903928e-238,1.1653499294903928e-237
+exclude_confirmed_defective_ar,any,OEQA,NL,E,answer_f1,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,E,answer_exact_match,questions without E,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,L,answer_f1,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,L,answer_exact_match,questions without L,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,C,answer_f1,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,C,answer_exact_match,questions without C,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,∩,answer_f1,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,∩,answer_exact_match,questions without ∩,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,U,answer_f1,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,U,answer_exact_match,questions without U,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,¬,answer_f1,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,¬,answer_exact_match,questions without ¬,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,J,answer_f1,questions without J,107,2909,True,,-0.23924692830318256,0.010795771310711525,-0.26040625125750794,-0.21808760534885718,8.140715169479965e-109,1.1397001237271952e-107
+exclude_confirmed_defective_ar,any,OEQA,NL,J,answer_exact_match,questions without J,107,2909,True,,-0.21393376876361367,0.006510497338049179,-0.22669410906763396,-0.20117342845959338,8.246800595119691e-237,7.422120535607722e-236
+exclude_confirmed_defective_ar,any,OEQA,NL,V,answer_f1,questions without V,256,2760,True,,-0.06907043356529487,0.010065828384584986,-0.08879909467364243,-0.049341772456947305,6.796358994285837e-12,2.0389076982857513e-11
+exclude_confirmed_defective_ar,any,OEQA,NL,V,answer_exact_match,questions without V,256,2760,True,,-0.22548309178744066,0.006792839639784517,-0.23879681283417437,-0.21216937074070696,1.303992637756114e-241,1.4343919015317255e-240
+exclude_confirmed_defective_ar,any,OEQA,NL,Y,answer_f1,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,Y,answer_exact_match,questions without Y,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,A,answer_f1,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,
+exclude_confirmed_defective_ar,any,OEQA,NL,A,answer_exact_match,questions without A,0,3016,False,tag sparse; descriptive only,,,,,,

@@ -1,0 +1,132 @@
+{
+  "analysis": "CORE-LLM-Bench v1.1 reasoning-tag difficulty",
+  "inputs": [
+    {
+      "bytes": 200779939,
+      "path": "data/correction/v1.1.1/core_llm_bench_v1_1_1_corrected.parquet",
+      "sha256": "2a6d5e7c68b768aada509ceef3d00e83636be7f6cee247deb11337f6d0836ee8"
+    },
+    {
+      "bytes": 25337392,
+      "path": "results/v1.1.1-release-candidate/evaluation/csv/per_observation_scores.csv",
+      "sha256": "8b824b6f74a35ca860fe33230bad6aa7a9cbae9eddcabc8e35a60e17c06edbed"
+    },
+    {
+      "bytes": 300,
+      "path": "results/v1.1.0-evaluation-corrected-v1/audit/confirmed_defective_ar_questions.csv",
+      "sha256": "2faefdb68c7c6ea7b61f539fa78e729be8b2e9d65574adba129e7c31a6e1f2ba"
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 1786,
+      "path": "audit/validation.json",
+      "sha256": "e38071a7f93a069bf9fcd81b60fd29a18d495aee5880ec7e1b5da168792b1c40"
+    },
+    {
+      "bytes": 131406,
+      "path": "csv/adjusted_associations.csv",
+      "sha256": "b1ca02c0dfac0a45a8d43cc586b8b7eea38056fe287977208554a85280e82163"
+    },
+    {
+      "bytes": 13528,
+      "path": "csv/bqa_label_supplement.csv",
+      "sha256": "1a60db10f23fb953a73c6f6cbee584d365cea1afbcdbf0353a15c75cec0eb7d8"
+    },
+    {
+      "bytes": 18819,
+      "path": "csv/defective_ar_sensitivity.csv",
+      "sha256": "289053e8130c6b7e8f6d57c2e5f8af373c4e14a2108309857cde33806940379d"
+    },
+    {
+      "bytes": 88430,
+      "path": "csv/descriptive_by_dataset_hop.csv",
+      "sha256": "00cf48e967220b01d82b83c6a6c8a2d9ddabc2e99ddce004deea97c733693d45"
+    },
+    {
+      "bytes": 50758,
+      "path": "csv/descriptive_by_model.csv",
+      "sha256": "3758e6e95af0dc2998c60fdb639cdb4453f7db567786c6ccdb8589b6a7b2523e"
+    },
+    {
+      "bytes": 16551,
+      "path": "csv/descriptive_by_task_tag_representation.csv",
+      "sha256": "119a70a99a89d833a4ad02d3e293b80d8a9dc26ea95582fa8454ce9b3305415d"
+    },
+    {
+      "bytes": 12030,
+      "path": "csv/model_diagnostics.csv",
+      "sha256": "3570391865f5bf300cc61f4bd10a46f9c8430c603535e1ba1eedcd5cbdee5a18"
+    },
+    {
+      "bytes": 72699,
+      "path": "csv/oeqa_gold_set_size.csv",
+      "sha256": "b6bcfccd6330a98a44ffde90552dc8ba53b68a68b128015ebf3fafd0d6dec142"
+    },
+    {
+      "bytes": 1821046,
+      "path": "csv/per_question_minimum_explanation_tags.csv",
+      "sha256": "378e2f955b410dbc0430e27d6c3d8c3deef14a1a18f93f0e98905d5f208d24b4"
+    },
+    {
+      "bytes": 126952,
+      "path": "csv/raw_tag_contrasts.csv",
+      "sha256": "b42b4cafb69bd2537b5e35fa2c3a09cc2d5613287af07701437adf871fdba5e3"
+    },
+    {
+      "bytes": 26452,
+      "path": "csv/tag_cooccurrence.csv",
+      "sha256": "7655366c3b1f6e984fd408ecb64169634565c5de1f8145c109f31e89782e101f"
+    },
+    {
+      "bytes": 3237,
+      "path": "csv/tag_frequencies.csv",
+      "sha256": "6ad4c7d13dd64a8cffe5cc934796fa71d9d031cc2815f4e413c8392a3aa16c01"
+    },
+    {
+      "bytes": 16682,
+      "path": "csv/tied_minimum_sensitivity.csv",
+      "sha256": "5cb78571174f2096f3cae4c158ed7d6738ac97631caac2c358ce8ba79c57841c"
+    },
+    {
+      "bytes": 36834,
+      "path": "figures/model_specific_tag_f1.pdf",
+      "sha256": "1d7bf5b4555896730085cde2831bd5ff67d0005482f91335cacadaebcc159456"
+    },
+    {
+      "bytes": 317903,
+      "path": "figures/model_specific_tag_f1.png",
+      "sha256": "5fb5f9139ecdc040b24463079b6b7ac38276c553fd1c3fdce8e1c895f76eda9c"
+    },
+    {
+      "bytes": 26594,
+      "path": "figures/reasoning_tag_f1_by_representation.pdf",
+      "sha256": "3adc3ce66bfd7b38a32251e2deeb9799767be746f87d5b1877c6773edf3e5baf"
+    },
+    {
+      "bytes": 155065,
+      "path": "figures/reasoning_tag_f1_by_representation.png",
+      "sha256": "1d4d536a7efba558ea4aff5161be679e72b003dd9d273517b6e6f43bbfd5c7e9"
+    },
+    {
+      "bytes": 4416,
+      "path": "INTERPRETATION_REPORT.md",
+      "sha256": "211b497937ca0ae033c2e72af9de7836cfd3637ea3cea884eae263e45ddd5cbe"
+    },
+    {
+      "bytes": 3193,
+      "path": "latex/adjusted_tag_associations.tex",
+      "sha256": "7523cd0218525282487d8ea639e64c7d206176c56bc541e8dceacf68e4219ba9"
+    },
+    {
+      "bytes": 1447,
+      "path": "latex/main_tag_performance.tex",
+      "sha256": "38307a2954bdfcd706484ce56913b003f96ef43266a18f63cce65bf968cda16e"
+    },
+    {
+      "bytes": 1095,
+      "path": "latex/tag_frequencies.tex",
+      "sha256": "130a86c96e4a4d4bbbf410126a6f0d9c5447ab62029a37e2ea036384cb849ba9"
+    }
+  ]
+}

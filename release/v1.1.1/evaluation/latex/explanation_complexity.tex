@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llllllll}
+\toprule
+Model & Task & Complexity & N & EM & F1 & Conf.-corr. & OEQA hall. \\
+\midrule
+GPT-5 mini & BQA & High & 2310 & 59.00 & 59.00 & 59.12 &  \\
+GPT-5 mini & BQA & Low & 6348 & 84.50 & 84.50 & 84.85 &  \\
+GPT-5 mini & BQA & Medium & 9438 & 73.17 & 73.17 & 73.16 &  \\
+GPT-5 mini & OEQA & High & 3186 & 18.55 & 34.35 & 49.00 & 24.70 \\
+GPT-5 mini & OEQA & Low & 4341 & 52.91 & 56.03 & 71.89 & 21.62 \\
+GPT-5 mini & OEQA & Medium & 1521 & 31.82 & 47.10 & 59.42 & 16.53 \\
+Gemini 2.5 Flash-Lite & BQA & High & 2310 & 54.68 & 54.68 & 55.64 &  \\
+Gemini 2.5 Flash-Lite & BQA & Low & 6348 & 79.38 & 79.38 & 79.11 &  \\
+Gemini 2.5 Flash-Lite & BQA & Medium & 9438 & 68.03 & 68.03 & 68.57 &  \\
+Gemini 2.5 Flash-Lite & OEQA & High & 3186 & 19.05 & 33.79 & 44.23 & 35.01 \\
+Gemini 2.5 Flash-Lite & OEQA & Low & 4341 & 40.96 & 46.41 & 58.44 & 70.59 \\
+Gemini 2.5 Flash-Lite & OEQA & Medium & 1521 & 27.02 & 43.69 & 52.05 & 40.82 \\
+Qwen3-30B-A3B-Instruct & BQA & High & 2310 & 66.23 & 66.23 & 66.12 &  \\
+Qwen3-30B-A3B-Instruct & BQA & Low & 6348 & 79.82 & 79.82 & 79.68 &  \\
+Qwen3-30B-A3B-Instruct & BQA & Medium & 9438 & 75.46 & 75.46 & 75.27 &  \\
+Qwen3-30B-A3B-Instruct & OEQA & High & 3186 & 19.55 & 31.88 & 36.31 & 64.66 \\
+Qwen3-30B-A3B-Instruct & OEQA & Low & 4341 & 44.37 & 52.70 & 55.43 & 80.67 \\
+Qwen3-30B-A3B-Instruct & OEQA & Medium & 1521 & 27.94 & 42.42 & 46.63 & 56.82 \\
+\bottomrule
+\end{tabular}
+\caption{Corrected explanation-complexity results}
+\label{tab:core-v11-corrected-explanation-complexity}
+\end{table}
