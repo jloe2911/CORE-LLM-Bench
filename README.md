@@ -2,16 +2,15 @@
 
 CORE-LLM-Bench is a neurosymbolic benchmark for evaluating language models on questions whose answers and explanations are grounded in OWL ontologies. Symbolic reasoning with Pellet provides entailed gold answers and proof metadata; models are evaluated through natural-language, formal-symbolic, and entity-abstracted views of the same underlying tasks.
 
-> **Current release:** CORE-LLM-Bench v1.1.0 contains 9,048 frozen question-hop
-> instances and was published on 2026-09-25. The versioned tabular dataset is
-> available on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
-> The complete source and data package is attached to the
-> [GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
-> Zenodo DOI [10.5281/zenodo.22959957](https://zenodo.org/records/22959957)
-> identifies the published archival copy. The immutable v1.0.0
-> archive remains at [10.5281/zenodo.22742977](https://doi.org/10.5281/zenodo.22742977).
+> **Current release:** CORE-LLM-Bench v1.1.1 contains 9,048 frozen question-hop
+> instances and was published on 2026-10-04. The canonical corrected benchmark
+> is the [Hugging Face v1.1.1 dataset](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1).
+> The [GitHub v1.1.1 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.1)
+> is the lean reproducibility/source subset. The complete frozen archival package
+> is on Zenodo under DOI [10.5281/zenodo.23138373](https://zenodo.org/records/23138373).
+> The immutable v1.1.0 and v1.0.0 releases remain available as historical versions.
 
-Version 1.1.0 contains **9,048 unique question-hop instances** from four source datasets:
+Version 1.1.1 contains **9,048 unique question-hop instances** from four source datasets:
 
 | Dataset | 1-hop | 2-hop | Total |
 | --- | ---: | ---: | ---: |
@@ -36,15 +35,16 @@ Each instance carries three representations:
 - **FS**: the formal SPARQL query and serialized OWL/Turtle context.
 - **AR**: an abstracted question and context in which ontology entities are systematically replaced.
 
-The **1-hop/2-hop designation describes ontology-context extraction depth** around a root entity. It does not describe proof length. **Explanation complexity** is derived independently from Pellet explanations and is represented by minimum and maximum reasoning-tag length. The 20-tag taxonomy and coverage analysis are documented under `results/reasoning_coverage/`.
+The **1-hop/2-hop designation describes ontology-context extraction depth** around a root entity. It does not describe proof length. **Explanation complexity** is derived independently from Pellet explanations using the primitive-operation count of the complete minimum explanation(s), with Low = 1, Medium = 2–3, and High = 4+. Tied minimum explanations are retained. The current v1.1.1 reasoning-tag analysis is documented under `release/v1.1.1/analysis/reasoning-tag-analysis/`; historical v1.0.0 coverage remains under `results/reasoning_coverage/`.
 
 ## Repository map
 
 | Purpose | Location |
 | --- | --- |
-| Current v1.1.0 benchmark | [GitHub release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0), [Hugging Face v1.1.0](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0), and [Zenodo](https://zenodo.org/records/22959957) |
+| Current v1.1.1 benchmark | Canonical [Hugging Face v1.1.1](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1), lean [GitHub v1.1.1 reproducibility/source release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.1), and complete frozen [Zenodo archive](https://zenodo.org/records/23138373) |
 | Current publication status and frozen-metadata clarification | `docs/PUBLICATION_STATUS.md` |
-| Immutable v1.1.0 package manifest and metadata snapshot | `release/v1.1.0/` |
+| Frozen v1.1.1 reproducibility subset, manifest, and metadata snapshot | `release/v1.1.1/` |
+| Historical immutable v1.1.0 release | [GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0), [Hugging Face v1.1.0](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0), and [Zenodo](https://zenodo.org/records/22959957) |
 | Historical v1.0.0 ready-to-use packages | `final_benchmark/*.zip` |
 | Historical v1.0.0 hashes, counts, and identity definition | `final_benchmark/manifest.json` |
 | Historical v1.0.0 complexity, reasoning tags, and negative-BQA proof links | `final_benchmark/reasoning_metadata.csv` |
@@ -59,7 +59,8 @@ The **1-hop/2-hop designation describes ontology-context extraction depth** arou
 
 The checked-in `final_benchmark/` packages and the commands in this section are
 the preserved v1.0.0 workflow. They do not describe or regenerate the published
-v1.1.0 artifact. Use the versioned public links above for v1.1.0.
+v1.1.1 artifact. Use the versioned public links above for v1.1.1. The immutable
+v1.1.0 release is also retained as a historical version.
 
 You do **not** need to regenerate the benchmark or use an API to load and validate it.
 
@@ -120,10 +121,10 @@ python scripts/llm_pipeline/run_final_benchmark.py \
 
 Use `nl`, `sparql`, or `abs` for a single condition. The evaluation runner is resumable. Use `--limit-questions` and `--max-api-calls` for a deliberately bounded smoke test. Answer EM/F1 manuscript processing delegates through `scripts/llm_pipeline/sageqa_answer_metrics.py` to the exact manuscript-frozen SAGE-QA evaluator vendored under `scripts/llm_pipeline/vendor/`; it does not depend on a mutable sibling checkout or silently substitute Jaccard similarity. The frozen source commit, hashes, and MIT license are recorded in the vendor README.
 
-### Current v1.1.0 tabular dataset and historical v1.0.0 export
+### Current v1.1.1 tabular dataset and historical v1.0.0 export
 
-The canonical tabular 9,048-row v1.1.0 dataset view is published at
-[huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
+The canonical corrected tabular 9,048-row v1.1.1 dataset view is published at
+[huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1).
 Each row is one unique question-hop instance, with NL, FS, and AR retained as
 aligned columns.
 
@@ -203,8 +204,8 @@ excludes all Family/FHKB payload.
 
 ## Known limitations
 
-- In v1.1.0, three AR prompts (task IDs 1274, 4094, and 5165) are confirmed defective. The primary frozen-observation analysis retains them and reports a separately identified exclusion sensitivity; no response was rerun.
-- The four ontology families do not cover every OWL construct. Historical v1.0.0 instantiates eight of its 20 documented reasoning tags; see the v1.1.0 release package for the current finalized explanation and primitive-tag schema.
+- In v1.1.1, three AR prompts (task IDs 1274, 4094, and 5165) are confirmed defective. The released evaluation retains the three prompts and reports the exclusion sensitivity.
+- The four ontology families do not cover every OWL construct. Historical v1.0.0 instantiates eight of its 20 documented reasoning tags; see the v1.1.1 release package for the current finalized explanation and primitive-tag schema.
 - Ontology-context depth and proof complexity are related but distinct and must not be conflated.
 - Natural-language and abstract verbalizations are generated and may contain stylistic or entity-rendering artifacts.
 - BQA and OEQA totals are not balanced across datasets or hops.
@@ -219,17 +220,18 @@ An extended version of CORE-LLM-Bench is currently being prepared for submission
 
 ## Version and license
 
-The current benchmark version is `1.1.0`; the release tag is `v1.1.0`, and the
-release date is 2026-09-25. The canonical tabular 9,048-row dataset view is available
-on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.0).
-The v1.1.0 Zenodo DOI is
-[`10.5281/zenodo.22959957`](https://zenodo.org/records/22959957). The source release is available from the
-[GitHub v1.1.0 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.0).
-The historical v1.0.0 GitHub, Hugging Face, and Zenodo artifacts remain unchanged.
-Frozen provenance files and the immutable v1.1.0 archive may retain staging or
-`prepared-not-published` labels that accurately record their prepublication
-creation state; they are not the current publication status. See
-`docs/PUBLICATION_STATUS.md`, `VERSION`, and `CITATION.cff`.
+The current benchmark version is `1.1.1`; the release tag is `v1.1.1`, and the
+release date is 2026-10-04. The canonical corrected tabular 9,048-row dataset is
+on [Hugging Face](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1).
+The [GitHub v1.1.1 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.1)
+is the lean reproducibility/source subset. The complete frozen archival package
+is on Zenodo under DOI
+[`10.5281/zenodo.23138373`](https://zenodo.org/records/23138373). The immutable
+v1.1.0 and v1.0.0 GitHub, Hugging Face, and Zenodo artifacts remain historical
+versions. Frozen provenance files under `release/v1.1.1/` may retain staging,
+`unpublished`, `will be distributed`, or similar prepublication wording that
+accurately records their build state; it is not the current publication status.
+See `docs/PUBLICATION_STATUS.md`, `VERSION`, and `CITATION.cff`.
 
 Licensing has three distinct layers:
 

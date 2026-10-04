@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1 - 2026-10-04
+
+- Publish a corrective release that supersedes v1.1.0 for future benchmark use while preserving v1.1.0 as an immutable historical version.
+- Correct source IRIs and publish complete OEQA entailment sets.
+- Replace 67 affected FALSE BQA pair members.
+- Correct NL identity and namespace handling.
+- Repair proof and complexity metadata.
+- Rerun correction-affected observations and reuse unaffected frozen observations.
+- Publish the lean reproducibility/source subset through the [GitHub v1.1.1 release](https://github.com/jloe2911/CORE-LLM-Bench/releases/tag/v1.1.1), the canonical corrected benchmark through [Hugging Face v1.1.1](https://huggingface.co/datasets/jloe2911/CORE-LLM-Bench/tree/v1.1.1), and the complete frozen archival package through Zenodo DOI [`10.5281/zenodo.23138373`](https://zenodo.org/records/23138373).
+
 ## 1.1.0 - 2026-09-25
 
 - Publish the schema-finalized 9,048-question benchmark with deterministic public IDs and semantic keys.
